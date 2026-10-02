@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SmtpEmailProvider } from "./smtp";
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 describe("SMTP delivery", () => {
   it("blocks unapproved certification recipients before SMTP delivery", async () => {
@@ -88,5 +88,31 @@ describe("SMTP delivery", () => {
     const first = sendMail.mock.calls[0]?.[0].messageId;
     expect(first).toBe(sendMail.mock.calls[1]?.[0].messageId);
     expect(first).not.toContain("recipient");
+  });
+});
+
+
+describe("Resend API delivery", () => {
+  it("uses the existing templates over HTTPS, preserves retry keys and fails closed", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ id: "email-id" }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const sendMail = vi.fn();
+    const provider = new SmtpEmailProvider({ host: "", port: 587, secure: false, username: "", password: "", from: "LobbyStack <noreply@example.test>", replyTo: "support@example.test", resendApiKey: "fixture-key" }, { sendMail } as never);
+    const input = { template: "verify_email" as const, to: "user@example.test", subject: "Verify", variables: { code: "123456" }, idempotencyKey: "auth-email:stable" };
+    expect(await provider.sendTemplate(input)).toEqual({ messageId: "email-id" });
+    const [url, request] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.resend.com/emails");
+    expect(request.headers.authorization).toBe("Bearer fixture-key");
+    expect(request.headers["idempotency-key"]).toMatch(/^[a-f0-9]{64}$/);
+    expect(JSON.parse(request.body)).toMatchObject({ to: ["user@example.test"], from: "LobbyStack <noreply@example.test>", reply_to: "support@example.test", text: expect.stringContaining("123456"), html: expect.stringContaining("123456") });
+    expect(sendMail).not.toHaveBeenCalled();
+    fetchMock.mockResolvedValueOnce(new Response("private provider response", { status: 429 }));
+    await expect(provider.sendTemplate(input)).rejects.toThrow("Resend email delivery failed with HTTP 429.");
+    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 200 }));
+    await expect(provider.sendTemplate(input)).rejects.toThrow("no message ID");
+    vi.stubEnv("LOBBYSTACK_CERTIFICATION_MODE", "true");
+    vi.stubEnv("LOBBYSTACK_CERTIFICATION_EMAILS", "approved@example.test");
+    await expect(provider.sendTemplate(input)).rejects.toThrow("CERTIFICATION_RECIPIENT_BLOCKED");
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });

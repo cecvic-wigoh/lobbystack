@@ -23,13 +23,15 @@ import { configureSchedulers } from "./scheduler";
 import { getWorkerSnapshotCache } from "./snapshot-cache";
 
 function createEmailProvider(): SmtpEmailProvider | undefined {
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
   const host = process.env.SMTP_HOST;
-  if (!host) {
-    console.warn("SMTP_HOST is missing. Authentication email jobs will fail until email delivery is configured.");
+  if (!host && !resendApiKey) {
+    console.warn("SMTP_HOST and RESEND_API_KEY are missing. Authentication email jobs will fail until email delivery is configured.");
     return undefined;
   }
   return new SmtpEmailProvider({
-    host,
+    host: host ?? "",
+    ...(resendApiKey ? { resendApiKey } : {}),
     // A deploy template can leave optional inputs blank, so "" counts as unset.
     port: Number(process.env.SMTP_PORT || 587),
     secure: process.env.SMTP_SECURE === "true",

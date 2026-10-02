@@ -11,6 +11,7 @@ export type SmtpConfig = {
   password: string;
   from: string;
   replyTo?: string;
+  resendApiKey?: string;
 };
 
 type TemplateName = "existing_account" | "verify_email" | "password_reset" | "invitation" | "operator_alert" | "feedback_submission" | "onboarding_followup";
@@ -35,6 +36,32 @@ export class SmtpEmailProvider {
     // A per-message sender (the founder check-in) replaces the default reply-to
     // too, so replies reach that sender rather than the shared inbox.
     const replyTo = input.from ? input.replyTo : input.replyTo ?? this.config.replyTo;
+    if (this.config.resendApiKey) {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${this.config.resendApiKey}`,
+          "content-type": "application/json",
+          ...(input.idempotencyKey ? { "idempotency-key": createHash("sha256").update(input.idempotencyKey).digest("hex") } : {}),
+        },
+        signal: AbortSignal.timeout(30_000),
+        body: JSON.stringify({
+          from: input.from ?? this.config.from,
+          to: [input.to],
+          subject: input.subject,
+          text: email.text,
+          ...(email.html ? { html: email.html } : {}),
+          ...(replyTo ? { reply_to: replyTo } : {}),
+        }),
+      });
+      // Keep recipient, code and credentials out of persisted job errors.
+      if (!response.ok) throw new Error(`Resend email delivery failed with HTTP ${response.status}.`);
+      const result: unknown = await response.json();
+      if (!result || typeof result !== "object" || !("id" in result) || typeof result.id !== "string" || !result.id) {
+        throw new Error("Resend email delivery returned no message ID.");
+      }
+      return { messageId: result.id };
+    }
     const result = await this.transporter.sendMail({
       from: input.from ?? this.config.from,
       ...(replyTo ? { replyTo } : {}),
