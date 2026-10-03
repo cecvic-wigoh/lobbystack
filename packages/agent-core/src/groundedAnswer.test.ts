@@ -20,3 +20,12 @@ it("does not let an unrelated answer pass even when it supplies a valid quote", 
 it("abstains when evidence is absent", () => {
  expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, [], "en").outcome).toBe("unknown");
 });
+it("asks for the campus rather than inventing a location", () => {
+ expect(validateGroundedAnswer({ status: "clarify_campus", claims: [] }, evidence, "en")).toMatchObject({ answer: "Which campus are you asking about?", outcome: "clarification" });
+});
+it("keeps a verified contact while disclosing that other details are missing", () => {
+ const result = validateGroundedAnswer({ status: "partial", claims: [claim] }, evidence, "en");
+ expect(result.answer).toContain(claim.text);
+ expect(result.answer).toContain("can't confirm the remaining details");
+ expect(result.sources).toEqual([evidence[0]!.sourceUrl]);
+});
