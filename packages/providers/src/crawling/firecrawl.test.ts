@@ -25,6 +25,20 @@ describe("FirecrawlProvider", () => {
     await new FirecrawlProvider({ apiKey: "test", maxPages: 800, excludePaths: ["^/news/"], pollIntervalMs: 0 }).crawl({ url: "https://example.com", limit: 10000 });
     expect(JSON.parse(fetcher.mock.calls[0]?.[1].body)).toMatchObject({ limit: 800, excludePaths: [".*\\.xml$", "^/news/"] });
   });
+  it("imports an existing stopped crawl only for its configured website without another paid crawl", async () => {
+    const fetcher = responses({ status: "cancelled", data: [page("https://example.com/")] });
+    const pages = await new FirecrawlProvider({ apiKey: "test", savedCrawlId: "saved", savedCrawlUrl: "https://example.com/" }).crawl({ url: "https://example.com", limit: 800 });
+    expect(pages).toHaveLength(1);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v1/crawl/saved");
+    expect(fetcher.mock.calls[0]?.[1].method).toBe("GET");
+  });
+  it("does not replay saved content for a different website", async () => {
+    const fetcher = responses({ id: "fresh" }, { status: "completed", data: [page("https://other.test/")] });
+    await new FirecrawlProvider({ apiKey: "test", savedCrawlId: "saved", savedCrawlUrl: "https://example.com/" }).crawl({ url: "https://other.test", limit: 2 });
+    expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v1/crawl");
+    expect(fetcher.mock.calls[0]?.[1].method).toBe("POST");
+  });
   it("waits for completion and collects paginated results", async () => {
     const fetcher = responses(
       { success: true, id: "job" },
