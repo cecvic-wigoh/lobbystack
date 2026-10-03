@@ -1,10 +1,10 @@
 import { afterEach, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ lookup: vi.fn(), generate: vi.fn(), agent: vi.fn() }));
+const mocks = vi.hoisted(() => ({ lookup: vi.fn(), generate: vi.fn(), agent: vi.fn(), complete: vi.fn() }));
 vi.mock("@/lib/domain-context", () => ({ createWorkerDomainContext: () => ({ db: {} }) }));
 vi.mock("@/lib/api-helpers", () => ({ asApiResponse: () => new Response(null, { status: 400 }) }));
 vi.mock("@lobbystack/db", () => ({ calls: {}, withBusinessTransaction: async (_db: unknown, _ctx: unknown, fn: (tx: unknown) => unknown) => fn({ select: () => ({ from: () => ({ where: () => ({ limit: mocks.lookup }) }) }) }) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), eq: vi.fn() }));
-vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful" }), completeCall: vi.fn(), markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
+vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful" }), completeCall: mocks.complete, markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
 vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), answerGroundedQuestion: mocks.agent }));
 import { POST } from "./route";
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
@@ -25,4 +25,13 @@ it("protects bridge requests and denies missing or ended workspace calls before 
  const reply = await POST(request(), route);
  expect(reply.status).toBe(200); expect(await reply.json()).toEqual({ answer: "Use the college admissions contact.", sources: [], outcome: "unknown" });
  expect(mocks.agent).toHaveBeenCalledWith(expect.objectContaining({ question: input.question, context: expect.objectContaining({ callId: input.callId }) }));
+});
+
+it("records whole seconds when finishing a call", async () => {
+ vi.stubEnv("VOICE_PROVIDER", "livekit"); vi.stubEnv("INTERNAL_SERVICE_TOKEN", "s".repeat(32));
+ const tenantId = crypto.randomUUID(); const callId = crypto.randomUUID();
+ mocks.lookup.mockResolvedValueOnce([{ id: callId, endedAt: null, mediaStartedAt: new Date(Date.now() - 1500) }]);
+ const request = new Request("https://lobby.example/api/internal/livekit/events", { method: "POST", headers: { authorization: `Bearer ${"s".repeat(32)}` }, body: JSON.stringify({ tenantId, callId, type: "completed" }) });
+ expect((await POST(request, { params: Promise.resolve({ operation: "events" }) })).status).toBe(200);
+ expect(Number.isInteger(mocks.complete.mock.calls[0]![1].providerDurationSeconds)).toBe(true);
 });

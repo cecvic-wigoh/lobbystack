@@ -34,7 +34,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
         await saveLiveCallTurn(domain, { businessId, callId: call.id, ...turn });
       }
       if (input.type === "completed" || input.type === "failed") {
-        const seconds = call.mediaStartedAt ? Math.max(0, (Date.now() - call.mediaStartedAt.getTime()) / 1000) : 0;
+        const seconds = call.mediaStartedAt ? Math.max(0, Math.ceil((Date.now() - call.mediaStartedAt.getTime()) / 1000)) : 0;
         await completeCall(domain, { businessId, callId: call.id, status: input.type === "failed" ? "failed" : "completed", endedAt: new Date().toISOString(), providerDurationSeconds: seconds, mediaDurationSeconds: seconds });
       }
       return NextResponse.json({ ok: true });

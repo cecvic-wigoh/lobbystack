@@ -17,14 +17,14 @@ export function validateGroundedAnswer(result: z.infer<typeof groundedAnswerSche
   const unknown = locale === "fr" ? "Je ne peux pas confirmer cela à partir des informations publiées par le collège. Veuillez contacter le collège pour confirmation." : "I can't confirm that from the college's published information. Please contact the college to confirm.";
   const declined = locale === "fr" ? "Je peux vous aider uniquement avec les informations et services du collège." : "I can help with the college's information and services only.";
   if (result.status === "out_of_scope") return { answer: declined, sources: [], outcome: "out_of_scope" };
-  if (result.status !== "supported" || !result.claims.length) return { answer: unknown, sources: [], outcome: "unknown" };
+  if (result.status !== "supported" || !result.claims.length) return { answer: unknown, sources: [], outcome: "unknown", reason: "missing_evidence" };
   for (const claim of result.claims) {
     const source = evidence.find(item => item.chunkId === claim.sourceId);
     const quote = normalize(claim.quote);
-    if (!source || !quote || !normalize(source.content).includes(quote) || !claim.text.trim()) return { answer: unknown, sources: [], outcome: "unknown" };
+    if (!source || !quote || !normalize(source.content).includes(quote) || !claim.text.trim()) return { answer: unknown, sources: [], outcome: "unknown", reason: "quote_mismatch" };
     // Contacts and numbers in a paraphrase must occur exactly in its cited quote.
     const details = claim.text.match(/[\w.+-]+@[\w.-]+\.[a-z]{2,}|https?:\/\/\S+|\d[\d.,-]*/gi) ?? [];
-    if (details.some(detail => !quote.includes(detail))) return { answer: unknown, sources: [], outcome: "unknown" };
+    if (details.some(detail => !quote.includes(detail.replace(/[.,-]+$/, "")))) return { answer: unknown, sources: [], outcome: "unknown", reason: "detail_mismatch" };
   }
   const sources = [...new Set(result.claims.map(claim => evidence.find(item => item.chunkId === claim.sourceId)?.sourceUrl).filter((url): url is string => !!url))];
   return { answer: result.claims.map(claim => claim.text.trim()).join(" "), sources, outcome: "supported" };
@@ -44,7 +44,7 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     timeout: 10000,
   });
   const checked = validateGroundedAnswer(result.output, evidence.matches, locale);
-  if (checked.outcome !== "supported") return checked;
+  if (checked.outcome !== "supported") return { ...checked, evidenceCount: evidence.matches.length };
   // A valid quote does not prove the paraphrase follows from it. Check that separately.
   const verification = await generateText({
     model: input.model,
@@ -54,5 +54,5 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     maxRetries: 0,
     timeout: 6000,
   });
-  return verification.output.supported ? checked : validateGroundedAnswer({ status: "unknown", claims: [] }, [], locale);
+  return verification.output.supported ? checked : { ...validateGroundedAnswer({ status: "unknown", claims: [] }, [], locale), reason: "unsupported_paraphrase" };
 }
