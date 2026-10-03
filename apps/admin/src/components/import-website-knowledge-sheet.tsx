@@ -15,6 +15,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -31,13 +32,14 @@ export function ImportWebsiteKnowledgeSheet({
   open,
   onOpenChange,
 }: {
-  save: (websiteUrl: string) => Promise<void>;
+  save: (websiteUrl: string, singlePage?: boolean) => Promise<void>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
   const { t } = useTranslation("agent");
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
+  const [singlePage, setSinglePage] = useState(false);
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +47,7 @@ export function ImportWebsiteKnowledgeSheet({
 
   function resetState(): void {
     setWebsiteUrl("");
+    setSinglePage(false);
     setErrorMessage(null);
     setIsSubmitting(false);
   }
@@ -68,7 +71,8 @@ export function ImportWebsiteKnowledgeSheet({
     setErrorMessage(null);
 
     try {
-      await save(trimmedWebsiteUrl);
+      if (singlePage) await save(trimmedWebsiteUrl, true);
+      else await save(trimmedWebsiteUrl);
       toast.success(t("sections.knowledge.websiteImport.success"));
       setDialogOpen(false);
       resetState();
@@ -134,6 +138,10 @@ export function ImportWebsiteKnowledgeSheet({
                 type="url"
                 value={websiteUrl}
               />
+            </Field>
+            <Field orientation="horizontal">
+              <Checkbox id="knowledge-single-page" checked={singlePage} onCheckedChange={(value) => setSinglePage(value === true)} />
+              <FieldLabel htmlFor="knowledge-single-page">{t("sections.knowledge.websiteImport.singlePage")}</FieldLabel>
             </Field>
           </FieldGroup>
 

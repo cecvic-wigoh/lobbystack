@@ -37,7 +37,8 @@
         },
         "validation": {
           "urlRequired": "Entrez l'URL du site web à importer."
-        }
+        },
+        "singlePage": "Importer uniquement cette page"
       },
       "addKnowledgeDescription": "Ajoutez des heures d'ouverture, des tarifs, des politiques ou toute autre information que votre réceptionniste devrait connaître.",
       "editKnowledgeDescription": "Mettez a jour les informations que votre receptionniste doit utiliser pour repondre aux questions des clients.",

@@ -34,8 +34,11 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
         await saveLiveCallTurn(domain, { businessId, callId: call.id, ...turn });
       }
       if (input.type === "completed" || input.type === "failed") {
-        const seconds = call.mediaStartedAt ? Math.max(0, Math.ceil((Date.now() - call.mediaStartedAt.getTime()) / 1000)) : 0;
-        await completeCall(domain, { businessId, callId: call.id, status: input.type === "failed" ? "failed" : "completed", endedAt: new Date().toISOString(), providerDurationSeconds: seconds, mediaDurationSeconds: seconds });
+        const endedAt = input.payload.endedAt === undefined ? new Date().toISOString() : z.iso.datetime().parse(input.payload.endedAt);
+        const endMs = new Date(endedAt).getTime();
+        if (endMs > Date.now() + 10000 || (call.mediaStartedAt && endMs < call.mediaStartedAt.getTime())) return NextResponse.json({ error: "Invalid call end time" }, { status: 400 });
+        const seconds = call.mediaStartedAt ? Math.max(0, Math.ceil((endMs - call.mediaStartedAt.getTime()) / 1000)) : 0;
+        await completeCall(domain, { businessId, callId: call.id, status: input.type === "failed" ? "failed" : "completed", endedAt, providerDurationSeconds: seconds, mediaDurationSeconds: seconds });
       }
       return NextResponse.json({ ok: true });
     }

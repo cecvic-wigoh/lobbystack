@@ -55,6 +55,14 @@ describe("restored knowledge dialogs", () => {
     await userEvent.click(screen.getByRole("button", { name: "sections.knowledge.websiteImport.submit" }));
     expect(save).toHaveBeenCalledWith("https://example.com/");
   });
+  it("can import an individual page without crawling the whole website", async () => {
+    const save = vi.fn().mockResolvedValue(undefined);
+    render(<ImportWebsiteKnowledgeSheet open save={save} />);
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "https://example.com/contact" } });
+    await userEvent.click(screen.getByRole("checkbox"));
+    await userEvent.click(screen.getByRole("button", { name: "sections.knowledge.websiteImport.submit" }));
+    expect(save).toHaveBeenCalledWith("https://example.com/contact", true);
+  });
   it("shows required and server website errors, clearing the error when edited", async () => {
     const save = vi.fn().mockRejectedValue(new Error("Import unavailable"));
     render(<ImportWebsiteKnowledgeSheet open save={save} />);

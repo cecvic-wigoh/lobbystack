@@ -73,7 +73,7 @@ export const FULL_CRAWL_PAGE_LIMIT = 10000;
 
 export async function createKnowledgeDocument(
   context: DomainContext,
-  input: { userId: string; businessId: string; title: string; sourceType: string; sourceUrl?: string; storageObjectId?: string; onboarding?: boolean },
+  input: { userId: string; businessId: string; title: string; sourceType: string; sourceUrl?: string; storageObjectId?: string; onboarding?: boolean; singlePage?: boolean },
 ): Promise<string> {
   return await withBusinessTransaction(context.db, { ...input, actorType: "operator" }, async (tx) => {
     await requireBusinessAdmin(tx, input);
@@ -100,7 +100,7 @@ export async function createKnowledgeDocument(
       if (existing) {
         // A retry of an onboarding submission is still onboarding: without the
         // limit it would fall back to the full crawl this sampling exists to defer.
-        if (["cancelled", "error"].includes(existing.status)) await queueKnowledgeDocumentRetry(tx, { businessId: input.businessId, documentId: existing.id, crawlLimit: input.onboarding ? ONBOARDING_CRAWL_PAGE_LIMIT : FULL_CRAWL_PAGE_LIMIT }, existing);
+        if (["cancelled", "error"].includes(existing.status)) await queueKnowledgeDocumentRetry(tx, { businessId: input.businessId, documentId: existing.id, crawlLimit: input.singlePage ? 1 : input.onboarding ? ONBOARDING_CRAWL_PAGE_LIMIT : FULL_CRAWL_PAGE_LIMIT }, existing);
         return existing.id;
       }
     }
@@ -115,7 +115,7 @@ export async function createKnowledgeDocument(
     if (!document) {
       throw new Error("Knowledge document could not be created.");
     }
-    const crawlLimit = input.onboarding ? ONBOARDING_CRAWL_PAGE_LIMIT : FULL_CRAWL_PAGE_LIMIT;
+    const crawlLimit = input.singlePage ? 1 : input.onboarding ? ONBOARDING_CRAWL_PAGE_LIMIT : FULL_CRAWL_PAGE_LIMIT;
     const ingestion = isWebsite ? (await tx.insert(websiteIngestionJobs).values({ businessId: input.businessId, rootDocumentId: document.id, websiteUrl: sourceUrl!, provider: "firecrawl", status: "queued", pageLimit: crawlLimit }).returning({ id: websiteIngestionJobs.id }))[0] : undefined;
     await enqueueOutbox(tx, {
       topic: isWebsite ? "knowledge.crawlWebsite" : "knowledge.extractDocument",
@@ -150,7 +150,8 @@ export async function retryKnowledgeDocument(context: DomainContext, input: { us
     await requireBusinessAdmin(tx, input);
     const document = (await tx.select({ id: knowledgeDocuments.id, sourceType: knowledgeDocuments.sourceType, sourceUrl: knowledgeDocuments.sourceUrl, revision: knowledgeDocuments.revision }).from(knowledgeDocuments).where(and(eq(knowledgeDocuments.id, input.documentId), eq(knowledgeDocuments.businessId, input.businessId))).limit(1).for("update"))[0];
     if (!document) throw new Error("Knowledge document not found.");
-    await queueKnowledgeDocumentRetry(tx, input, document);
+    const priorImport = document.sourceType === "website" ? (await tx.select({ pageLimit: websiteIngestionJobs.pageLimit }).from(websiteIngestionJobs).where(and(eq(websiteIngestionJobs.rootDocumentId, document.id), eq(websiteIngestionJobs.businessId, input.businessId))).limit(1))[0] : undefined;
+    await queueKnowledgeDocumentRetry(tx, { ...input, ...(priorImport?.pageLimit === 1 ? { crawlLimit: 1 } : {}) }, document);
   });
 }
 

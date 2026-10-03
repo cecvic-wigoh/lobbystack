@@ -37,7 +37,8 @@
         },
         "validation": {
           "urlRequired": "Enter a website URL to import."
-        }
+        },
+        "singlePage": "Import only this page"
       },
       "addKnowledgeDescription": "Add opening hours, pricing, policies, or any other information your receptionist should know.",
       "editKnowledgeDescription": "Update the information your receptionist should use when answering customer questions.",

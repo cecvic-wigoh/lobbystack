@@ -37,7 +37,8 @@
         },
         "validation": {
           "urlRequired": "Unesite URL sajta koji želite da uvezete."
-        }
+        },
+        "singlePage": "Uvezi samo ovu stranicu"
       },
       "addKnowledgeDescription": "Dodajte radno vreme, cene, pravila poslovanja ili bilo koju drugu informaciju koju recepcioner treba da zna.",
       "editKnowledgeDescription": "Izmenite informacije koje recepcioner koristi kada odgovara na pitanja klijenata.",

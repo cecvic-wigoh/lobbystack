@@ -37,7 +37,8 @@
         },
         "validation": {
           "urlRequired": "Introduzca la URL del sitio web que desea importar."
-        }
+        },
+        "singlePage": "Importar solo esta página"
       },
       "addKnowledgeDescription": "Añada el horario de atención, precios, políticas o cualquier otra información que su recepcionista deba conocer.",
       "editKnowledgeDescription": "Actualice la información que su recepcionista debe usar para responder a las preguntas de los clientes.",

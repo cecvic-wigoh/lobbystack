@@ -166,3 +166,11 @@ describe("website crawl page limits", () => {
     expect(ONBOARDING_CRAWL_PAGE_LIMIT).toBeLessThan(FULL_CRAWL_PAGE_LIMIT);
   });
 });
+
+it("queues a one-page crawl for a targeted official source", async () => {
+  mocks.enqueueOutbox.mockClear();
+  const tx = transactionReturning([{ id: "doc_1" }]);
+  mocks.withBusinessTransaction.mockImplementation(async (_db: unknown, _input: unknown, run: (tx: unknown) => Promise<unknown>) => await run(tx));
+  await createKnowledgeDocument(context, { userId: "user_1", businessId: "biz_1", title: "Contact", sourceType: "website", sourceUrl: "https://example.com/contact", singlePage: true });
+  expect(mocks.enqueueOutbox.mock.calls.at(-1)?.[1].payload.limit).toBe(1);
+});
