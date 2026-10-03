@@ -10,6 +10,7 @@ import { posthogSources, recordingStorageSource } from "./csp";
 
 export function securityHeaders(env: Record<string, string | undefined> = process.env): Record<string, string> {
   const recordingOrigin = recordingStorageSource(env);
+  const livekitSources = env.VOICE_PROVIDER === "livekit" ? " https://*.livekit.cloud" : "";
   const posthogOrigin = posthogSources(env).join(" ");
   return {
     "Content-Security-Policy": [
@@ -20,7 +21,7 @@ export function securityHeaders(env: Record<string, string | undefined> = proces
       `script-src 'self' 'unsafe-inline'${env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com ${posthogOrigin}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
-      `connect-src 'self' ${posthogOrigin} https://challenges.cloudflare.com${recordingOrigin ? ` ${recordingOrigin}` : ""} wss:`,
+      `connect-src 'self' ${posthogOrigin} https://challenges.cloudflare.com${recordingOrigin ? ` ${recordingOrigin}` : ""}${livekitSources} wss:`,
       "font-src 'self' data:",
       "frame-src 'self' https://challenges.cloudflare.com",
       "form-action 'self'",

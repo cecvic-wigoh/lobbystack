@@ -32,3 +32,10 @@ it("classifies only the embed surfaces as embeddable", () => {
 it("converts header records into the next.config header list shape", () => {
   expect(toNextHeaderList({ "X-Frame-Options": "DENY" })).toEqual([{ key: "X-Frame-Options", value: "DENY" }]);
 });
+
+it("permits LiveKit Cloud region discovery only when its voice provider is enabled", () => {
+  const policy = securityHeaders({ ...env, VOICE_PROVIDER: "livekit" })["Content-Security-Policy"];
+  expect(policy).toContain("https://*.livekit.cloud");
+  expect(policy).toContain("object-src 'none'");
+  expect(securityHeaders(env)["Content-Security-Policy"]).not.toContain("https://*.livekit.cloud");
+});
