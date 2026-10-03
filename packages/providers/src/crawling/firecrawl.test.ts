@@ -20,6 +20,11 @@ describe("FirecrawlProvider", () => {
     await provider().crawl({ url: "https://example.com", limit: 10000 });
     expect(JSON.parse(fetcher.mock.calls[1]?.[1].body)).toMatchObject({ limit: 3, allowExternalLinks: false, excludePaths: [".*\\.xml$"] });
   });
+  it("honors the configured credit budget and priority exclusions", async () => {
+    const fetcher = responses({ id: "job" }, { status: "completed", data: [page("https://example.com/")] });
+    await new FirecrawlProvider({ apiKey: "test", maxPages: 800, excludePaths: ["^/news/"], pollIntervalMs: 0 }).crawl({ url: "https://example.com", limit: 10000 });
+    expect(JSON.parse(fetcher.mock.calls[0]?.[1].body)).toMatchObject({ limit: 800, excludePaths: [".*\\\\.xml$", "^/news/"] });
+  });
   it("waits for completion and collects paginated results", async () => {
     const fetcher = responses(
       { success: true, id: "job" },

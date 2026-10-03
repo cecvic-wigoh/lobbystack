@@ -5,12 +5,13 @@ export type CrawlPage = { url: string; title?: string; markdown?: string };
 type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string }> };
 
 export class FirecrawlProvider {
-  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number }) {}
+  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[] }) {}
 
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {
     const url = await assertPublicHttpUrl(input.url);
     const baseUrl = (this.config.baseUrl ?? "https://api.firecrawl.dev").replace(/\/$/, "");
     let limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
+    if (this.config.maxPages !== undefined) limit = Math.min(limit, Math.max(1, Math.floor(this.config.maxPages)));
     const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
     const request = async <T = CrawlResponse>(endpoint: string, body?: object): Promise<T> => {
       const remaining = deadline - Date.now();
@@ -41,7 +42,7 @@ export class FirecrawlProvider {
       // Bound the crawl to the discovered site size, rather than reserving 10,000 pages.
       if (readableUrls.size) limit = Math.min(limit, readableUrls.size + 1);
     }
-    const started = await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$"], scrapeOptions: { formats: ["markdown"] } });
+    const started = await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$", ...(this.config.excludePaths ?? [])], scrapeOptions: { formats: ["markdown"] } });
     if (!started.id) throw new Error("Website crawl did not return a job ID.");
     const statusUrl = new URL(`${baseUrl}/v1/crawl/${encodeURIComponent(started.id)}`);
     let payload: CrawlResponse;

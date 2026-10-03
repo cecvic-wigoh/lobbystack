@@ -75,7 +75,7 @@ function createAlertSmsProvider(): WorkerDependencies["twilioAlerts"] {
 
 function createCrawlerProvider(): FirecrawlProvider | undefined {
   const apiKey = process.env.FIRECRAWL_API_KEY;
-  return apiKey ? new FirecrawlProvider({ apiKey, ...(process.env.FIRECRAWL_BASE_URL ? { baseUrl: process.env.FIRECRAWL_BASE_URL } : {}) }) : undefined;
+  return apiKey ? new FirecrawlProvider({ apiKey, ...(process.env.FIRECRAWL_MAX_PAGES && Number.isFinite(Number(process.env.FIRECRAWL_MAX_PAGES)) ? { maxPages: Number(process.env.FIRECRAWL_MAX_PAGES) } : {}), ...(process.env.FIRECRAWL_EXCLUDE_PATHS ? { excludePaths: process.env.FIRECRAWL_EXCLUDE_PATHS.split(",").filter(Boolean) } : {}), ...(process.env.FIRECRAWL_BASE_URL ? { baseUrl: process.env.FIRECRAWL_BASE_URL } : {}) }) : undefined;
 }
 
 function createCalendarProvider(): GoogleCalendarProvider | undefined {
