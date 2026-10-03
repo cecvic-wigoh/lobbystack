@@ -5,7 +5,7 @@ export type CrawlPage = { url: string; title?: string; markdown?: string };
 type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string }> };
 
 export class FirecrawlProvider {
-  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedCrawlUrl?: string }) {}
+  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedCrawlUrl?: string; pauseNewCrawls?: boolean }) {}
 
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {
     const url = await assertPublicHttpUrl(input.url);
@@ -13,6 +13,7 @@ export class FirecrawlProvider {
     let limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
     if (this.config.maxPages !== undefined) limit = Math.min(limit, Math.max(1, Math.floor(this.config.maxPages)));
     const savedCrawlId = this.config.savedCrawlUrl && new URL(this.config.savedCrawlUrl).toString() === url.toString() ? this.config.savedCrawlId : undefined;
+    if (this.config.pauseNewCrawls && !savedCrawlId) throw new Error("New website crawls are paused. Imported knowledge remains available.");
     const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
     const request = async <T = CrawlResponse>(endpoint: string, body?: object): Promise<T> => {
       const remaining = deadline - Date.now();

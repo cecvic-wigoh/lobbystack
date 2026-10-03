@@ -39,6 +39,11 @@ describe("FirecrawlProvider", () => {
     expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v1/crawl");
     expect(fetcher.mock.calls[0]?.[1].method).toBe("POST");
   });
+  it("makes no provider request while new paid crawls are paused", async () => {
+    const fetcher = responses();
+    await expect(new FirecrawlProvider({ apiKey: "test", pauseNewCrawls: true }).crawl({ url: "https://example.com", limit: 2 })).rejects.toThrow("paused");
+    expect(fetcher).not.toHaveBeenCalled();
+  });
   it("waits for completion and collects paginated results", async () => {
     const fetcher = responses(
       { success: true, id: "job" },
