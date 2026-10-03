@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { Room } from "livekit-client";
 
 import type { TelemetryEventName } from "@lobbystack/telemetry";
 
@@ -12,7 +13,7 @@ export type WebVoiceWidgetStatus =
   | "error";
 
 /** Browser calls start here; the server records the call and connects it to GPT-Live. */
-export const LIVE_WEB_CALL_ENDPOINT = "/api/voice/live/session";
+export const LIVE_WEB_CALL_ENDPOINT = process.env.NEXT_PUBLIC_VOICE_PROVIDER === "livekit" ? "/api/voice/livekit/session" : "/api/voice/live/session";
 
 type UseWebVoiceCallOptions = {
   businessSlug: string;
@@ -179,6 +180,7 @@ export function useWebVoiceCall({
   const [muted, setMuted] = useState(false);
   const [errorKey, setErrorKey] = useState<WebVoiceErrorKey | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const livekitRoomRef = useRef<Room | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const eventsChannelRef = useRef<RTCDataChannel | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -224,6 +226,9 @@ export function useWebVoiceCall({
     invalidatePendingStart();
     window.clearTimeout(disconnectTimerRef.current);
     disconnectTimerRef.current = undefined;
+    const room = livekitRoomRef.current;
+    livekitRoomRef.current = null;
+    void room?.disconnect();
     localStreamRef.current?.getTracks().forEach((track) => track.stop());
     localStreamRef.current = null;
     eventsChannelRef.current = null;
@@ -338,6 +343,38 @@ export function useWebVoiceCall({
       }
       setStatus("connecting");
       const visitorId = getVisitorId();
+
+      if (process.env.NEXT_PUBLIC_VOICE_PROVIDER === "livekit") {
+        const response = await fetchWithTimeout(endpoint, { method: "POST", credentials: "include", headers: { "content-type": "application/json", ...getHeaders?.() }, body: JSON.stringify({ businessSlug, widgetId, visitorId, pageUrl: window.location.href, ...await getStartPayload?.() }) });
+        if (!response.ok) throw new Error("The AI receptionist is unavailable right now.");
+        const payload = await response.json() as StartedSession & { serverUrl: string; token: string };
+        const session = { sessionId: payload.sessionId, endToken: payload.endToken };
+        if (attemptId !== startCallAttemptRef.current) { stopAttemptResources(); requestSessionEnd(endpoint, session); return; }
+        sessionRef.current = session;
+        const { Room, RoomEvent, Track } = await import("livekit-client");
+        if (attemptId !== startCallAttemptRef.current) { stopAttemptResources(); requestSessionEnd(endpoint, session); return; }
+        const room = new Room();
+        livekitRoomRef.current = room;
+        room.on(RoomEvent.TrackSubscribed, track => {
+          if (livekitRoomRef.current !== room || track.kind !== Track.Kind.Audio) return;
+          const stream = new MediaStream([track.mediaStreamTrack]);
+          setRemoteStream(stream);
+          if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = stream; void remoteAudioRef.current.play().catch(() => setMuted(true)); }
+        });
+        room.on(RoomEvent.Disconnected, () => {
+          if (livekitRoomRef.current !== room) return;
+          endRemoteSession(); cleanup(); setStatus("ended");
+          emit("web.voice.test_call_ended", { endedBy: "agent" satisfies WebVoiceEndedBy });
+        });
+        await room.connect(payload.serverUrl, payload.token);
+        if (attemptId !== startCallAttemptRef.current) { await room.disconnect(); return; }
+        const track = stream.getAudioTracks()[0];
+        if (!track) throw new Error("This browser does not support microphone calls.");
+        await room.localParticipant.publishTrack(track, { source: Track.Source.Microphone });
+        if (attemptId !== startCallAttemptRef.current) { await room.disconnect(); return; }
+        setStatus("connected");
+        return;
+      }
 
       const connection = new RTCPeerConnection();
       peerConnection = connection;

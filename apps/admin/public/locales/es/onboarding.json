@@ -354,6 +354,12 @@
     },
     "continue": "Continuar",
     "continuing": "Continuando...",
-    "continueFailed": "No pudimos continuar en este momento. Inténtelo de nuevo."
+    "continueFailed": "No pudimos continuar en este momento. Inténtelo de nuevo.",
+    "managed": {
+      "title": "Tu recepcionista administrada",
+      "description": "Tu agencia administra el servicio, la facturación y el teléfono. No necesitas pagar a LobbyStack.",
+      "price": "Servicio mensual: $200",
+      "continue": "Continuar configuración"
+    }
   }
 }

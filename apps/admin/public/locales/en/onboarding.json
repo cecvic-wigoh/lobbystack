@@ -354,6 +354,12 @@
     },
     "continue": "Continue",
     "continuing": "Continuing...",
-    "continueFailed": "We couldn't continue right now. Please try again."
+    "continueFailed": "We couldn't continue right now. Please try again.",
+    "managed": {
+      "title": "Your managed receptionist",
+      "description": "Your agency manages this service, billing and phone setup. No LobbyStack checkout is required.",
+      "price": "Monthly service: $200",
+      "continue": "Continue setup"
+    }
   }
 }

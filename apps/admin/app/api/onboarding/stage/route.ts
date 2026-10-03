@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (!isOnboardingStage(target) || target === "create_business" || target === "complete") {
       return NextResponse.json({ error: "A valid next onboarding stage is required." }, { status: 400 });
     }
-    await advanceOnboardingStage(createDomainContext(), { userId: session.user.id, businessId, to: target });
+    await advanceOnboardingStage(createDomainContext(), { userId: session.user.id, businessId, to: target, managed: process.env.MANAGED_CLIENT_DEPLOYMENT === "true" });
     return NextResponse.json({ ok: true, stage: target });
   } catch (error) {
     return asApiResponse(error);

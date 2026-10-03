@@ -26,7 +26,7 @@ beforeEach(() => {
   });
 });
 afterEach(() => { cleanup(); clients.forEach(client => client.clear()); clients.length = 0; vi.unstubAllGlobals(); vi.clearAllMocks(); });
-function setup(synced: boolean | "error" = false, monthlyOnly = false) {
+function setup(synced: boolean | "error" = false, monthlyOnly = false, managed = false) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } }); clients.push(client);
   client.setQueryData(["businesses"], { businesses: [{ businessId: "business", active: true }] });
   client.setQueryData(["billing", "business"], { checkoutAvailable: true, availableCheckoutPlans: ["pro"], availableCheckoutIntervals: { starter: [], pro: monthlyOnly ? ["monthly"] : ["monthly", "annual"] } });
@@ -38,7 +38,7 @@ function setup(synced: boolean | "error" = false, monthlyOnly = false) {
     throw new Error(`Unexpected request ${url}`);
   });
   vi.stubGlobal("fetch", fetchMock);
-  render(<StrictMode><QueryClientProvider client={client}><OnboardingPlanSurface /></QueryClientProvider></StrictMode>);
+  render(<StrictMode><QueryClientProvider client={client}><OnboardingPlanSurface managed={managed} /></QueryClientProvider></StrictMode>);
   return fetchMock;
 }
 describe("original onboarding plan behavior with asynchronous checkout", () => {
@@ -96,5 +96,16 @@ describe("original onboarding plan behavior with asynchronous checkout", () => {
     await waitFor(() => expect(screen.getByRole("tab", { name: "plan.billingInterval.monthly" }).getAttribute("aria-selected")).toBe("true"));
     expect(screen.getByRole("button", { name: "plan.tiers.starter.cta.monthly" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "plan.tiers.pro.cta.monthly" }).hasAttribute("disabled")).toBe(false);
+  });
+});
+
+describe("managed onboarding", () => {
+  it("advances without requesting a hosted checkout", async () => {
+    const requests = setup(false, false, true);
+    expect(screen.getByText("plan.managed.price")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "plan.managed.continue" }));
+    await waitFor(() => expect(route.router.push).toHaveBeenCalledWith("/onboarding/attribution"));
+    expect(requests).toHaveBeenCalledWith("/api/onboarding/stage?businessId=business", expect.objectContaining({ body: JSON.stringify({ to: "attribution" }) }));
+    expect(requests.mock.calls.some(([url]) => url.includes("checkout"))).toBe(false);
   });
 });

@@ -1,0 +1,28 @@
+import { afterEach, expect, it, vi } from "vitest";
+const mocks = vi.hoisted(() => ({ lookup: vi.fn(), generate: vi.fn(), agent: vi.fn() }));
+vi.mock("@/lib/domain-context", () => ({ createWorkerDomainContext: () => ({ db: {} }) }));
+vi.mock("@/lib/api-helpers", () => ({ asApiResponse: () => new Response(null, { status: 400 }) }));
+vi.mock("@lobbystack/db", () => ({ calls: {}, withBusinessTransaction: async (_db: unknown, _ctx: unknown, fn: (tx: unknown) => unknown) => fn({ select: () => ({ from: () => ({ where: () => ({ limit: mocks.lookup }) }) }) }) }));
+vi.mock("drizzle-orm", () => ({ and: vi.fn(), eq: vi.fn() }));
+vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful" }), completeCall: vi.fn(), markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
+vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), createReceptionistAgent: mocks.agent }));
+import { POST } from "./route";
+afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
+it("protects bridge requests and denies missing or ended workspace calls before running the agent", async () => {
+ vi.stubEnv("VOICE_PROVIDER", "livekit"); vi.stubEnv("INTERNAL_SERVICE_TOKEN", "s".repeat(32));
+ const input = { tenantId: crypto.randomUUID(), callId: crypto.randomUUID(), question: "Admissions contact?" };
+ const request = (token = "s".repeat(32)) => new Request("https://lobby.example/api/internal/livekit/respond", { method: "POST", headers: { authorization: `Bearer ${token}` }, body: JSON.stringify(input) });
+ const route = { params: Promise.resolve({ operation: "respond" }) };
+ expect((await POST(request("wrong"), route)).status).toBe(401);
+ expect(mocks.lookup).not.toHaveBeenCalled();
+ mocks.lookup.mockResolvedValueOnce([]);
+ expect((await POST(request(), route)).status).toBe(404);
+ mocks.lookup.mockResolvedValueOnce([{ id: input.callId, endedAt: new Date() }]);
+ expect((await POST(request(), route)).status).toBe(410);
+ expect(mocks.agent).not.toHaveBeenCalled();
+ mocks.lookup.mockResolvedValueOnce([{ id: input.callId, endedAt: null }]);
+ mocks.agent.mockReturnValue({ generate: mocks.generate.mockResolvedValue({ text: "Use the college admissions contact." }) });
+ const reply = await POST(request(), route);
+ expect(reply.status).toBe(200); expect(await reply.json()).toEqual({ answer: "Use the college admissions contact." });
+ expect(mocks.agent).toHaveBeenCalledWith(expect.objectContaining({ readOnly: true, context: expect.objectContaining({ callId: input.callId }) }));
+});

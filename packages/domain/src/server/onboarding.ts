@@ -157,7 +157,7 @@ export async function advanceOnboardingStageInTransaction(
 
 export async function advanceOnboardingStage(
   context: DomainContext,
-  input: { userId: string; businessId: string; to: OnboardingStage },
+  input: { userId: string; businessId: string; to: OnboardingStage; managed?: boolean },
 ): Promise<void> {
   await withBusinessTransaction(context.db, { ...input, actorType: "operator" }, async (tx) => {
     await requireBusinessAdmin(tx, input);
@@ -173,6 +173,10 @@ export async function advanceOnboardingStage(
     }
     // Revisiting an earlier form must never move durable onboarding progress backwards.
     if (canVisitOnboardingStage(currentStage, input.to)) return;
+    if (input.managed && currentStage === "plan" && input.to === "attribution") {
+      // Agency billing lives outside hosted checkout; keep native usage metering.
+      await tx.update(businesses).set({ deploymentMode: "self_host", updatedAt: new Date() }).where(eq(businesses.id, input.businessId));
+    }
     await advanceOnboardingStageInTransaction(tx, { ...input, from: currentStage });
   });
 }

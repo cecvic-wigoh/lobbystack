@@ -354,6 +354,12 @@
     },
     "continue": "Nastavi",
     "continuing": "Nastavljanje...",
-    "continueFailed": "Trenutno ne možemo da nastavimo. Pokušajte ponovo."
+    "continueFailed": "Trenutno ne možemo da nastavimo. Pokušajte ponovo.",
+    "managed": {
+      "title": "Vaš recepcioner pod upravljanjem",
+      "description": "Vaša agencija upravlja uslugom, naplatom i telefonom. LobbyStack plaćanje nije potrebno.",
+      "price": "Mesečna usluga: $200",
+      "continue": "Nastavi podešavanje"
+    }
   }
 }

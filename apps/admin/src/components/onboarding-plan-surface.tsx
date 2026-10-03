@@ -58,7 +58,23 @@ function markCheckoutReported(key: string): void {
   }
 }
 
-export function OnboardingPlanSurface() {
+export function OnboardingPlanSurface({ managed = false }: { managed?: boolean } = {}) {
+  return managed ? <ManagedPlanSurface /> : <HostedPlanSurface />;
+}
+
+function ManagedPlanSurface() {
+  const { t } = useTranslation("onboarding");
+  const { navigate, navigating } = useStepNavigation();
+  const businesses = useQuery({ queryKey: ["businesses"], queryFn: () => requestJson<{ businesses: Business[] }>("/api/businesses") });
+  const business = businesses.data?.businesses.find(item => item.active) ?? businesses.data?.businesses[0];
+  const activate = useMutation({
+    mutationFn: () => requestJson(`/api/onboarding/stage?businessId=${encodeURIComponent(business!.businessId)}`, { method: "POST", body: JSON.stringify({ to: "attribution" }) }),
+    onSuccess: () => navigate("/onboarding/attribution"),
+  });
+  return <div className="flex flex-col gap-6 rounded-xl border p-6"><h2 className="text-xl font-semibold">{t("plan.managed.title")}</h2><p>{t("plan.managed.description")}</p><p className="font-medium">{t("plan.managed.price")}</p>{activate.isError ? <FieldError>{t("plan.continueFailed")}</FieldError> : null}<Button disabled={!business || activate.isPending || navigating} onClick={() => activate.mutate()}>{t("plan.managed.continue")}</Button></div>;
+}
+
+function HostedPlanSurface() {
   const { t } = useTranslation("onboarding");
   const { navigate, navigating, router } = useStepNavigation();
   const telemetry = useTelemetry();

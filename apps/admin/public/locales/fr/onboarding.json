@@ -354,6 +354,12 @@
     },
     "continue": "Continuer",
     "continuing": "Continuer...",
-    "continueFailed": "Impossible de continuer maintenant. Réessayez."
+    "continueFailed": "Impossible de continuer maintenant. Réessayez.",
+    "managed": {
+      "title": "Votre réceptionniste gérée",
+      "description": "Votre agence gère ce service, la facturation et le téléphone. Aucun paiement LobbyStack requis.",
+      "price": "Service mensuel : 200 $",
+      "continue": "Continuer la configuration"
+    }
   }
 }
