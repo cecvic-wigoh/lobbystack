@@ -971,7 +971,7 @@ async function indexWebsitePage(
   deferFailure = false,
 ): Promise<number> {
   const text = page.markdown?.trim() ?? "";
-  if (!text || !page.url || /\.xml(?:$|\?)/i.test(page.url) || /^#?\s*Hello world, again!\s*$/i.test(text)) return 0;
+  if (!text || !page.url || /\.(?:xml|jpe?g|png|gif|webp|svg|mp3|mp4|wav|css|js|zip)(?:$|[?#])/i.test(page.url) || /^#?\s*Hello world, again!\s*$/i.test(text)) return 0;
   if (importGuard) {
     const active = await withBusinessTransaction(dependencies.domain.db, { businessId, actorType: "worker" }, async (tx) => (await tx.select({ id: knowledgeDocuments.id }).from(knowledgeDocuments).where(and(eq(knowledgeDocuments.id, importGuard.documentId), eq(knowledgeDocuments.businessId, businessId), eq(knowledgeDocuments.revision, importGuard.revision), eq(knowledgeDocuments.status, "processing"))).limit(1)).length > 0);
     if (!active) return 0;
