@@ -36,10 +36,12 @@ describe("FirecrawlProvider", () => {
     expect(fetcher.mock.calls[1]?.[1].method).toBe("GET");
   });
 
-  it("stops at the requested page limit", async () => {
-    const fetcher = responses({ id: "job" }, { status: "completed", data: [page("https://example.com/")], next: "https://api.firecrawl.dev/v1/crawl/job?skip=1" });
-    expect(await provider().crawl({ url: "https://example.com", limit: 1 })).toHaveLength(1);
-    expect(fetcher).toHaveBeenCalledTimes(2);
+  it("scrapes the requested page directly for a single-page import", async () => {
+    const fetcher = responses({ success: true, data: page("https://example.com/contact") });
+    expect(await provider().crawl({ url: "https://example.com/contact", limit: 1 })).toEqual([{ url: "https://example.com/contact", title: "Page", markdown: "Content" }]);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v1/scrape");
+    expect(JSON.parse(fetcher.mock.calls[0]?.[1].body)).toMatchObject({ url: "https://example.com/contact", formats: ["markdown"] });
   });
 
   it.each(["failed", "cancelled", "canceled"])("rejects a %s job", async (status) => {

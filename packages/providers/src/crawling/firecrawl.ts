@@ -12,7 +12,7 @@ export class FirecrawlProvider {
     const baseUrl = (this.config.baseUrl ?? "https://api.firecrawl.dev").replace(/\/$/, "");
     let limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
     const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
-    const request = async (endpoint: string, body?: object): Promise<CrawlResponse> => {
+    const request = async <T = CrawlResponse>(endpoint: string, body?: object): Promise<T> => {
       const remaining = deadline - Date.now();
       if (remaining <= 0) throw new Error("Website crawl timed out before completion.");
       const response = await fetch(endpoint, {
@@ -22,10 +22,16 @@ export class FirecrawlProvider {
         signal: AbortSignal.timeout(Math.min(30_000, remaining)),
       });
       if (!response.ok) throw new Error(`Website crawl failed with status ${response.status}.`);
-      const payload = await response.json() as CrawlResponse;
+      const payload = await response.json() as T & Pick<CrawlResponse, "success" | "status">;
       if (payload.success === false || ["failed", "cancelled", "canceled"].includes(payload.status ?? "")) throw new Error("Website crawl failed at the crawling provider.");
       return payload;
     };
+    if (limit === 1) {
+      const scraped = await request<{ data?: { metadata?: { sourceURL?: string; title?: string }; markdown?: string } }>(`${baseUrl}/v1/scrape`, { url: url.toString(), formats: ["markdown"] });
+      const page = scraped.data;
+      if (!page?.markdown?.trim()) throw new Error("Website page returned no readable content.");
+      return [{ url: page.metadata?.sourceURL ?? url.toString(), ...(page.metadata?.title ? { title: page.metadata.title } : {}), markdown: page.markdown }];
+    }
     if (limit > 1000) {
       const mapped = await request(`${baseUrl}/v1/map`, { url: url.toString(), limit, includeSubdomains: false });
       const readableUrls = new Set((mapped.links ?? []).filter(link => {
