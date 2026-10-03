@@ -2,7 +2,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { assertPublicHttpUrl } from "./urlSafety";
 
 export type CrawlPage = { url: string; title?: string; markdown?: string };
-type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string }> };
+type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string }> };
 
 export class FirecrawlProvider {
   constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number }) {}
@@ -10,7 +10,7 @@ export class FirecrawlProvider {
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {
     const url = await assertPublicHttpUrl(input.url);
     const baseUrl = (this.config.baseUrl ?? "https://api.firecrawl.dev").replace(/\/$/, "");
-    const limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
+    let limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
     const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
     const request = async (endpoint: string, body?: object): Promise<CrawlResponse> => {
       const remaining = deadline - Date.now();
@@ -26,6 +26,15 @@ export class FirecrawlProvider {
       if (payload.success === false || ["failed", "cancelled", "canceled"].includes(payload.status ?? "")) throw new Error("Website crawl failed at the crawling provider.");
       return payload;
     };
+    if (limit > 1000) {
+      const mapped = await request(`${baseUrl}/v1/map`, { url: url.toString(), limit, includeSubdomains: false });
+      const readableUrls = new Set((mapped.links ?? []).filter(link => {
+        try { const candidate = new URL(link); return candidate.hostname.replace(/^www\./, "") === url.hostname.replace(/^www\./, "") && !/\.xml$/i.test(candidate.pathname); }
+        catch { return false; }
+      }));
+      // Bound the crawl to the discovered site size, rather than reserving 10,000 pages.
+      if (readableUrls.size) limit = Math.min(limit, readableUrls.size + 1);
+    }
     const started = await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$"], scrapeOptions: { formats: ["markdown"] } });
     if (!started.id) throw new Error("Website crawl did not return a job ID.");
     const statusUrl = new URL(`${baseUrl}/v1/crawl/${encodeURIComponent(started.id)}`);
