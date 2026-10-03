@@ -294,10 +294,13 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
       }
       let indexedChunks = 0;
       let indexedPages = 0;
+      let unreadablePages = 0;
       if (!await progress("indexing", pages.length)) return { status: "skipped", entityId: documentId ?? websiteIngestionJobId ?? "" };
       for (const page of pages) {
-        indexedChunks += await indexWebsitePage(dependencies, businessIdOrThrow(job), page, importGuard, execution.isFinalAttempt === false);
-        indexedPages += 1;
+        const chunks = await indexWebsitePage(dependencies, businessIdOrThrow(job), page, importGuard, execution.isFinalAttempt === false);
+        indexedChunks += chunks;
+        if (chunks > 0) indexedPages += 1;
+        else unreadablePages += 1;
         if (!await progress("indexing", pages.length, indexedPages)) return { status: "skipped", entityId: documentId ?? websiteIngestionJobId ?? "" };
       }
       if (indexedChunks === 0 && documentId) {
@@ -310,7 +313,7 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
             if (!changed.length) return;
           }
           if (websiteIngestionJobId) {
-            await tx.update(websiteIngestionJobs).set({ status: "completed", importedCount: pages.length, indexedCount: indexedPages, errorCount: 0, lastError: null, updatedAt: new Date() }).where(and(eq(websiteIngestionJobs.id, websiteIngestionJobId), eq(websiteIngestionJobs.businessId, businessIdOrThrow(job)), ne(websiteIngestionJobs.status, "cancelled")));
+            await tx.update(websiteIngestionJobs).set({ status: "completed", importedCount: pages.length, indexedCount: indexedPages, errorCount: unreadablePages, lastError: unreadablePages ? `${unreadablePages} pages returned no readable content.` : null, updatedAt: new Date() }).where(and(eq(websiteIngestionJobs.id, websiteIngestionJobId), eq(websiteIngestionJobs.businessId, businessIdOrThrow(job)), ne(websiteIngestionJobs.status, "cancelled")));
             await enqueueOutbox(tx, { topic: "snapshot.refresh", businessId: businessIdOrThrow(job), aggregateType: "website_ingestion_job", aggregateId: websiteIngestionJobId, dedupeKey: `website-ingestion:${websiteIngestionJobId}:snapshot:${source?.revision ?? 0}`, payload: { businessId: businessIdOrThrow(job), reason: "website_ingestion_completed" } });
           }
         });
@@ -968,7 +971,7 @@ async function indexWebsitePage(
   deferFailure = false,
 ): Promise<number> {
   const text = page.markdown?.trim() ?? "";
-  if (!text || !page.url) return 0;
+  if (!text || !page.url || /\.xml(?:$|\?)/i.test(page.url) || /^#?\s*Hello world, again!\s*$/i.test(text)) return 0;
   if (importGuard) {
     const active = await withBusinessTransaction(dependencies.domain.db, { businessId, actorType: "worker" }, async (tx) => (await tx.select({ id: knowledgeDocuments.id }).from(knowledgeDocuments).where(and(eq(knowledgeDocuments.id, importGuard.documentId), eq(knowledgeDocuments.businessId, businessId), eq(knowledgeDocuments.revision, importGuard.revision), eq(knowledgeDocuments.status, "processing"))).limit(1)).length > 0);
     if (!active) return 0;

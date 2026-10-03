@@ -138,7 +138,7 @@ export function createReceptionistTools(context: AgentToolContext): ToolSet {
         try {
           const evidence = await searchKnowledgeEvidence(domain, { businessId, query, limit: 6, ...(context.callId ? { callId: context.callId } : {}) });
           // Evidence first. Snippets only fill the slots and tokens it leaves.
-          const matches = withSnippetsInBudget(evidence.matches.map((match) => ({ title: match.title, text: match.content })), fallback);
+          const matches = withSnippetsInBudget(evidence.matches.map((match) => ({ title: match.title, text: match.content, sourceUrl: match.sourceUrl, sourceId: match.chunkId })), fallback);
           return { outcome: matches.length ? "found" : evidence.outcome, matches };
         } catch {
           const matches = withSnippetsInBudget([], fallback);

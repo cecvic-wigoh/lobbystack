@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { calls, withBusinessTransaction } from "@lobbystack/db";
 import { completeCall, getCachedBusinessSnapshot, markLiveCallMediaStarted, saveLiveCallTurn } from "@lobbystack/domain";
-import { createAgentModel, createReceptionistAgent } from "@lobbystack/agent-core";
+import { createAgentModel, answerGroundedQuestion } from "@lobbystack/agent-core";
 import { z } from "zod";
 import { asApiResponse } from "@/lib/api-helpers";
 import { createWorkerDomainContext } from "@/lib/domain-context";
@@ -49,10 +49,9 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
       knowledge: [],
     });
     if (!input.question) return NextResponse.json({ error: "Question required" }, { status: 400 });
-    const model = createAgentModel();
+    const model = createAgentModel({ ...process.env, AI_CHAT_REASONING_EFFORT: "low" });
     if (!model) return NextResponse.json({ error: "AI unavailable" }, { status: 503 });
-    const agent = createReceptionistAgent({ model, context: { domain, snapshot, channel: "web_voice", callId: call.id }, readOnly: true, extraInstructions: "Answer this caller's business question briefly in the configured language. Look up website facts with searchKnowledge. Give published admissions contacts when relevant. Do not claim to book, transfer, save messages or send anything: this call supports information lookup only. Keep the answer under 50 words." });
-    const result = await agent.generate({ prompt: input.question });
-    return NextResponse.json({ answer: result.text });
+    const result = await answerGroundedQuestion({ model, context: { domain, snapshot, channel: "web_voice", callId: call.id }, question: input.question });
+    return NextResponse.json(result);
   } catch (error) { return asApiResponse(error); }
 }

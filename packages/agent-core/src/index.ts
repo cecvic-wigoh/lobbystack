@@ -1,3 +1,4 @@
+export { answerGroundedQuestion } from "./groundedAnswer";
 export { createReceptionistAgent, type ReceptionistAgent } from "./agent";
 export { buildAgentInstructions, buildLiveInstructions } from "./instructions";
 export { agentModelId, callSummaryEnvironment, createAgentModel, describeAgentUsage, type AgentUsage } from "./model";

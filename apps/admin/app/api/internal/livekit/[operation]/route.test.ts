@@ -5,7 +5,7 @@ vi.mock("@/lib/api-helpers", () => ({ asApiResponse: () => new Response(null, { 
 vi.mock("@lobbystack/db", () => ({ calls: {}, withBusinessTransaction: async (_db: unknown, _ctx: unknown, fn: (tx: unknown) => unknown) => fn({ select: () => ({ from: () => ({ where: () => ({ limit: mocks.lookup }) }) }) }) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), eq: vi.fn() }));
 vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful" }), completeCall: vi.fn(), markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
-vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), createReceptionistAgent: mocks.agent }));
+vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), answerGroundedQuestion: mocks.agent }));
 import { POST } from "./route";
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
 it("protects bridge requests and denies missing or ended workspace calls before running the agent", async () => {
@@ -21,8 +21,8 @@ it("protects bridge requests and denies missing or ended workspace calls before 
  expect((await POST(request(), route)).status).toBe(410);
  expect(mocks.agent).not.toHaveBeenCalled();
  mocks.lookup.mockResolvedValueOnce([{ id: input.callId, endedAt: null }]);
- mocks.agent.mockReturnValue({ generate: mocks.generate.mockResolvedValue({ text: "Use the college admissions contact." }) });
+ mocks.agent.mockResolvedValue({ answer: "Use the college admissions contact.", sources: [], outcome: "unknown" });
  const reply = await POST(request(), route);
- expect(reply.status).toBe(200); expect(await reply.json()).toEqual({ answer: "Use the college admissions contact." });
- expect(mocks.agent).toHaveBeenCalledWith(expect.objectContaining({ readOnly: true, context: expect.objectContaining({ callId: input.callId }) }));
+ expect(reply.status).toBe(200); expect(await reply.json()).toEqual({ answer: "Use the college admissions contact.", sources: [], outcome: "unknown" });
+ expect(mocks.agent).toHaveBeenCalledWith(expect.objectContaining({ question: input.question, context: expect.objectContaining({ callId: input.callId }) }));
 });

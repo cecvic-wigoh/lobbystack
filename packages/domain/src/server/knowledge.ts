@@ -69,7 +69,7 @@ export function hashContent(value: string): string {
 export const ONBOARDING_CRAWL_PAGE_LIMIT = 10;
 
 /** Matches the crawler's own default, used once someone asks for the full read. */
-export const FULL_CRAWL_PAGE_LIMIT = 50;
+export const FULL_CRAWL_PAGE_LIMIT = 10000;
 
 export async function createKnowledgeDocument(
   context: DomainContext,

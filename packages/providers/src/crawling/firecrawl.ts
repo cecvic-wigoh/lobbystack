@@ -10,8 +10,8 @@ export class FirecrawlProvider {
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {
     const url = await assertPublicHttpUrl(input.url);
     const baseUrl = (this.config.baseUrl ?? "https://api.firecrawl.dev").replace(/\/$/, "");
-    const limit = Math.max(1, Math.min(1000, Math.floor(input.limit ?? 50)));
-    const deadline = Date.now() + (this.config.timeoutMs ?? 5 * 60_000);
+    const limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
+    const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
     const request = async (endpoint: string, body?: object): Promise<CrawlResponse> => {
       const remaining = deadline - Date.now();
       if (remaining <= 0) throw new Error("Website crawl timed out before completion.");
@@ -26,7 +26,7 @@ export class FirecrawlProvider {
       if (payload.success === false || ["failed", "cancelled", "canceled"].includes(payload.status ?? "")) throw new Error("Website crawl failed at the crawling provider.");
       return payload;
     };
-    const started = await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, scrapeOptions: { formats: ["markdown"] } });
+    const started = await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$"], scrapeOptions: { formats: ["markdown"] } });
     if (!started.id) throw new Error("Website crawl did not return a job ID.");
     const statusUrl = new URL(`${baseUrl}/v1/crawl/${encodeURIComponent(started.id)}`);
     let payload: CrawlResponse;
