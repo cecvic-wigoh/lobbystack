@@ -20,7 +20,7 @@ export function LiveUsageSurface() {
   const businesses = useQuery({ queryKey: ["businesses"], queryFn: () => requestJson<{ businesses: WorkspaceViewModel[] }>("/api/businesses") });
   const business = selectActiveBusiness(businesses.data?.businesses);
   const billing = useQuery({ queryKey: ["billing", business?.businessId], queryFn: () => requestJson<BillingUsageViewModel>(`/api/billing?businessId=${encodeURIComponent(business!.businessId)}`), enabled: Boolean(business?.businessId) });
-  const accountPlan = billing.data?.account?.plan;
+  const accountPlan = billing.data?.effectivePlan ?? billing.data?.account?.plan;
   const plan = isPlan(accountPlan) ? accountPlan : "free_cloud";
   const catalog = billingPlanCatalog[plan];
   const status = billing.data?.usageStatus ?? {

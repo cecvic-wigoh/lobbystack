@@ -96,6 +96,7 @@ export type PhoneNumberViewModel = {
 };
 
 export type BillingUsageViewModel = {
+  effectivePlan?: string;
   knowledgeStorageBytesUsed: number;
   account: {
     plan: string | null;

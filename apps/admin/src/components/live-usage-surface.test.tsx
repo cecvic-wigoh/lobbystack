@@ -8,12 +8,13 @@ const language = vi.hoisted(() => ({ value: "en" }));
 vi.mock("react-i18next", () => ({ useTranslation: () => ({ i18n: { language: language.value }, t: (key: string) => key }) }));
 const clients: QueryClient[] = [];
 afterEach(() => { cleanup(); clients.forEach(client => client.clear()); clients.length = 0; });
-function setup(locale: string, blocked = false) {
+function setup(locale: string, blocked = false, effectivePlan = "") {
   language.value = locale;
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
   clients.push(client);
   client.setQueryData(["businesses"], { businesses: [{ businessId: "business", active: true }] });
   client.setQueryData(["billing", "business"], {
+    effectivePlan: effectivePlan || undefined,
     account: { plan: "pro", currentPeriodEnd: "2026-10-01T12:00:00Z" },
     usageStatus: { voiceSecondsUsed: 750, outboundCallAttemptsUsed: 4, alertSmsSegmentsUsed: 2, voiceBlocked: blocked },
     knowledgeStorageBytesUsed: 1024 * 1024,
@@ -21,6 +22,11 @@ function setup(locale: string, blocked = false) {
   render(<QueryClientProvider client={client}><LiveUsageSurface /></QueryClientProvider>);
 }
 describe("original dedicated billing usage page", () => {
+  it("does not show hosted Free usage limits for a managed workspace", () => {
+    setup("en", false, "self_host");
+    expect(screen.getByText("billing.currentPlan.selfHostNotice")).toBeTruthy();
+    expect(screen.queryByText("billing.usage.voiceTitle")).toBeNull();
+  });
   it.each([["en", "12.5"], ["fr", "12,5"]])("formats voice minutes in %s and preserves the four non-AI usage meters", (locale, minutes) => {
     setup(locale!);
     for (const name of ["voiceTitle", "outboundAttemptsTitle", "alertSmsTitle", "knowledgeTitle"]) expect(screen.getByText(`billing.usage.${name}`)).toBeTruthy();

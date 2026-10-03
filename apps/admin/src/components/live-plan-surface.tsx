@@ -21,6 +21,7 @@ import { intlLocale } from "@/lib/locale";
 
 type Business = { businessId: string; name: string; slug: string; role: string; active: boolean };
 type Billing = {
+  effectivePlan?: string;
   availableCheckoutPlans: Array<"starter" | "pro">;
   availableCheckoutIntervals: { starter: string[]; pro: string[] };
   permissions: BillingPermissions;
@@ -71,7 +72,7 @@ export function LivePlanSurface() {
   if (businesses.isError || billing.isError || !business || !billing.data) return <PageSurface description="" title={t("sections.billing")}><Surface className="flex flex-col items-start gap-4 p-6"><p role="alert">{t("billing.usage.unavailable")}</p><Button variant="outline" onClick={() => { if (businesses.isError || !business) void businesses.refetch(); else void billing.refetch(); }}>{t("billing.actions.retry")}</Button></Surface></PageSurface>;
 
   const account = billing.data?.account;
-  const plan = planSlug(account?.plan);
+  const plan = planSlug(billing.data.effectivePlan ?? account?.plan);
   const catalog = billingPlanCatalog[plan];
   const monthlyPrice = account?.billingInterval === "annual" ? catalog.annualEffectiveMonthlyChargeCents : catalog.monthlyChargeCents;
   const included = [catalog.voiceSecondsIncluded === null ? t("billing.currentPlan.includedVoiceCustom") : `${Math.round(catalog.voiceSecondsIncluded / 60)} ${t("billing.currentPlan.includedVoiceLabel")}`, catalog.outboundCallAttemptsIncluded === null ? t("billing.currentPlan.includedOutboundCustom") : `${catalog.outboundCallAttemptsIncluded} ${t("billing.currentPlan.includedOutboundLabel")}`, catalog.alertSmsSegmentsIncluded === null ? t("billing.currentPlan.includedSmsCustom") : `${catalog.alertSmsSegmentsIncluded} ${t("billing.currentPlan.includedSmsLabel")}`, catalog.knowledgeStorageBytes === null ? t("billing.currentPlan.includedStorageCustom") : t("billing.currentPlan.includedStorage", { amount: (catalog.knowledgeStorageBytes / (catalog.knowledgeStorageBytes >= 1024 ** 3 ? 1024 ** 3 : 1024 ** 2)).toLocaleString(intlLocale(i18n.language)), unit: catalog.knowledgeStorageBytes >= 1024 ** 3 ? "GB" : "MB" })];
