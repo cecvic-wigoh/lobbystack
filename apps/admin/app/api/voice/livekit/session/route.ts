@@ -27,7 +27,6 @@ export async function POST(request: Request) {
     const [allowance, snapshot] = await Promise.all([getWebVoiceBillingAllowance(domain, { businessId: access.businessId, maxDurationMs }), loadValidBusinessSnapshot(access.businessId)]);
     if (!allowance.allowed) return NextResponse.json({ code: allowance.errorCode }, { status: 402, headers: cors });
     if (!snapshot) return NextResponse.json({ code: "snapshot_missing" }, { status: 409, headers: cors });
-    if (access.widgetId === "lobbystack-widget" && !snapshot.contactChannels.phoneNumber) return NextResponse.json({ code: "voice_unavailable" }, { status: 403, headers: cors });
     const room = `lobby-${randomUUID()}`;
     const config = await createLivekitRoom(room);
     let callId: string | undefined;

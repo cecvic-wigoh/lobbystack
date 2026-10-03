@@ -108,3 +108,9 @@ it("rejects webhooks before their handlers can acknowledge events during mainten
   expect(response.status).toBe(503);
   expect(response.headers.get("retry-after")).toBe("60");
 });
+
+it("lets the token-only LiveKit bridge reach its own authorization handler without a browser origin", () => {
+  const response = proxy(new NextRequest("http://localhost:3210/api/internal/livekit/context", { method: "POST" }));
+  expect(response.status).toBe(200);
+  expect(proxy(new NextRequest("http://localhost:3210/api/onboarding/stage", { method: "POST" })).status).toBe(403);
+});

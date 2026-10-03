@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       greeting: session.config.greeting ?? snapshot?.greeting ?? undefined,
       snapshotPresent: snapshot !== null,
       businessSlug: session.businessSlug,
-      voiceEnabled: Boolean(snapshot?.contactChannels?.phoneNumber),
+      voiceEnabled: Boolean(snapshot && (process.env.VOICE_PROVIDER === "livekit" || snapshot.contactChannels?.phoneNumber)),
     });
   } catch (error) {
     return asApiResponse(error);
