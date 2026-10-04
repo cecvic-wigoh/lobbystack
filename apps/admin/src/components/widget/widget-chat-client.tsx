@@ -287,14 +287,14 @@ export function WidgetChatClient({ widgetKey }: { widgetKey: string }) {
   const configErrorCode = config.error instanceof Error && ["originDenied", "invalidKey", "configLoad"].includes(config.error.message) ? config.error.message : null;
 
   return (
-    <main className="flex h-full min-h-0 flex-col bg-white text-zinc-900" style={{ minHeight: "100dvh" }}>
+    <main className="flex h-full min-h-0 flex-col bg-background text-foreground" style={{ minHeight: "100dvh" }}>
       <header className="flex items-center gap-3 border-b px-4 py-3">
         <div className="flex size-9 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: color }} aria-hidden="true">
           {(title || "?")[0]?.toUpperCase()}
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{title}</p>
-          {configState?.config?.subtitle ? <p className="truncate text-xs text-zinc-500">{configState.config.subtitle}</p> : null}
+          {configState?.config?.subtitle ? <p className="truncate text-xs text-muted-foreground">{configState.config.subtitle}</p> : null}
         </div>
         {voiceEnabled ? <VoiceButton className="ml-auto" businessSlug={configState!.businessSlug!} visitorId={visitorIdRef.current} sessionToken={sessionToken} parentOrigin={parentOrigin} onStatusChange={setSubmitError} /> : null}
       </header>
@@ -302,23 +302,23 @@ export function WidgetChatClient({ widgetKey }: { widgetKey: string }) {
       {handoff ? <div className="border-b bg-amber-50 px-4 py-2 text-xs font-medium text-amber-800">{t("chat.handoffBanner")}</div> : null}
 
       <div ref={threadRef} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
-        {configErrorCode ? <p className="text-center text-sm text-zinc-500">{t(`errors.${configErrorCode}` as never)}</p> : null}
-        {config.isError ? <p className="text-center text-sm text-zinc-500">{t("errors.configLoad")}</p> : null}
-        {config.isLoading ? <p className="text-center text-sm text-zinc-400">{t("chat.loadingTranscript")}</p> : null}
+        {configErrorCode ? <p className="text-center text-sm text-muted-foreground">{t(`errors.${configErrorCode}` as never)}</p> : null}
+        {config.isError ? <p className="text-center text-sm text-muted-foreground">{t("errors.configLoad")}</p> : null}
+        {config.isLoading ? <p className="text-center text-sm text-muted-foreground">{t("chat.loadingTranscript")}</p> : null}
         {config.data && messages.length === 0 && !showLeadBeforeChat ? (
-          <div className="flex flex-col gap-1 text-sm text-zinc-600">
-            <p className="font-medium text-zinc-800">{t("chat.welcome")}</p>
-            {configState?.config?.greeting ? <p className="rounded-xl rounded-bl-sm bg-zinc-100 px-3 py-2 whitespace-pre-wrap">{configState.config.greeting}</p> : null}
+          <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">{t("chat.welcome")}</p>
+            {configState?.config?.greeting ? <p className="rounded-xl rounded-bl-sm bg-muted px-3 py-2 whitespace-pre-wrap">{configState.config.greeting}</p> : null}
           </div>
         ) : null}
         {messages.map((message) => (
           <div key={message.id} className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
-            <div className={cn("max-w-[85%] rounded-2xl px-3 py-2 text-sm", message.role === "user" ? "rounded-br-sm text-white" : "rounded-bl-sm bg-zinc-100")} style={message.role === "user" ? { backgroundColor: color } : undefined}>
+            <div className={cn("max-w-[85%] rounded-2xl px-3 py-2 text-sm", message.role === "user" ? "rounded-br-sm text-white" : "rounded-bl-sm bg-muted")} style={message.role === "user" ? { backgroundColor: color } : undefined}>
               <p><MessageContent content={messageText(message)} pending={streamingMessageId === message.id} /></p>
             </div>
           </div>
         ))}
-        {sending && messages.at(-1)?.role === "user" ? <div className="flex justify-start"><div className="rounded-2xl rounded-bl-sm bg-zinc-100 px-3 py-2 text-sm text-zinc-400">{t("chat.pendingLabel")}</div></div> : null}
+        {sending && messages.at(-1)?.role === "user" ? <div className="flex justify-start"><div className="rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-sm text-muted-foreground">{t("chat.pendingLabel")}</div></div> : null}
         {submitError ? <p className="text-center text-xs text-red-600">{t(submitError)}</p> : null}
       </div>
 
@@ -331,14 +331,14 @@ export function WidgetChatClient({ widgetKey }: { widgetKey: string }) {
           <Button type="button" onClick={() => setLeadOpen(true)} variant="outline" className="shrink-0 text-xs" disabled={leadOpen}>{t("chat.leaveDetails")}</Button>
         ) : null}
         <Input
-          className="min-h-11 flex-1"
+          className="min-h-11 flex-1 text-foreground caret-foreground"
           placeholder={t("chat.composerPlaceholder")}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           disabled={!config.data || sending || leadOpen}
           aria-label={t("chat.composerPlaceholder")}
         />
-        <Button aria-label={t("chat.send")} disabled={!draft.trim() || sending || leadOpen} loading={sending} size="icon-lg" type="submit" style={{ backgroundColor: color }}><Send /></Button>
+        <Button className="text-white" aria-label={t("chat.send")} disabled={!draft.trim() || sending || leadOpen} loading={sending} size="icon-lg" type="submit" style={{ backgroundColor: color }}><Send /></Button>
       </form>
 
       {leadOpen && !showLeadBeforeChat ? <LeadOverlay lead={lead} setLead={setLead} onSubmit={submitLead} submitting={leadSubmitting} onClose={() => setLeadOpen(false)} t={t} /> : null}
@@ -378,13 +378,13 @@ function VoiceButton({ className, businessSlug, visitorId, sessionToken, parentO
 function LeadOverlay({ lead, setLead, onSubmit, submitting, onClose, t }: { lead: { name: string; email: string; phone: string }; setLead: (value: { name: string; email: string; phone: string }) => void; onSubmit: (event: FormEvent) => void; submitting: boolean; onClose: () => void; t: (key: string) => string }) {
   return (
     <div className="absolute inset-0 z-10 flex items-end bg-black/30 p-4 sm:items-center">
-      <form className="w-full rounded-2xl bg-white p-4 shadow-xl" onSubmit={onSubmit}>
+      <form className="w-full rounded-2xl bg-card text-card-foreground p-4 shadow-xl" onSubmit={onSubmit}>
         <h2 className="text-sm font-semibold">{t("lead.heading")}</h2>
-        <p className="mb-3 text-xs text-zinc-500">{t("lead.description")}</p>
+        <p className="mb-3 text-xs text-muted-foreground">{t("lead.description")}</p>
         <div className="space-y-3">
-          <label className="block text-xs font-medium text-zinc-700">{t("lead.name")}<Input className="mt-1" value={lead.name} onChange={(event) => setLead({ ...lead, name: event.target.value })} /></label>
-          <label className="block text-xs font-medium text-zinc-700">{t("lead.email")}<Input className="mt-1" type="email" value={lead.email} onChange={(event) => setLead({ ...lead, email: event.target.value })} /></label>
-          <label className="block text-xs font-medium text-zinc-700">{t("lead.phone")}<Input className="mt-1" type="tel" value={lead.phone} onChange={(event) => setLead({ ...lead, phone: event.target.value })} /></label>
+          <label className="block text-xs font-medium text-foreground">{t("lead.name")}<Input className="mt-1" value={lead.name} onChange={(event) => setLead({ ...lead, name: event.target.value })} /></label>
+          <label className="block text-xs font-medium text-foreground">{t("lead.email")}<Input className="mt-1" type="email" value={lead.email} onChange={(event) => setLead({ ...lead, email: event.target.value })} /></label>
+          <label className="block text-xs font-medium text-foreground">{t("lead.phone")}<Input className="mt-1" type="tel" value={lead.phone} onChange={(event) => setLead({ ...lead, phone: event.target.value })} /></label>
         </div>
         <div className="mt-4 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>{t("lead.skip")}</Button>
@@ -400,7 +400,7 @@ function LeadForm({ lead, setLead, onSubmit, submitting, onSkip, t, className }:
     <form className={cn("space-y-3", className)} onSubmit={onSubmit}>
       <div>
         <h2 className="text-sm font-semibold">{t("lead.beforeChatHeading")}</h2>
-        <p className="text-xs text-zinc-500">{t("lead.description")}</p>
+        <p className="text-xs text-muted-foreground">{t("lead.description")}</p>
       </div>
       <Input placeholder={t("lead.name")} value={lead.name} onChange={(event) => setLead({ ...lead, name: event.target.value })} />
       <Input placeholder={t("lead.email")} type="email" value={lead.email} onChange={(event) => setLead({ ...lead, email: event.target.value })} />
