@@ -1,5 +1,5 @@
 import { expect, it, vi } from "vitest";
-import { validateGroundedAnswer } from "./groundedAnswer";
+import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
 vi.mock("@lobbystack/domain", () => ({ searchKnowledgeEvidence: vi.fn() }));
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
 const claim = { text: "Call 306-555-1234 for program applications.", sourceId: "contact", quote: "Call 306-555-1234 for program applications." };
@@ -28,4 +28,13 @@ it("keeps a verified contact while disclosing that other details are missing", (
  expect(result.answer).toContain(claim.text);
  expect(result.answer).toContain("can't confirm the remaining details");
  expect(result.sources).toEqual([evidence[0]!.sourceUrl]);
+});
+
+it("handles greetings without inventing facts or doing a knowledge search", async () => {
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {} as never, snapshot: { defaultLocale: "en" } as never } as never, question: "Hello!" });
+ expect(result).toMatchObject({ outcome: "greeting", sources: [] });
+});
+it("clarifies an unspecified college location before choosing a campus", async () => {
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {} as never, snapshot: { defaultLocale: "en" } as never } as never, question: "Where is Suncrest College located?" });
+ expect(result).toMatchObject({ outcome: "clarification", answer: "Which campus are you asking about?" });
 });

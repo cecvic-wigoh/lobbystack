@@ -40,6 +40,11 @@ function context(embed = vi.fn().mockResolvedValue([[0.1, 0.2]])): DomainContext
 afterEach(() => vi.useRealTimers());
 
 describe("knowledge evidence", () => {
+  it("keeps a pinned source search inside the same active business boundary", async () => {
+    await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "admissions", sourcePath: "/contact-us" });
+    expect(statements.filter(value => value.includes("LIMIT 12")).every(value => value.includes("right(rtrim(split_part"))).toBe(true);
+    expect(statements.filter(value => !value.startsWith("SET")).every(value => value.includes("d.active = true"))).toBe(true);
+  });
   it("reserves primary evidence before expanding neighboring chunks", async () => {
     const content = Array.from({ length: 90 }, (_, index) => `detail${index}`).join(" ");
     lexical = semantic = Array.from({ length: 6 }, (_, index) => ({ ...primary, chunkId: `primary-${index}`, documentId: `document-${index}`, sequence: 1, content: `${content} ${index === 5 ? "MNGT 10407" : ""}` }));

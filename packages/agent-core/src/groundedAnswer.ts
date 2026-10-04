@@ -38,15 +38,17 @@ export function validateGroundedAnswer(result: z.infer<typeof groundedAnswerSche
 export async function answerGroundedQuestion(input: { model: LanguageModel; context: AgentToolContext; question: string; history?: Array<{ role: "user" | "assistant"; content: string }>; onUsage?: (usage: AgentUsage) => void }) {
   const { domain, snapshot, callId } = input.context;
   const locale = snapshot.defaultLocale === "fr" ? "fr" : "en";
-  const search = (query: string) => searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query, limit: 6, ...(callId ? { callId } : {}) });
+  if (/^(?:hi|hello|hey|good morning|good afternoon|good evening|thanks|thank you)[!.\s]*$/i.test(input.question.trim())) return { answer: locale === "fr" ? "Bonjour ! Comment puis-je vous aider avec les informations du collège ?" : "Hello! How can I help you with the college’s programs, admissions, or services?", sources: [], outcome: "greeting" };
+  if (/^(?:where (?:is|are) (?:the )?(?:suncrest(?: college)?|college)|where (?:is|are) (?:the )?(?:college )?campus(?:es)?|what is (?:the )?(?:college['’]s )?(?:address|location))(?: located)?\??$/i.test(input.question.trim())) return validateGroundedAnswer({ status: "clarify_campus", claims: [] }, [], locale);
+  const search = (query: string, sourcePath?: string) => searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query, limit: 6, ...(sourcePath ? { sourcePath } : {}), ...(callId ? { callId } : {}) });
   const history = (input.history ?? []).slice(-4).map(turn => ({ role: turn.role, content: turn.content.slice(0, 1000) }));
   // Previous questions resolve follow-ups; previous answers are never evidence.
   const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
   const query = previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
-  const [evidence, admissionContact] = await Promise.all([search(query), /admiss|appl|register|enrol/i.test(query) ? search("admissions applications inquiries contact email phone") : Promise.resolve(null)]);
+  const [evidence, admissionContact] = await Promise.all([search(query), /admiss|appl|register|enrol/i.test(query) ? search("admissions applications inquiries contact email phone", "/contact-us") : Promise.resolve(null)]);
   if (admissionContact) {
     const seen = new Set(evidence.matches.map(item => item.chunkId));
-    evidence.matches.push(...admissionContact.matches.filter(item => /\/contact-us(?:[/?#]|$)/.test(item.sourceUrl ?? "") && !seen.has(item.chunkId)).slice(0, 2));
+    evidence.matches.push(...admissionContact.matches.filter(item => /\/contact-us(?:[/?#]|$)/.test(item.sourceUrl ?? "") && !seen.has(item.chunkId)).slice(0, 3));
   }
   const answerStartedAt = performance.now();
   const result = await generateText({

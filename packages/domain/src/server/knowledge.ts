@@ -415,7 +415,7 @@ export async function searchKnowledge(
 
 export async function searchKnowledgeEvidence(
   context: DomainContext,
-  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string },
+  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string; sourcePath?: string },
 ): Promise<{ matches: KnowledgePassage[]; mode: "hybrid" | "keyword"; outcome: "found" | "empty" | "unavailable"; failure?: "embedding_unavailable" | "search_unavailable"; durationMs: number }> {
   const startedAt = performance.now();
   const actor = { userId: input.userId, businessId: input.businessId, actorType: input.userId ? "operator" as const : "worker" as const };
@@ -427,7 +427,8 @@ export async function searchKnowledgeEvidence(
   const from = sql`FROM knowledge_chunks c JOIN knowledge_documents d ON d.id = c.document_id`;
   const select = sql`SELECT ${fields} ${from}`;
   const filters = sql`c.business_id = ${input.businessId} AND d.business_id = ${input.businessId}
-    AND d.active = true AND d.status = 'indexed'`;
+    AND d.active = true AND d.status = 'indexed'
+    ${input.sourcePath ? sql`AND right(rtrim(split_part(split_part(d.source_url, '?', 1), '#', 1), '/'), ${input.sourcePath.length}) = ${input.sourcePath}` : sql``}`;
   const execute = (statement: ReturnType<typeof sql>) => withBusinessTransaction(context.db, actor, async tx => {
     await tx.execute(sql`SET LOCAL statement_timeout = '2000ms'`);
     return (await tx.execute<KnowledgePassage>(statement)).rows;
