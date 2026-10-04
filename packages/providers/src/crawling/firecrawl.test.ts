@@ -38,13 +38,19 @@ describe("FirecrawlProvider", () => {
       { status: "completed", data: [page("https://example.com/a")], next: "https://api.firecrawl.dev/v2/batch/scrape/batch?skip=1" },
       { status: "completed", data: [page("https://example.com/b")] },
     );
-    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchId: "batch", savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com", limit: 10000 })).toHaveLength(2);
+    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com", limit: 10000 })).toHaveLength(2);
     expect(fetcher.mock.calls.every(call => call[1].method === "GET")).toBe(true);
     expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v2/batch/scrape/batch");
   });
+  it("collects multiple saved batches without a new paid request", async () => {
+    const fetcher = responses({ status: "completed", data: [page("https://example.com/a")] }, { status: "completed", data: [page("https://example.com/b")] });
+    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["one", "two"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com", limit: 10000 })).toHaveLength(2);
+    expect(fetcher.mock.calls.map(call => call[0])).toEqual(["https://api.firecrawl.dev/v2/batch/scrape/one", "https://api.firecrawl.dev/v2/batch/scrape/two"]);
+    expect(fetcher.mock.calls.every(call => call[1].method === "GET")).toBe(true);
+  });
   it("does not replay a saved batch for another tenant website while paused", async () => {
     const fetcher = responses();
-    await expect(new FirecrawlProvider({ apiKey: "test", savedBatchId: "batch", savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://other.test" })).rejects.toThrow("paused");
+    await expect(new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://other.test" })).rejects.toThrow("paused");
     expect(fetcher).not.toHaveBeenCalled();
   });
   it("does not replay saved content for a different website", async () => {
