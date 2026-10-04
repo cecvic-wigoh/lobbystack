@@ -45,10 +45,14 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   // Previous questions resolve follow-ups; previous answers are never evidence.
   const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
   const query = previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
-  const [evidence, admissionContact] = await Promise.all([search(query), /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null)]);
+  const [evidence, admissionContact, programCatalog] = await Promise.all([search(query), /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), /\b(?:what|which)\s+(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null)]);
   if (admissionContact) {
     const seen = new Set(evidence.matches.map(item => item.chunkId));
     evidence.matches.unshift(...admissionContact.matches.filter(item => /\/(?:contact-us|international-application-process)(?:[/?#]|$)/.test(item.sourceUrl ?? "") && !seen.has(item.chunkId)).slice(0, 3));
+  }
+  if (programCatalog) {
+    const seen = new Set(evidence.matches.map(item => item.chunkId));
+    evidence.matches.unshift(...programCatalog.matches.filter(item => !seen.has(item.chunkId)).slice(0, 2));
   }
   const answerStartedAt = performance.now();
   const result = await generateText({
