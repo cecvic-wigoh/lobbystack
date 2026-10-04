@@ -83,3 +83,33 @@ it("keeps the location question when a caller supplies a campus clarification", 
  expect(result.outcome).toBe("supported");
  expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("Previous question: Where is College located?");
 });
+
+it("uses the actual retrieved catalogue passage when the model reformats a quotation", async () => {
+ const catalog = { chunkId: "catalog", sourceUrl: "https://college.test/programs", content: "Area of Interest\n- **Business**\n- **Health**\n- **Trades**" };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [catalog] } as never);
+ mockAnswer({ text: "The catalogue lists Business, Health, and Trades areas.", sourceId: "catalog", quote: "Business, Health, Trades" });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "what courses do you offer" });
+ expect(result).toMatchObject({ outcome: "supported", sources: [catalog.sourceUrl] });
+ expect(JSON.parse(vi.mocked(generateText).mock.calls[1]![0].prompt as string).claims[0].quote).toBe(catalog.content);
+});
+it("still rejects an unsupported claim after replacing its fabricated quotation with the real source", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Admission is guaranteed.", sourceId: "contact", quote: "Admission is guaranteed." }] } } as never)
+  .mockResolvedValueOnce({ output: { supported: false } } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Is admission guaranteed?" });
+ expect(result).toMatchObject({ outcome: "unknown", reason: "unsupported_paraphrase", sources: [] });
+});
+it("does not repair citations to a nonexistent source", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ ...claim, sourceId: "invented" }] } } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Who handles admissions?" });
+ expect(result).toMatchObject({ outcome: "unknown", reason: "quote_mismatch" });
+ expect(generateText).toHaveBeenCalledTimes(1);
+});
+it("does not accept an invented contact through citation repair", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Call 306-555-9876.", sourceId: "contact", quote: "Call 306-555-9876." }] } } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What is the admissions phone number?" });
+ expect(result).toMatchObject({ outcome: "unknown", reason: "detail_mismatch" });
+ expect(generateText).toHaveBeenCalledTimes(1);
+});
