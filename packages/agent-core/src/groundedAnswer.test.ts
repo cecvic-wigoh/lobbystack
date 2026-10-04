@@ -95,6 +95,8 @@ it("uses the actual retrieved catalogue passage when the model reformats a quota
 it("still rejects an unsupported claim after replacing its fabricated quotation with the real source", async () => {
  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
  vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Admission is guaranteed.", sourceId: "contact", quote: "Admission is guaranteed." }] } } as never)
+  .mockResolvedValueOnce({ output: { supported: false } } as never)
+  .mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Admission is guaranteed.", sourceId: "contact", quote: "Admission is guaranteed." }] } } as never)
   .mockResolvedValueOnce({ output: { supported: false } } as never);
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "Is admission guaranteed?" });
  expect(result).toMatchObject({ outcome: "unknown", reason: "unsupported_paraphrase", sources: [] });
@@ -112,4 +114,27 @@ it("does not accept an invented contact through citation repair", async () => {
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "What is the admissions phone number?" });
  expect(result).toMatchObject({ outcome: "unknown", reason: "detail_mismatch" });
  expect(generateText).toHaveBeenCalledTimes(1);
+});
+
+it("rechecks a narrower second draft after factual verification rejects the first", async () => {
+ const catalog = { chunkId: "catalog", sourceUrl: "https://college.test/programs", content: "Area of Interest: Business, Health, Trades." };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [catalog] } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Business registration is open.", sourceId: "catalog", quote: catalog.content }] } } as never)
+  .mockResolvedValueOnce({ output: { supported: false } } as never)
+  .mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "The catalogue lists Business, Health, and Trades areas.", sourceId: "catalog", quote: catalog.content }] } } as never)
+  .mockResolvedValueOnce({ output: { supported: true } } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Which programs are available?" });
+ expect(result).toMatchObject({ outcome: "supported", answer: "The catalogue lists Business, Health, and Trades areas." });
+ expect(generateText).toHaveBeenCalledTimes(4);
+ expect(searchKnowledgeEvidence).toHaveBeenCalledTimes(2);
+ expect(JSON.parse(vi.mocked(generateText).mock.calls[2]![0].prompt as string).correction).toContain("without implying current registration availability");
+});
+
+it("keeps a safe refusal if the single verification retry times out", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [claim] } } as never)
+  .mockResolvedValueOnce({ output: { supported: false } } as never)
+  .mockRejectedValueOnce(new Error("timeout"));
+ expect(await answerGroundedQuestion({ model: {} as never, context, question: "Who handles admissions?" })).toMatchObject({ outcome: "unknown", reason: "unsupported_paraphrase", sources: [] });
+ expect(generateText).toHaveBeenCalledTimes(3);
 });
