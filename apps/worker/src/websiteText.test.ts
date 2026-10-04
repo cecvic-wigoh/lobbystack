@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { websiteKnowledgeText } from "./websiteText";
+import { describe, expect, it, vi } from "vitest";
+import { websiteKnowledgeText, websitePageText } from "./websiteText";
 
 describe("Suncrest public website text", () => {
   const course = "# A+ Cisco IT Essentials 1\n\nCRN: CNET-113\n\n4.00 CEU\n\n60.00 Hours\n\nYou will install personal computer hardware using safe lab procedures.";
@@ -14,4 +14,17 @@ describe("Suncrest public website text", () => {
   it("does not apply Suncrest-specific cleanup to other businesses", () => {
     expect(websiteKnowledgeText("https://another-college.test/course", course + wizard)).toBe(course + wizard);
   });
+});
+
+vi.mock("./documentExtraction", () => ({ extractDocumentText: vi.fn(async () => "# Annual Research Report 2013\nPublished historical research findings.") }));
+
+it("extracts saved PDF bytes while preserving the historical year", async () => {
+  const text = await websitePageText({ url: "https://suncrestcollege.ca/report.pdf", rawBase64: Buffer.from("%PDF-1.7\nfixture").toString("base64") });
+  expect(text).toContain("Annual Research Report 2013");
+});
+it("rejects non-PDF file bytes rather than indexing an error response as evidence", async () => {
+  await expect(websitePageText({ url: "https://suncrestcollege.ca/report.pdf", rawBase64: Buffer.from("Access denied").toString("base64") })).rejects.toThrow("not a PDF");
+});
+it("does not treat raw image bytes as website knowledge", async () => {
+  expect(await websitePageText({ url: "https://suncrestcollege.ca/photo.png", rawBase64: "AAAA" })).toBe("");
 });

@@ -48,6 +48,10 @@ describe("FirecrawlProvider", () => {
     expect(fetcher.mock.calls.map(call => call[0])).toEqual(["https://api.firecrawl.dev/v2/batch/scrape/one", "https://api.firecrawl.dev/v2/batch/scrape/two"]);
     expect(fetcher.mock.calls.every(call => call[1].method === "GET")).toBe(true);
   });
+  it("preserves raw PDF bytes from a saved batch for our document reader", async () => {
+    responses({ status: "completed", data: [{ metadata: { sourceURL: "https://example.com/report.pdf" }, rawBase64: "JVBERi0=" }] });
+    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com" })).toEqual([{ url: "https://example.com/report.pdf", rawBase64: "JVBERi0=" }]);
+  });
   it("does not replay a saved batch for another tenant website while paused", async () => {
     const fetcher = responses();
     await expect(new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://other.test" })).rejects.toThrow("paused");

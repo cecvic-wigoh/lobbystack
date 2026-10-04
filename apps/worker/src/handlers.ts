@@ -1,4 +1,4 @@
-import { websiteKnowledgeText } from "./websiteText";
+import { websitePageText } from "./websiteText";
 import { createHash, randomUUID } from "node:crypto";
 import Redis from "ioredis";
 import { and, eq, inArray, isNull, lte, ne, or } from "drizzle-orm";
@@ -51,7 +51,7 @@ export type WorkerDependencies = {
   twilioAlerts?: Pick<TwilioProvider, "sendSms"> & { from: string };
   polar?: { recordUsage(input: { eventName: string; externalCustomerId: string; quantity: number; timestamp: string; idempotencyKey: string; businessId: string; usageKind: string }): Promise<void>; createCheckout?(input: { productId: string; customerEmail: string; externalCustomerId: string; successUrl: string; returnUrl: string; idempotencyKey?: string }): Promise<{ checkoutUrl: string; checkoutId: string }> };
   embeddings?: { fingerprint?: string; embed(values: string[], onUsage?: (usage: DurableAiUsage) => Promise<void> | void): Promise<number[][]> };
-  crawler?: { crawl(input: { url: string; limit?: number }): Promise<Array<{ url: string; title?: string; markdown?: string }>> };
+  crawler?: { crawl(input: { url: string; limit?: number }): Promise<Array<{ url: string; title?: string; markdown?: string; rawBase64?: string }>> };
   calendar?: CalendarOperations;
   productAnalytics?: { capture(events: Array<{ event: string; distinctId: string; properties: Record<string, unknown>; timestamp: string }>): Promise<void> };
   realtime?: Redis;
@@ -283,7 +283,7 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
         });
       };
       if (!await progress("crawling")) return { status: "skipped", entityId: documentId ?? websiteIngestionJobId ?? "" };
-      let pages: Array<{ url: string; title?: string; markdown?: string }>;
+      let pages: Array<{ url: string; title?: string; markdown?: string; rawBase64?: string }>;
       try {
         pages = await dependencies.crawler.crawl({ url, ...(typeof job.payload.limit === "number" ? { limit: job.payload.limit } : {}) });
       } catch (error) {
@@ -967,11 +967,11 @@ async function generateCallSummary(
 async function indexWebsitePage(
   dependencies: WorkerDependencies,
   businessId: string,
-  page: { url: string; title?: string; markdown?: string },
+  page: { url: string; title?: string; markdown?: string; rawBase64?: string },
   importGuard?: { documentId: string; revision: number },
   deferFailure = false,
 ): Promise<number> {
-  const text = websiteKnowledgeText(page.url, page.markdown);
+  const text = await websitePageText(page);
   if (!text || !page.url || /\.(?:xml|jpe?g|png|gif|webp|svg|mp3|mp4|wav|css|js|zip)(?:$|[?#])/i.test(page.url) || /^#?\s*Hello world, again!\s*$/i.test(text)) return 0;
   if (importGuard) {
     const active = await withBusinessTransaction(dependencies.domain.db, { businessId, actorType: "worker" }, async (tx) => (await tx.select({ id: knowledgeDocuments.id }).from(knowledgeDocuments).where(and(eq(knowledgeDocuments.id, importGuard.documentId), eq(knowledgeDocuments.businessId, businessId), eq(knowledgeDocuments.revision, importGuard.revision), eq(knowledgeDocuments.status, "processing"))).limit(1)).length > 0);
