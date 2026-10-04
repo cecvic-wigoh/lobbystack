@@ -47,6 +47,30 @@ function HookHarness(props: {
 describe("useWebVoiceCall", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("shows the rate limit error and releases the microphone when LiveKit rejects a start", async () => {
+    vi.stubEnv("NEXT_PUBLIC_VOICE_PROVIDER", "livekit");
+    const trackStop = vi.fn();
+    vi.stubGlobal("navigator", {
+      mediaDevices: { getUserMedia: vi.fn(async () => createMockMediaStream(trackStop)) },
+    });
+    vi.stubGlobal("RTCPeerConnection", vi.fn());
+    const fetchMock = vi.fn(async () => new Response(
+      JSON.stringify({ code: "web_voice_rate_limited" }), { status: 429 },
+    ));
+    vi.stubGlobal("fetch", fetchMock);
+    let controls: HookControls | null = null;
+    render(createElement(HookHarness, {
+      endpoint: "/api/voice/livekit/session",
+      onReady: (next) => { controls = next; },
+    }));
+    await act(async () => { await controls!.startCall(); });
+    expect(controls!.status).toBe("error");
+    expect(controls!.errorKey).toBe("rateLimited");
+    expect(trackStop).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("stops a pending start call when the dialog is dismissed before media access resolves", async () => {

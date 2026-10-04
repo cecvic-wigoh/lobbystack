@@ -346,7 +346,16 @@ export function useWebVoiceCall({
 
       if (process.env.NEXT_PUBLIC_VOICE_PROVIDER === "livekit") {
         const response = await fetchWithTimeout(endpoint, { method: "POST", credentials: "include", headers: { "content-type": "application/json", ...getHeaders?.() }, body: JSON.stringify({ businessSlug, widgetId, visitorId, pageUrl: window.location.href, ...await getStartPayload?.() }) });
-        if (!response.ok) throw new Error("The AI receptionist is unavailable right now.");
+        if (!response.ok) {
+          const detail = await response.json().catch(() => null) as { code?: unknown } | null;
+          throw new Error(
+            response.status === 429
+              ? "web_voice_rate_limited"
+              : typeof detail?.code === "string"
+                ? detail.code
+                : "The AI receptionist is unavailable right now.",
+          );
+        }
         const payload = await response.json() as StartedSession & { serverUrl: string; token: string };
         const session = { sessionId: payload.sessionId, endToken: payload.endToken };
         if (attemptId !== startCallAttemptRef.current) { stopAttemptResources(); requestSessionEnd(endpoint, session); return; }
