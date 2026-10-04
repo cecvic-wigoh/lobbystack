@@ -316,6 +316,7 @@
     "cancelImportTitle": "¿Cancelar la importación del sitio web?",
     "cancelImportDescription": "Se detendrá la importación del sitio web y se quitará de la tabla la entrada en curso.",
     "enable": "Activar",
+    "refreshWebsite": "Actualizar sitio web",
     "disable": "Desactivar",
     "retry": "Reintentar",
     "moveUp": "Subir",

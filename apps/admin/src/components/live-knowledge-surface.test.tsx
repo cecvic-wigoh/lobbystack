@@ -55,6 +55,15 @@ describe("original knowledge row interactions", () => {
     expect(screen.getByText("Clinic hours")).toBeTruthy();
     expect(screen.queryByRole("progressbar")).toBeNull();
   });
+  it("refreshes a completed root website through the existing scoped import endpoint", async () => {
+    const fetchMock = setup({ sourceType: "website", websiteImport: { id: "job", status: "completed", websiteUrl: "https://example.invalid", importedCount: 10, indexedCount: 10 } });
+    await userEvent.click(screen.getByRole("button", { name: "actions.refreshWebsite" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith("/api/knowledge/document?businessId=business", expect.objectContaining({ method: "PATCH", body: JSON.stringify({ action: "expand" }) })));
+  });
+  it("does not offer refresh during an active import or to a viewer", () => {
+    setup({ sourceType: "website", role: "viewer", websiteImport: { id: "job", status: "completed", websiteUrl: "https://example.invalid", importedCount: 10, indexedCount: 10 } });
+    expect(screen.queryByRole("button", { name: "actions.refreshWebsite" })).toBeNull();
+  });
   it("uses the original crawl and indexing progress bounds", () => {
     const job = { id: "job", websiteUrl: "https://example.invalid", importedCount: 0, indexedCount: 0 };
     expect(websiteImportProgress({ ...job, status: "crawling" })).toBe(12);
