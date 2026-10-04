@@ -1,6 +1,10 @@
-import { expect, it, vi } from "vitest";
+import { beforeEach, expect, it, vi } from "vitest";
+import { generateText } from "ai";
+import { searchKnowledgeEvidence } from "@lobbystack/domain";
 import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
 vi.mock("@lobbystack/domain", () => ({ searchKnowledgeEvidence: vi.fn() }));
+vi.mock("ai", async importOriginal => ({ ...await importOriginal<typeof import("ai")>(), generateText: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
 const claim = { text: "Call 306-555-1234 for program applications.", sourceId: "contact", quote: "Call 306-555-1234 for program applications." };
 it("returns verified claims with the actual source URL", () => {
@@ -37,4 +41,45 @@ it("handles greetings without inventing facts or doing a knowledge search", asyn
 it("clarifies an unspecified college location before choosing a campus", async () => {
  const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {} as never, snapshot: { defaultLocale: "en" } as never } as never, question: "Where is Suncrest College located?" });
  expect(result).toMatchObject({ outcome: "clarification", answer: "Which campus are you asking about?" });
+});
+
+const context = { domain: {}, snapshot: { businessId: "college", displayName: "College", defaultLocale: "en" } } as never;
+const admissionsHistory = [
+ { role: "user" as const, content: "Who should I contact about admission to College?" },
+ { role: "assistant" as const, content: "Contact admissions@college.test." },
+ { role: "user" as const, content: "Who should I contact about admission to College?" },
+ { role: "assistant" as const, content: "Contact admissions@college.test." },
+];
+function mockAnswer(claim: { text: string; sourceId: string; quote: string }) {
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [claim] } } as never)
+  .mockResolvedValueOnce({ output: { supported: true } } as never);
+}
+it("answers a new courses question without carrying over repeated admissions intent", async () => {
+ const catalog = { chunkId: "catalog", sourceUrl: "https://college.test/programs", content: "Area of Interest: Business, Health, Trades." };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [catalog] } as never);
+ mockAnswer({ text: "The catalogue lists areas including Business, Health, and Trades.", sourceId: "catalog", quote: catalog.content });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "what courses do you offer", history: admissionsHistory });
+ expect(result).toMatchObject({ outcome: "supported", sources: [catalog.sourceUrl] });
+ const searches = vi.mocked(searchKnowledgeEvidence).mock.calls.map(call => call[1]);
+ expect(searches).toHaveLength(2);
+ expect(searches[0]!.query).toBe("what courses do you offer");
+ expect(searches[1]!.sourcePath).toBe("/programs");
+ for (const [request] of vi.mocked(generateText).mock.calls) expect(JSON.parse(request.prompt as string).conversation).toEqual([]);
+});
+it("keeps admissions context when a caller asks for their email", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ mockAnswer({ text: "The admissions email is admissions@college.test.", sourceId: "contact", quote: evidence[0]!.content });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What is their email?", history: admissionsHistory });
+ expect(result).toMatchObject({ outcome: "supported", sources: [evidence[0]!.sourceUrl] });
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("Previous question: Who should I contact about admission");
+ expect(JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string).conversation).toEqual(admissionsHistory);
+});
+it("keeps the location question when a caller supplies a campus clarification", async () => {
+ const campus = { chunkId: "campus", sourceUrl: "https://college.test/campuses", content: "Yorkton campus: 200 Prystai Way." };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [campus] } as never);
+ mockAnswer({ text: "Yorkton campus is at 200 Prystai Way.", sourceId: "campus", quote: campus.content });
+ const history = [{ role: "user" as const, content: "Where is College located?" }, { role: "assistant" as const, content: "Which campus are you asking about?" }];
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Yorkton", history });
+ expect(result.outcome).toBe("supported");
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("Previous question: Where is College located?");
 });
