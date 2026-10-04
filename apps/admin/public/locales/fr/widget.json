@@ -6,6 +6,7 @@
     "composerPlaceholder": "Écrivez votre message...",
     "send": "Envoyer",
     "sendingFailed": "Votre message n'a pas pu être envoyé. Veuillez réessayer.",
+    "rateLimited": "La limite temporaire de messages est atteinte. Veuillez patienter avant d’envoyer un autre message.",
     "loadingTranscript": "Chargement de la conversation...",
     "chatUnavailable": "La messagerie n'est pas disponible pour le moment.",
     "emptyBody": "Veuillez saisir un message.",

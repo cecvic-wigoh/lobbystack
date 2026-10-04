@@ -43,7 +43,9 @@ function chatErrorKey(error: unknown): string {
   if (!(error instanceof Error)) return "chat.sendingFailed";
   try {
     const parsed = JSON.parse(error.message) as { code?: unknown };
-    return parsed.code === "chat_ai_limit_reached" ? "chat.limitReached" : "chat.sendingFailed";
+    if (parsed.code === "chat_ai_limit_reached") return "chat.limitReached";
+    if (typeof parsed.code === "string" && parsed.code.startsWith("rate_limit_")) return "chat.rateLimited";
+    return "chat.sendingFailed";
   } catch {
     return "chat.sendingFailed";
   }
@@ -241,8 +243,8 @@ export function WidgetChatClient({ widgetKey }: { widgetKey: string }) {
     try {
       clearError();
       await sendMessage({ text: content });
-    } catch {
-      setSubmitError("chat.sendingFailed");
+    } catch (error) {
+      setSubmitError(chatErrorKey(error));
     }
   }
 
