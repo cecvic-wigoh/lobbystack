@@ -52,6 +52,10 @@ describe("FirecrawlProvider", () => {
     responses({ status: "completed", data: [{ metadata: { sourceURL: "https://example.com/report.pdf" }, rawBase64: "JVBERi0=" }] });
     expect(await new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com" })).toEqual([{ url: "https://example.com/report.pdf", rawBase64: "JVBERi0=" }]);
   });
+  it("does not index a dead link's HTML error page as published business evidence", async () => {
+    responses({ status: "completed", data: [{ metadata: { sourceURL: "https://example.com/missing", statusCode: 404 }, markdown: "Not found. Generic homepage and navigation." }, { ...page("https://example.com/live"), metadata: { sourceURL: "https://example.com/live", statusCode: 200 } }] });
+    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com" })).toEqual([{ url: "https://example.com/live", markdown: "Content" }]);
+  });
   it("does not replay a saved batch for another tenant website while paused", async () => {
     const fetcher = responses();
     await expect(new FirecrawlProvider({ apiKey: "test", savedBatchIds: ["batch"], savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://other.test" })).rejects.toThrow("paused");

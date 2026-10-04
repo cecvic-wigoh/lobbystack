@@ -2,7 +2,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { assertPublicHttpUrl } from "./urlSafety";
 
 export type CrawlPage = { url: string; title?: string; markdown?: string; rawBase64?: string };
-type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string; rawBase64?: string }> };
+type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string; statusCode?: number }; markdown?: string; rawBase64?: string }> };
 
 export class FirecrawlProvider {
   constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedBatchIds?: string[]; savedCrawlUrl?: string; pauseNewCrawls?: boolean }) {}
@@ -31,7 +31,7 @@ export class FirecrawlProvider {
       return payload;
     };
     if (limit === 1 && !savedCrawlId) {
-      const scraped = await request<{ data?: { metadata?: { sourceURL?: string; title?: string }; markdown?: string; rawBase64?: string } }>(`${baseUrl}/v1/scrape`, { url: url.toString(), formats: ["markdown"] });
+      const scraped = await request<{ data?: { metadata?: { sourceURL?: string; title?: string; statusCode?: number }; markdown?: string; rawBase64?: string } }>(`${baseUrl}/v1/scrape`, { url: url.toString(), formats: ["markdown"] });
       const page = scraped.data;
       if (!page?.markdown?.trim()) throw new Error("Website page returned no readable content.");
       return [{ url: page.metadata?.sourceURL ?? url.toString(), ...(page.metadata?.title ? { title: page.metadata.title } : {}), markdown: page.markdown }];
@@ -63,6 +63,7 @@ export class FirecrawlProvider {
       const visited = new Set<string>([statusUrl.toString()]);
       for (;;) {
         for (const page of payload.data ?? []) {
+          if (page.metadata?.statusCode !== undefined && (page.metadata.statusCode < 200 || page.metadata.statusCode >= 300)) continue;
           const pageUrl = page.metadata?.sourceURL ?? url.toString();
           pages.set(pageUrl, { url: pageUrl, ...(page.metadata?.title ? { title: page.metadata.title } : {}), ...(page.markdown ? { markdown: page.markdown } : {}), ...(page.rawBase64 ? { rawBase64: page.rawBase64 } : {}) });
           if (pages.size >= limit) return [...pages.values()];
