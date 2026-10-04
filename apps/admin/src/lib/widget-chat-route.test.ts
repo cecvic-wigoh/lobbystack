@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   getWorkerDatabase: vi.fn(),
   createAgentModel: vi.fn(),
   createReceptionistAgent: vi.fn(),
+  answerGroundedQuestion: vi.fn(),
 }));
 
 vi.mock("@lobbystack/domain", () => ({
@@ -48,6 +49,7 @@ vi.mock("@lobbystack/agent-core/model", () => ({
 vi.mock("@lobbystack/agent-core/agent", () => ({
   createReceptionistAgent: mocks.createReceptionistAgent,
 }));
+vi.mock("@lobbystack/agent-core", () => ({ answerGroundedQuestion: mocks.answerGroundedQuestion }));
 
 function agentStreaming(textStream: AsyncIterable<string>, finishReason = "stop") {
   return { stream: vi.fn().mockResolvedValue({ textStream, totalUsage: Promise.resolve({ inputTokens: 1, outputTokens: 1, totalTokens: 2 }), finishReason: Promise.resolve(finishReason) }) };
@@ -145,6 +147,31 @@ afterEach(() => {
 });
 
 describe("POST /api/widget/chat", () => {
+  it("uses verified knowledge and source links for a managed college instead of free-form generation", async () => {
+    vi.stubEnv("MANAGED_CLIENT_DEPLOYMENT", "true");
+    mocks.getCachedBusinessSnapshot.mockResolvedValue({ businessId, displayName: "Suncrest College", defaultLocale: "en" });
+    mocks.loadWidgetChatHistory.mockResolvedValue([{ direction: "inbound", body: "Tell me about CAAT B." }, { direction: "outbound", body: "A prior answer." }, { direction: "inbound", body: "How long does it take?" }]);
+    mocks.answerGroundedQuestion.mockImplementation(async ({ onUsage }) => {
+      onUsage({ provider: "test", model: "test", inputTokens: 10, outputTokens: 5 });
+      return { answer: "Approximately 3 hours.", sources: ["https://suncrestcollege.ca/caat-b-testing"], outcome: "supported" };
+    });
+    const body = await readSse(await POST(widgetRequest({ content: "How long does it take?" })));
+    expect(body).toContain("Approximately 3 hours.");
+    expect(body).toContain("https://suncrestcollege.ca/caat-b-testing");
+    expect(mocks.createReceptionistAgent).not.toHaveBeenCalled();
+    expect(mocks.answerGroundedQuestion).toHaveBeenCalledWith(expect.objectContaining({ history: [{ role: "user", content: "Tell me about CAAT B." }, { role: "assistant", content: "A prior answer." }] }));
+    expect(mocks.recordAiGenerationEvent).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ inputTokens: 10, isStreaming: false }));
+  });
+
+  it("does not fall back to an ungrounded agent when managed knowledge is unavailable", async () => {
+    vi.stubEnv("MANAGED_CLIENT_DEPLOYMENT", "true");
+    mocks.getCachedBusinessSnapshot.mockResolvedValue(null);
+    mocks.loadWidgetChatHistory.mockResolvedValue([]);
+    const body = await readSse(await POST(widgetRequest()));
+    expect(body).toContain("The chat could not be processed.");
+    expect(mocks.createReceptionistAgent).not.toHaveBeenCalled();
+    expect(mocks.answerGroundedQuestion).not.toHaveBeenCalled();
+  });
   it("rejects when the widget key cannot be resolved", async () => {
     mocks.resolveWidgetSessionAccess.mockResolvedValue({
       ok: false,

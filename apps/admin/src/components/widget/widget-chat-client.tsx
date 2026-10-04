@@ -135,6 +135,7 @@ export function WidgetChatClient({ widgetKey }: { widgetKey: string }) {
     const handleMessage = (event: MessageEvent) => {
       if (event.source !== window.parent) return;
       const data = event.data as { type?: string; visitorId?: string; token?: string; parentOrigin?: string; code?: string };
+      if (data?.type === "suggested-question" && event.origin === window.location.origin && "question" in data && typeof data.question === "string" && data.question.length <= 2000) setDraft(data.question);
       if (data && data.type === "session-error") {
         setSubmitError(data.code === "widget_origin_denied" ? "errors.originDenied" : data.code === "widget_key_invalid" ? "errors.invalidKey" : "errors.configLoad");
       }

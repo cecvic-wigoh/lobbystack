@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { createReceptionistAgent } from "@lobbystack/agent-core/agent";
+import { answerGroundedQuestion } from "@lobbystack/agent-core";
 import { createAgentModel, describeAgentUsage } from "@lobbystack/agent-core/model";
 import { appendMessage, getCachedBusinessSnapshot, getOrCreateWidgetConversation, loadWidgetChatHistory, recordAiGenerationEvent, registerWidgetVisitor, reserveWidgetChatUsageInTransaction, type DomainContext } from "@lobbystack/domain";
 import { conversations, withBusinessTransaction } from "@lobbystack/db";
@@ -109,6 +110,27 @@ export async function POST(request: Request) {
           const activeSnapshot = snapshot ?? fallbackSnapshot(session);
           const history = await loadWidgetChatHistory(context, { businessId: session.businessId, conversationId });
           const language = body.locale === "fr" || (!body.locale && (session.config.localeOverride === "fr" || session.defaultLocale === "fr")) ? "French" : "English";
+          if (process.env.MANAGED_CLIENT_DEPLOYMENT === "true") {
+            if (!snapshot) throw new Error("Knowledge snapshot unavailable");
+            const usageEvents: ReturnType<typeof describeAgentUsage>[] = [];
+            const result = await answerGroundedQuestion({
+              model: model!,
+              context: { domain: context, snapshot: { ...snapshot, defaultLocale: language === "French" ? "fr" : "en" }, channel: "web_chat", conversationId },
+              question: body.content,
+              history: history.slice(0, -1).slice(-4).map(row => ({ role: row.direction === "inbound" ? "user" : "assistant", content: row.body })),
+              onUsage: usage => usageEvents.push(usage),
+            });
+            const citations = result.sources.map((url, index) => `[${index + 1}](${url})`).join(" · ");
+            const reply = result.answer + (citations ? `\n\nSources: ${citations}` : "");
+            const messageId = await appendMessage(context, { businessId: session.businessId, conversationId, body: reply, direction: "outbound", channel: "web_chat", aiGenerated: true });
+            await Promise.all(usageEvents.map(usage => recordAiGenerationEvent(context, { ...usage, businessId: session.businessId, operation: "widget.chat", conversationId, messageId, traceId, isStreaming: false }).catch(logGenerationFailure)));
+            writer.write({ type: "text-start", id: assistantMessageId });
+            writer.write({ type: "text-delta", id: assistantMessageId, delta: reply });
+            writer.write({ type: "text-end", id: assistantMessageId });
+            writer.write({ type: "message-metadata", messageMetadata: { automationState: "ai_active" } });
+            writer.write({ type: "finish", finishReason: "stop" });
+            return;
+          }
           const agent = createReceptionistAgent({
             model: model!,
             context: { domain: context, snapshot: activeSnapshot, channel: "web_chat", conversationId },

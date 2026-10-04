@@ -85,6 +85,7 @@ type AuraVoiceDemoProps = {
   auraTone?: AuraTone;
   className?: string;
   getStartPayload?: () => Promise<Record<string, string>>;
+  getHeaders?: () => Record<string, string>;
   onEvent?: (
     eventName: TelemetryEventName,
     properties?: Record<string, unknown>,
@@ -132,6 +133,7 @@ export function AuraVoiceDemo({
   businessSlug,
   endpoint,
   getStartPayload,
+  getHeaders,
   widgetId,
   auraTone = "light",
   className,
@@ -155,6 +157,7 @@ export function AuraVoiceDemo({
     businessSlug,
     ...(endpoint ? { endpoint } : {}),
     ...(getStartPayload ? { getStartPayload } : {}),
+    ...(getHeaders ? { getHeaders } : {}),
     ...(widgetId ? { widgetId } : {}),
     ...(onEvent ? { onEvent } : {}),
   });
