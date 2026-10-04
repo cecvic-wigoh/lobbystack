@@ -12,17 +12,17 @@ vi.mock("react-i18next", () => ({ useTranslation: () => ({ i18n: { language: "en
 const clients: QueryClient[] = [];
 beforeEach(() => { telemetryRef.current = createRecordedBrowserTelemetry(); });
 afterEach(() => { cleanup(); clients.forEach(client => client.clear()); clients.length = 0; vi.unstubAllGlobals(); vi.clearAllMocks(); });
-function setup({ snippet = false, active = true, role = "business_owner", status = "indexed", sourceType = "upload", textContent = "**Clinic** [hours](https://example.invalid)", websiteImport = null as null | WebsiteImport } = {}) {
+function setup({ websiteRefreshPaused = false, snippet = false, active = true, role = "business_owner", status = "indexed", sourceType = "upload", textContent = "**Clinic** [hours](https://example.invalid)", websiteImport = null as null | WebsiteImport } = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } }); clients.push(client);
   client.setQueryData(["businesses"], { businesses: [{ businessId: "business", active: true, role }] });
   const document = { websiteImport, id: "document", title: "Clinic hours", active, sourceType, status, sourceUrl: sourceType === "website" ? "https://example.invalid" : null, textContent, processingProgress: 40, createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z" };
   const snippets = snippet ? [{ id: "snippet", title: "Clinic hours", content: "Open weekdays", tags: ["hours"], priority: 5, active, createdAt: "2026-09-01T12:00:00Z" }] : [];
-  client.setQueryData(["knowledge", "business"], { documents: snippet ? [] : [document] });
+  client.setQueryData(["knowledge", "business"], { websiteRefreshPaused, documents: snippet ? [] : [document] });
   client.setQueryData(["knowledge-snippets", "business"], { snippets });
   const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
     if (init?.method) return Response.json({ ok: true });
     if (url.includes("/document?")) return Response.json({ document, content: "Readable extracted content" });
-    return Response.json(url.includes("/snippets?") ? { snippets } : { documents: snippet ? [] : [document] });
+    return Response.json(url.includes("/snippets?") ? { snippets } : { websiteRefreshPaused, documents: snippet ? [] : [document] });
   }); vi.stubGlobal("fetch", fetchMock);
   render(<QueryClientProvider client={client}><LiveKnowledgeSurface /></QueryClientProvider>);
   return Object.assign(fetchMock, { client });
@@ -59,6 +59,11 @@ describe("original knowledge row interactions", () => {
     const fetchMock = setup({ sourceType: "website", websiteImport: { id: "job", status: "completed", websiteUrl: "https://example.invalid", importedCount: 10, indexedCount: 10 } });
     await userEvent.click(screen.getByRole("button", { name: "actions.refreshWebsite" }));
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith("/api/knowledge/document?businessId=business", expect.objectContaining({ method: "PATCH", body: JSON.stringify({ action: "expand" }) })));
+  });
+  it("disables refreshing while retaining indexed knowledge when website updates are paused", () => {
+    setup({ websiteRefreshPaused: true, sourceType: "website", websiteImport: { id: "job", status: "completed", websiteUrl: "https://example.invalid", importedCount: 10, indexedCount: 10 } });
+    expect((screen.getByRole("button", { name: "actions.websiteRefreshPaused" }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByText("Clinic hours")).toBeTruthy();
   });
   it("does not offer refresh during an active import or to a viewer", () => {
     setup({ sourceType: "website", role: "viewer", websiteImport: { id: "job", status: "completed", websiteUrl: "https://example.invalid", importedCount: 10, indexedCount: 10 } });

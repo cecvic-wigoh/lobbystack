@@ -28,6 +28,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ do
     if (typeof body?.active === "boolean") await setKnowledgeDocumentActive(createDomainContext(), { userId: session.user.id, businessId, documentId, active: body.active });
     else if (body?.action === "retry") await retryKnowledgeDocument(createDomainContext(), { userId: session.user.id, businessId, documentId });
     else if (body?.action === "cancel") await cancelKnowledgeDocument(createDomainContext(), { userId: session.user.id, businessId, documentId });
+    else if (body?.action === "expand" && process.env.FIRECRAWL_PAUSE_NEW_CRAWLS === "true") return NextResponse.json({ error: "Website refresh is paused. Existing indexed knowledge remains available.", code: "website_refresh_paused" }, { status: 409 });
     else if (body?.action === "expand") await expandWebsiteCrawl(createDomainContext(), { userId: session.user.id, businessId, documentId });
     else return NextResponse.json({ error: "Provide active as a boolean, or action as retry, cancel, or expand." }, { status: 400 });
     return NextResponse.json({ ok: true });

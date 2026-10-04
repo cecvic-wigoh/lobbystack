@@ -316,6 +316,7 @@
     "cancelImportTitle": "Otkazati uvoz sajta?",
     "cancelImportDescription": "Uvoz sajta će biti zaustavljen, a unos u toku uklonjen iz tabele.",
     "enable": "Uključi",
+    "websiteRefreshPaused": "Ažuriranja sajta su pauzirana",
     "refreshWebsite": "Osveži veb-sajt",
     "disable": "Isključi",
     "retry": "Pokušaj ponovo",

@@ -316,6 +316,7 @@
     "cancelImportTitle": "Cancel website import?",
     "cancelImportDescription": "This will stop the website import and remove the in-progress entry from the table.",
     "enable": "Enable",
+    "websiteRefreshPaused": "Website updates paused",
     "refreshWebsite": "Refresh website",
     "disable": "Disable",
     "retry": "Retry",
