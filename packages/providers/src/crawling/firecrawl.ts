@@ -5,14 +5,15 @@ export type CrawlPage = { url: string; title?: string; markdown?: string };
 type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string }; markdown?: string }> };
 
 export class FirecrawlProvider {
-  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedCrawlUrl?: string; pauseNewCrawls?: boolean }) {}
+  constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedBatchId?: string; savedCrawlUrl?: string; pauseNewCrawls?: boolean }) {}
 
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {
     const url = await assertPublicHttpUrl(input.url);
     const baseUrl = (this.config.baseUrl ?? "https://api.firecrawl.dev").replace(/\/$/, "");
     let limit = Math.max(1, Math.min(10000, Math.floor(input.limit ?? 50)));
     if (this.config.maxPages !== undefined) limit = Math.min(limit, Math.max(1, Math.floor(this.config.maxPages)));
-    const savedCrawlId = this.config.savedCrawlUrl && new URL(this.config.savedCrawlUrl).toString() === url.toString() ? this.config.savedCrawlId : undefined;
+    const savedBatchId = this.config.savedCrawlUrl && new URL(this.config.savedCrawlUrl).toString() === url.toString() ? this.config.savedBatchId : undefined;
+    const savedCrawlId = savedBatchId ?? (this.config.savedCrawlUrl && new URL(this.config.savedCrawlUrl).toString() === url.toString() ? this.config.savedCrawlId : undefined);
     if (this.config.pauseNewCrawls && !savedCrawlId) throw new Error("New website crawls are paused. Imported knowledge remains available.");
     const deadline = Date.now() + (this.config.timeoutMs ?? 30 * 60_000);
     const request = async <T = CrawlResponse>(endpoint: string, body?: object): Promise<T> => {
@@ -46,7 +47,7 @@ export class FirecrawlProvider {
     }
     const started = savedCrawlId ? { id: savedCrawlId } : await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$", ...(this.config.excludePaths ?? [])], scrapeOptions: { formats: ["markdown"] } });
     if (!started.id) throw new Error("Website crawl did not return a job ID.");
-    const statusUrl = new URL(`${baseUrl}/v1/crawl/${encodeURIComponent(started.id)}`);
+    const statusUrl = new URL(`${baseUrl}/${savedBatchId ? "v2/batch/scrape" : "v1/crawl"}/${encodeURIComponent(started.id)}`);
     let payload: CrawlResponse;
     do {
       payload = await request(statusUrl.toString());

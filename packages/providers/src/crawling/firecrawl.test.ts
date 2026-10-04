@@ -20,7 +20,7 @@ describe("FirecrawlProvider", () => {
     await provider().crawl({ url: "https://example.com", limit: 10000 });
     expect(JSON.parse(fetcher.mock.calls[1]?.[1].body)).toMatchObject({ limit: 3, allowExternalLinks: false, excludePaths: [".*\\.xml$"] });
   });
-  it("honors the configured credit budget and priority exclusions", async () => {
+  it("honors the configured page limit and priority exclusions", async () => {
     const fetcher = responses({ id: "job" }, { status: "completed", data: [page("https://example.com/")] });
     await new FirecrawlProvider({ apiKey: "test", maxPages: 800, excludePaths: ["^/news/"], pollIntervalMs: 0 }).crawl({ url: "https://example.com", limit: 10000 });
     expect(JSON.parse(fetcher.mock.calls[0]?.[1].body)).toMatchObject({ limit: 800, excludePaths: [".*\\.xml$", "^/news/"] });
@@ -32,6 +32,20 @@ describe("FirecrawlProvider", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v1/crawl/saved");
     expect(fetcher.mock.calls[0]?.[1].method).toBe("GET");
+  });
+  it("replays a saved batch while paid crawls stay paused, including guarded pagination", async () => {
+    const fetcher = responses(
+      { status: "completed", data: [page("https://example.com/a")], next: "https://api.firecrawl.dev/v2/batch/scrape/batch?skip=1" },
+      { status: "completed", data: [page("https://example.com/b")] },
+    );
+    expect(await new FirecrawlProvider({ apiKey: "test", savedBatchId: "batch", savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://example.com", limit: 10000 })).toHaveLength(2);
+    expect(fetcher.mock.calls.every(call => call[1].method === "GET")).toBe(true);
+    expect(fetcher.mock.calls[0]?.[0]).toBe("https://api.firecrawl.dev/v2/batch/scrape/batch");
+  });
+  it("does not replay a saved batch for another tenant website while paused", async () => {
+    const fetcher = responses();
+    await expect(new FirecrawlProvider({ apiKey: "test", savedBatchId: "batch", savedCrawlUrl: "https://example.com/", pauseNewCrawls: true }).crawl({ url: "https://other.test" })).rejects.toThrow("paused");
+    expect(fetcher).not.toHaveBeenCalled();
   });
   it("does not replay saved content for a different website", async () => {
     const fetcher = responses({ id: "fresh" }, { status: "completed", data: [page("https://other.test/")] });
