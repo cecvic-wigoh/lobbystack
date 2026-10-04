@@ -14,8 +14,9 @@ describe("call recording availability", () => {
     expect(recordingListState({ ...phoneCall, disposition })).toBe("missing");
   });
 
-  it("does not promise a recording for an unrecorded browser call", () => {
-    expect(recordingState({ ...phoneCall, transport: "webrtc" })).toBe("missing");
+  it.each(["webrtc", "web_voice"])("does not promise a recording for an unrecorded %s call", (transport) => {
+    expect(recordingState({ ...phoneCall, transport })).toBe("missing");
+    expect(recordingListState({ ...phoneCall, transport })).toBe("missing");
   });
 
   it("exposes only ready stored recordings and respects retention", () => {
