@@ -437,7 +437,9 @@ export async function searchKnowledgeEvidence(
   const lexical = terms.length ? execute(sql`${select} WHERE ${filters}
     AND (to_tsvector('simple', c.content) @@ to_tsquery('simple', ${lexicalQuery})
       OR to_tsvector('simple', d.title) @@ to_tsquery('simple', ${lexicalQuery}))
-    ORDER BY ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${allTermsQuery})) DESC,
+    ORDER BY CASE WHEN ${/\bprogram\b/i.test(query)} AND d.source_url ~ '/programs/[^/?#]+$' THEN 0 ELSE 1 END,
+      ts_rank_cd(to_tsvector('simple', d.title), to_tsquery('simple', ${lexicalQuery})) DESC,
+      ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${allTermsQuery})) DESC,
       ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${lexicalQuery})) DESC, c.id LIMIT 12`) : Promise.resolve([]);
   const semantic = (async () => {
     if (!query || !context.embeddings) throw new Error("embedding_unavailable");
@@ -466,13 +468,26 @@ export async function searchKnowledgeEvidence(
   const current = candidates.length ? await execute(sql`${select} WHERE ${filters} AND (${sql.join(candidates.map(p => sql`(c.document_id = ${p.documentId} AND d.revision = ${p.sourceRevision} AND c.sequence BETWEEN ${p.sequence - 1} AND ${p.sequence + 1})`), sql` OR `)})`).catch(() => { validationFailed = true; return []; }) : [];
   const valid = new Map(current.map(p => [p.chunkId, p]));
   // Reserve the ranked primary passages first. Neighbors must not crowd out distinct candidates.
-  const matches = withinKnowledgeBudget(candidates.filter(p => valid.has(p.chunkId)), KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
+  let matches = withinKnowledgeBudget(candidates.filter(p => valid.has(p.chunkId)), KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
   for (let index = 0; index < matches.length; index += 1) {
     const p = matches[index]!;
     const neighbors = current.filter(row => row.documentId === p.documentId && row.sourceRevision === p.sourceRevision && Math.abs(row.sequence - p.sequence) <= 1).sort((a, b) => a.sequence - b.sequence);
     const expanded = { ...p, supportingChunkIds: neighbors.map(row => row.chunkId), content: neighbors.map(row => row.content).join("\n\n") };
     const proposed = matches.map((match, candidateIndex) => candidateIndex === index ? expanded : match);
     if (proposed.reduce((sum, match) => sum + countKnowledgeTokens(JSON.stringify(match) + "\n"), 0) <= KNOWLEDGE_SEARCH_TOKEN_BUDGET) matches[index] = expanded;
+  }
+  if (input.sourcePath) {
+    // A directory's names can span more chunks than the search window. Include
+    // its stored headings without copying repetitive hours, images or footers.
+    const outlines = await execute(sql`SELECT
+      'outline:' || d.id::text || ':' || d.revision::text AS "chunkId",
+      d.id AS "documentId", d.title, d.source_url AS "sourceUrl",
+      d.revision AS "sourceRevision", 0 AS sequence,
+      d.title || E'\n' || string_agg(heading.line[1], E'\n' ORDER BY c.sequence, heading.ordinality) AS content
+      ${from} CROSS JOIN LATERAL regexp_matches(c.content, '(?:^|\n)#{1,6} [^\n]+', 'g')
+        WITH ORDINALITY AS heading(line, ordinality)
+      WHERE ${filters} GROUP BY d.id, d.title, d.source_url, d.revision`).catch(() => []);
+    matches = withinKnowledgeBudget([...outlines, ...matches], KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
   }
   const failed = validationFailed || (lexicalResult.status === "rejected" && semanticResult.status === "rejected");
   const outcome = matches.length ? "found" as const : failed ? "unavailable" as const : "empty" as const;

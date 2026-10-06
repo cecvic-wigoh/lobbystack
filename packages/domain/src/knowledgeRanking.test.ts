@@ -9,8 +9,17 @@ describe("knowledge ranking", () => {
     expect(knowledgeQueryTerms("B.A.A. Management MNGT 10407")).toEqual(["baa", "management", "mngt", "10407"]);
     expect(knowledgeLexicalQueries(["baa", "management", "10407"])).toEqual({ any: "(baa | b.a.a) | management | 10407", all: "(baa | b.a.a) & management & 10407" });
   });
+  it("does not rank conversational filler as website facts", () => {
+    expect(knowledgeQueryTerms("Tell me about some available nursing programs you offer")).toEqual(["nursing", "programs"]);
+  });
   it("promotes evidence found by both searches without duplicating it", () => {
     expect(fuseKnowledgeRanks([[passage("a"), passage("b")], [passage("b"), passage("c")]]).map(p => p.chunkId)).toEqual(["b", "a", "c"]);
+  });
+  it("corroborates a document even when the two indexes find different sections", () => {
+    const overview = { ...passage("overview"), documentId: "program" };
+    const requirements = { ...passage("requirements"), documentId: "program" };
+    const unrelated = { ...passage("unrelated"), documentId: "archive" };
+    expect(fuseKnowledgeRanks([[unrelated, requirements], [overview]])[0]?.documentId).toBe("program");
   });
   it("does not inflate scores for duplicate candidates within one index", () => {
     expect(fuseKnowledgeRanks([[passage("a"), passage("a")], [passage("b")]])).toHaveLength(2);

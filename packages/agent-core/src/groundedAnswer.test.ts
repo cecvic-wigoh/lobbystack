@@ -81,7 +81,7 @@ it("keeps the location question when a caller supplies a campus clarification", 
  const history = [{ role: "user" as const, content: "Where is College located?" }, { role: "assistant" as const, content: "Which campus are you asking about?" }];
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "Yorkton", history });
  expect(result.outcome).toBe("supported");
- expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("Previous question: Where is College located?");
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toMatch(/Previous question: Where is\s+located/);
 });
 
 it("uses the actual retrieved catalogue passage when the model reformats a quotation", async () => {
@@ -110,10 +110,10 @@ it("does not repair citations to a nonexistent source", async () => {
 });
 it("does not accept an invented contact through citation repair", async () => {
  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
- vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ text: "Call 306-555-9876.", sourceId: "contact", quote: "Call 306-555-9876." }] } } as never);
+ vi.mocked(generateText).mockResolvedValue({ output: { status: "supported", claims: [{ text: "Call 306-555-9876.", sourceId: "contact", quote: "Call 306-555-9876." }] } } as never);
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "What is the admissions phone number?" });
  expect(result).toMatchObject({ outcome: "unknown", reason: "detail_mismatch" });
- expect(generateText).toHaveBeenCalledTimes(1);
+ expect(generateText).toHaveBeenCalledTimes(2);
 });
 
 it("rechecks a narrower second draft after factual verification rejects the first", async () => {
@@ -137,4 +137,27 @@ it("keeps a safe refusal if the single verification retry times out", async () =
   .mockRejectedValueOnce(new Error("timeout"));
  expect(await answerGroundedQuestion({ model: {} as never, context, question: "Who handles admissions?" })).toMatchObject({ outcome: "unknown", reason: "unsupported_paraphrase", sources: [] });
  expect(generateText).toHaveBeenCalledTimes(3);
+});
+
+it("retrieves a catalogue for a natural broad program inquiry and a directory for campuses", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ vi.mocked(generateText).mockResolvedValue({ output: { status: "unknown", claims: [] } } as never);
+ await answerGroundedQuestion({ model: {} as never, context, question: "Can you tell me about some of the programs available at College?" });
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === "/programs")).toBe(true);
+ vi.mocked(searchKnowledgeEvidence).mockClear();
+ await answerGroundedQuestion({ model: {} as never, context, question: "What campuses are available for College?" });
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === "/contact-us")).toBe(true);
+});
+
+it("checks factual claims before using them to name program alternatives", () => {
+ expect(validateGroundedAnswer({ status: "clarify_program", claims: [claim] }, evidence, "en").answer).toContain("Which program");
+ expect(validateGroundedAnswer({ status: "clarify_program", claims: [{ ...claim, text: "Call 999-555-0000." }] }, evidence, "en").outcome).toBe("unknown");
+});
+
+it("retries a number-format mismatch once without weakening factual checks", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ ...claim, text: "Call 1-306-555-1234 for program applications." }] } } as never);
+ mockAnswer(claim);
+ expect(await answerGroundedQuestion({ model: {} as never, context, question: "Who can I contact?" })).toMatchObject({ outcome: "supported", answer: claim.text });
+ expect(vi.mocked(generateText)).toHaveBeenCalledTimes(3);
 });

@@ -102,7 +102,7 @@ export function SuncrestDemo({ widgetKey }: { widgetKey: string }) {
         {error ? <div className={styles.waiting} role="alert"><h2>Let’s reconnect.</h2><p>The receptionist couldn’t connect. Please try again.</p><button onClick={() => setRetry(value => value + 1)}>Try again</button></div> : !session ? <div className={styles.waiting} role="status"><span className={styles.loading} /><p>Getting your receptionist ready…</p></div> : mode === "voice" ? <div className={styles.voice}>
           <p className={styles.voiceLabel}>SUNCREST COLLEGE</p>
           <AuraVoiceDemo businessSlug={session.businessSlug} endpoint="/api/voice/livekit/session" widgetId="lobbystack-widget" getHeaders={getHeaders} getStartPayload={getStartPayload} onRegisterControls={registerControls} auraTone="light" />
-          <p className={styles.voiceHint}>Click to start, allow your microphone, and say hello.<br />You can interrupt or ask a follow-up, just like a conversation.</p>
+          <p className={styles.voiceHint}>Click to start, allow your microphone, and say hello.<br />You can interrupt or ask a follow-up, just like a conversation.<br />Preview calls last up to 5 minutes. Each connection can start 5 calls per hour and 10 per day.</p>
         </div> : <iframe ref={frame} title="Chat with Suncrest College" className={styles.chat} src={`/embed/${encodeURIComponent(widgetKey)}`} allow="microphone" onLoad={syncFrame} />}
         <div className={styles.disclosure}><span /> AI receptionist · Voice and chat</div>
       </div>

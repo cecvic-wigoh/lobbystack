@@ -16,21 +16,27 @@ export type KnowledgePassage = {
 
 export function fuseKnowledgeRanks(lists: KnowledgePassage[][], limit = 6): KnowledgePassage[] {
   const ranked = new Map<string, { passage: KnowledgePassage; score: number }>();
+  const documentScores = new Map<string, number>();
   for (const list of lists) {
+    const seenDocuments = new Set<string>();
     const seen = new Set<string>();
     list.forEach((passage, index) => {
       if (seen.has(passage.chunkId)) return;
       seen.add(passage.chunkId);
+      if (!seenDocuments.has(passage.documentId)) {
+        seenDocuments.add(passage.documentId);
+        documentScores.set(passage.documentId, (documentScores.get(passage.documentId) ?? 0) + 1 / (60 + index + 1));
+      }
       const existing = ranked.get(passage.chunkId);
       ranked.set(passage.chunkId, { passage, score: (existing?.score ?? 0) + 1 / (60 + index + 1) });
     });
   }
-  return [...ranked.values()].sort((a, b) => b.score - a.score || a.passage.chunkId.localeCompare(b.passage.chunkId)).slice(0, limit).map(row => row.passage);
+  return [...ranked.values()].sort((a, b) => (b.score + (documentScores.get(b.passage.documentId) ?? 0)) - (a.score + (documentScores.get(a.passage.documentId) ?? 0)) || a.passage.chunkId.localeCompare(b.passage.chunkId)).slice(0, limit).map(row => row.passage);
 }
 
 // Stop words cover English, French, Spanish and Serbian (Latin script) function words, plus elided French articles like the "l" in "l'heure".
 export function knowledgeQueryTerms(query: string): string[] {
-  const stop = new Set("the a an is are what which of for in and to at on do does can you me i le la les un une de du des au aux à quel quelle quels quelles est sont dans pour et ce cette ces mon ma mes votre vos je tu vous nous il elle en sur avec cours numéro number course how much many your my we our it or with have has there any this that be from by when where who why please qui que qu quoi où ou comment quand combien y ont avez l d j s n c m t se sa nos notre leur leurs el los las del al o es qué cuál cuáles cómo como cuándo dónde cuánto cuánta cuántos cuántas por para con mi mis su sus tus lo hay este esta esto usted ustedes tiene tienen da li u na za od iz ili koji koja koje šta sta što kako gde gdje kada kad ima imate mogu može moj moja moje vaš vaša vaše vas vam ja ti vi ste kod po".split(" "));
+  const stop = new Set("tell about some available offer offered details the a an is are what which of for in and to at on do does can you me i le la les un une de du des au aux à quel quelle quels quelles est sont dans pour et ce cette ces mon ma mes votre vos je tu vous nous il elle en sur avec cours numéro number course how much many your my we our it or with have has there any this that be from by when where who why please qui que qu quoi où ou comment quand combien y ont avez l d j s n c m t se sa nos notre leur leurs el los las del al o es qué cuál cuáles cómo como cuándo dónde cuánto cuánta cuántos cuántas por para con mi mis su sus tus lo hay este esta esto usted ustedes tiene tienen da li u na za od iz ili koji koja koje šta sta što kako gde gdje kada kad ima imate mogu može moj moja moje vaš vaša vaše vas vam ja ti vi ste kod po".split(" "));
   const normalized = query.replace(/\b(?:[A-Za-z]\.){2,}[A-Za-z]?/g, acronym => acronym.replaceAll(".", ""));
   // The stop list mixes languages, so an English "PO" or "LA" collides with a Serbian or
   // French function word. Keep short capitalized tokens unless the whole query is in capitals.

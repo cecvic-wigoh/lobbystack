@@ -14,11 +14,12 @@ const statements: string[] = [];
 let lexical: KnowledgePassage[];
 let semantic: KnowledgePassage[];
 let current: KnowledgePassage[];
+let outlines: KnowledgePassage[];
 let failAll: boolean;
 
 beforeEach(() => {
   statements.length = 0;
-  lexical = [primary]; semantic = [primary]; current = [primary, adjacent]; failAll = false;
+  lexical = [primary]; semantic = [primary]; current = [primary, adjacent]; outlines = []; failAll = false;
   mocks.transaction.mockImplementation(async (_db, actor, callback) => {
     expect(actor.businessId).toBe("tenant-a");
     return callback({ execute: async (statement: Parameters<typeof dialect.sqlToQuery>[0]) => {
@@ -29,6 +30,7 @@ beforeEach(() => {
       expect(query.params).toContain("tenant-a");
       expect(query.sql).toContain("d.active = true AND d.status = 'indexed'");
       if (query.sql.includes("BETWEEN")) return { rows: current };
+      if (query.sql.includes("string_agg")) return { rows: outlines };
       return { rows: query.sql.includes("<=>") ? semantic : lexical };
     } });
   });
@@ -44,6 +46,15 @@ describe("knowledge evidence", () => {
     await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "admissions", sourcePath: "/contact-us" });
     expect(statements.filter(value => value.includes("LIMIT 12")).every(value => value.includes("right(rtrim(split_part"))).toBe(true);
     expect(statements.filter(value => !value.startsWith("SET")).every(value => value.includes("d.active = true"))).toBe(true);
+  });
+  it("includes every stored directory heading while preserving source and business boundaries", async () => {
+    outlines = [{ ...primary, chunkId: "outline:document:3", content: "## Campuses\n" + Array.from({ length: 9 }, (_, i) => `### Campus ${i}`).join("\n") }];
+    const result = await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "campuses", sourcePath: "/contact-us" });
+    expect(result.matches[0]?.content).toContain("Campus 8");
+    expect(result.matches[0]).toMatchObject({ sourceRevision: 3, sourceUrl: primary.sourceUrl });
+    const outlineSql = statements.find(value => value.includes("string_agg"))!;
+    expect(outlineSql).toContain("ORDER BY c.sequence, heading.ordinality");
+    expect(outlineSql).toContain("right(rtrim(split_part");
   });
   it("reserves primary evidence before expanding neighboring chunks", async () => {
     const content = Array.from({ length: 90 }, (_, index) => `detail${index}`).join(" ");
