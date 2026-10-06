@@ -63,6 +63,13 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     const seen = new Set(evidence.matches.map(item => item.chunkId));
     evidence.matches.unshift(...campusDirectory.matches.filter(item => !seen.has(item.chunkId)).slice(0, 2));
   }
+  const directoryQuestion = input.question.replace(businessName, "").replace(/[?.]/g, "").trim();
+  if (/^(?:(?:what|which)(?: are)?(?: the)? campuses(?: are (?:available|there))?|(?:list|show|tell me about)(?: all| the)? campuses)(?: (?:at|for|of)(?: the college)?)?$/i.test(directoryQuestion)) {
+    const outline = campusDirectory?.matches.find(item => item.chunkId.startsWith("outline:"));
+    const section = outline?.content.match(/(?:^|\n)## Campuses\n([\s\S]*?)(?=\n#{1,2} |$)/)?.[1];
+    const campuses = [...new Set(section?.split("\n").filter(line => line.startsWith("### ")).map(line => line.slice(4).trim()).filter(Boolean))];
+    if (campuses.length && outline?.sourceUrl) return { answer: `${locale === "fr" ? "Les campus publiés sont" : "The published campuses and buildings are"}: ${campuses.join(", ")}.`, sources: [outline.sourceUrl], outcome: "supported" };
+  }
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const answerStartedAt = performance.now();

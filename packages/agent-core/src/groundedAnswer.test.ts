@@ -171,3 +171,11 @@ it("retries one timed-out draft within the existing time budget", async () => {
  expect(generateText).toHaveBeenCalledTimes(3);
  expect(vi.mocked(generateText).mock.calls[1]![0].timeout).toBe(4000);
 });
+
+it("returns a source-derived campus directory without a model deadline", async () => {
+ const outline = { chunkId: "outline:contact:3", sourceUrl: "https://college.test/contact-us", content: "## Contact Us\n##### For Admissions\n## Campuses\n### Canora\n### Yorkton (TTC)\n## Services\n### Library" };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [outline] } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What campuses are available for College?" });
+ expect(result).toMatchObject({ outcome: "supported", answer: "The published campuses and buildings are: Canora, Yorkton (TTC).", sources: [outline.sourceUrl] });
+ expect(generateText).not.toHaveBeenCalled();
+});
