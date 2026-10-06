@@ -102,6 +102,7 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
       if (!verification.output.supported) console.warn("[grounded-answer] verification declined", { reason: "unsupported_paraphrase", evidenceCount: evidence.matches.length });
       if (verification.output.supported) return checked;
     } catch (error) {
+      if (attempt === 0 && error instanceof Error && error.name === "TimeoutError") continue;
       if (attempt === 0) throw error;
       console.warn("[grounded-answer] verification retry failed", { reason: "retry_failed", evidenceCount: evidence.matches.length });
     }

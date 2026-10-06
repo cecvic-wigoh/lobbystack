@@ -161,3 +161,13 @@ it("retries a number-format mismatch once without weakening factual checks", asy
  expect(await answerGroundedQuestion({ model: {} as never, context, question: "Who can I contact?" })).toMatchObject({ outcome: "supported", answer: claim.text });
  expect(vi.mocked(generateText)).toHaveBeenCalledTimes(3);
 });
+
+it("retries one timed-out draft within the existing time budget", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockRejectedValueOnce(Object.assign(new Error("provider deadline"), { name: "TimeoutError" }));
+ mockAnswer(claim);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Who handles applications?" });
+ expect(result).toMatchObject({ outcome: "supported", answer: claim.text });
+ expect(generateText).toHaveBeenCalledTimes(3);
+ expect(vi.mocked(generateText).mock.calls[1]![0].timeout).toBe(4000);
+});
