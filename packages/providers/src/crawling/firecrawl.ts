@@ -36,7 +36,7 @@ export class FirecrawlProvider {
       if (!page?.markdown?.trim()) throw new Error("Website page returned no readable content.");
       return [{ url: page.metadata?.sourceURL ?? url.toString(), ...(page.metadata?.title ? { title: page.metadata.title } : {}), markdown: page.markdown }];
     }
-    if (limit > 1000 && !savedCrawlId) {
+    if (limit >= 1000 && !savedCrawlId) {
       const mapped = await request(`${baseUrl}/v1/map`, { url: url.toString(), limit, includeSubdomains: false });
       const readableUrls = new Set((mapped.links ?? []).filter(link => {
         try { const candidate = new URL(link); return candidate.hostname.replace(/^www\./, "") === url.hostname.replace(/^www\./, "") && !/\.xml$/i.test(candidate.pathname); }

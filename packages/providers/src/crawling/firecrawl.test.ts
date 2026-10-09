@@ -15,9 +15,9 @@ const provider = () => new FirecrawlProvider({ apiKey: "test-key", pollIntervalM
 const page = (url: string) => ({ metadata: { sourceURL: url, title: "Page" }, markdown: "Content" });
 
 describe("FirecrawlProvider", () => {
-  it("sizes a full import from the site map and excludes XML from the crawl budget", async () => {
+  it.each([1000, 10000])("sizes a full import of %i pages from the site map and excludes XML from the crawl budget", async limit => {
     const fetcher = responses({ links: ["https://example.com/", "https://example.com/about", "https://example.com/sitemap.xml", "https://other.test/"] }, { id: "job" }, { status: "completed", data: [page("https://example.com/")] });
-    await provider().crawl({ url: "https://example.com", limit: 10000 });
+    await provider().crawl({ url: "https://example.com", limit });
     expect(JSON.parse(fetcher.mock.calls[1]?.[1].body)).toMatchObject({ limit: 3, allowExternalLinks: false, excludePaths: [".*\\.xml$"] });
   });
   it("honors the configured page limit and priority exclusions", async () => {
