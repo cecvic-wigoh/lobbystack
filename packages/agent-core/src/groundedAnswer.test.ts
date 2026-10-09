@@ -39,7 +39,7 @@ it("handles greetings without inventing facts or doing a knowledge search", asyn
  expect(result).toMatchObject({ outcome: "greeting", sources: [] });
 });
 it("clarifies an unspecified college location before choosing a campus", async () => {
- const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {} as never, snapshot: { defaultLocale: "en" } as never } as never, question: "Where is Suncrest College located?" });
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {} as never, snapshot: { displayName: "Suncrest College", defaultLocale: "en" } as never } as never, question: "Where is Suncrest College located?" });
  expect(result).toMatchObject({ outcome: "clarification", answer: "Which campus are you asking about?" });
 });
 
@@ -178,4 +178,14 @@ it("returns a source-derived campus directory without a model deadline", async (
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "What campuses are available for College?" });
  expect(result).toMatchObject({ outcome: "supported", answer: "The published campuses and buildings are: Canora, Yorkton (TTC).", sources: [outline.sourceUrl] });
  expect(generateText).not.toHaveBeenCalled();
+});
+
+it("uses business guidance without college lookups for a non-college client", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ mockAnswer(claim);
+ await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "certnova", displayName: "CertNova", defaultLocale: "en" } } as never, question: "Who can help with my application?" });
+ expect(searchKnowledgeEvidence).toHaveBeenCalledTimes(1);
+ expect(vi.mocked(generateText).mock.calls[0]![0].instructions).toContain("this business's published information");
+ expect(vi.mocked(generateText).mock.calls[0]![0].instructions).not.toContain("nursing programs");
+ expect(validateGroundedAnswer({ status: "unknown", claims: [] }, [], "en").answer).not.toContain("college");
 });
