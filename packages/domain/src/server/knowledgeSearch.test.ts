@@ -15,11 +15,12 @@ let lexical: KnowledgePassage[];
 let semantic: KnowledgePassage[];
 let current: KnowledgePassage[];
 let outlines: KnowledgePassage[];
+let notes: KnowledgePassage[];
 let failAll: boolean;
 
 beforeEach(() => {
   statements.length = 0;
-  lexical = [primary]; semantic = [primary]; current = [primary, adjacent]; outlines = []; failAll = false;
+  lexical = [primary]; semantic = [primary]; current = [primary, adjacent]; outlines = []; notes = []; failAll = false;
   mocks.transaction.mockImplementation(async (_db, actor, callback) => {
     expect(actor.businessId).toBe("tenant-a");
     return callback({ execute: async (statement: Parameters<typeof dialect.sqlToQuery>[0]) => {
@@ -28,6 +29,10 @@ beforeEach(() => {
       if (query.sql.startsWith("SET")) return { rows: [] };
       if (failAll) throw new Error("database unavailable");
       expect(query.params).toContain("tenant-a");
+      if (query.sql.includes("FROM knowledge_snippets")) {
+        expect(query.sql).toContain("business_id = $1 AND active = true");
+        return { rows: notes };
+      }
       expect(query.sql).toContain("d.active = true AND d.status = 'indexed'");
       if (query.sql.includes("BETWEEN")) return { rows: current };
       if (query.sql.includes("string_agg")) return { rows: outlines };
@@ -42,6 +47,12 @@ function context(embed = vi.fn().mockResolvedValue([[0.1, 0.2]])): DomainContext
 afterEach(() => vi.useRealTimers());
 
 describe("knowledge evidence", () => {
+  it("includes current operator notes in the tenant's grounded evidence", async () => {
+    notes = [{ ...primary, chunkId: "snippet:contact", content: "Call +1 (306) 539-1637.", sourceUrl: null }];
+    const result = await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "contact" });
+    expect(result.matches[0]).toMatchObject({ chunkId: "snippet:contact", content: notes[0]!.content });
+    expect(statements.some(value => value.includes("FROM knowledge_snippets"))).toBe(true);
+  });
   it("keeps a pinned source search inside the same active business boundary", async () => {
     await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "admissions", sourcePath: "/contact-us" });
     expect(statements.filter(value => value.includes("LIMIT 12")).every(value => value.includes("right(rtrim(split_part"))).toBe(true);

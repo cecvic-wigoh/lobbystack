@@ -489,6 +489,19 @@ export async function searchKnowledgeEvidence(
       WHERE ${filters} GROUP BY d.id, d.title, d.source_url, d.revision`).catch(() => []);
     matches = withinKnowledgeBudget([...outlines, ...matches], KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
   }
+  if (!input.sourcePath && terms.length) {
+    // Operator knowledge notes are evidence too; read their current active content.
+    const notes = await withBusinessTransaction(context.db, actor, async tx => {
+      await tx.execute(sql`SET LOCAL statement_timeout = '2000ms'`);
+      return (await tx.execute<KnowledgePassage>(sql`SELECT 'snippet:' || id::text AS "chunkId", id AS "documentId",
+        title, content, null::text AS "sourceUrl", 0 AS "sourceRevision", 0 AS sequence
+        FROM knowledge_snippets WHERE business_id = ${input.businessId} AND active = true
+        AND to_tsvector('simple', title || ' ' || content) @@ to_tsquery('simple', ${lexicalQuery})
+        ORDER BY ts_rank_cd(to_tsvector('simple', title || ' ' || content), to_tsquery('simple', ${allTermsQuery})) DESC,
+          priority DESC, updated_at DESC LIMIT 2`)).rows;
+    }).catch(() => []);
+    matches = withinKnowledgeBudget([...notes, ...matches], KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
+  }
   const failed = validationFailed || (lexicalResult.status === "rejected" && semanticResult.status === "rejected");
   const outcome = matches.length ? "found" as const : failed ? "unavailable" as const : "empty" as const;
   const durationMs = performance.now() - startedAt;
