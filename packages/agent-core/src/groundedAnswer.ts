@@ -25,9 +25,14 @@ export function validateGroundedAnswer(result: z.infer<typeof groundedAnswerSche
     const source = evidence.find(item => item.chunkId === claim.sourceId);
     const quote = normalize(claim.quote);
     if (!source || !quote || !normalize(source.content).includes(quote) || !claim.text.trim()) return { answer: unknown, sources: [], outcome: "unknown", reason: "quote_mismatch" };
-    // Contacts and numbers in a paraphrase must occur exactly in its cited quote.
+    // Keep numeric values and contacts; allow "1-10" to paraphrase "1 to 10".
     const details = claim.text.match(/[\w.+-]+@[\w.-]+\.[a-z]{2,}|https?:\/\/\S+|\d[\d.,-]*/gi) ?? [];
-    if (details.some(detail => !quote.includes(detail.replace(/[.,-]+$/, "")))) return { answer: unknown, sources: [], outcome: "unknown", reason: "detail_mismatch" };
+    if (details.some(detail => {
+      const value = detail.replace(/[.,-]+$/, "");
+      if (quote.includes(value)) return false;
+      const range = /^(\d+)-(\d+)$/.exec(value);
+      return !range || !new RegExp(`\\b${range[1]}\\s*(?:to|à|[–—-])\\s*${range[2]}\\b`).test(quote);
+    })) return { answer: unknown, sources: [], outcome: "unknown", reason: "detail_mismatch" };
   }
   const sources = [...new Set(result.claims.map(claim => evidence.find(item => item.chunkId === claim.sourceId)?.sourceUrl).filter((url): url is string => !!url))];
   const partialNotice = locale === "fr" ? "Je ne peux pas confirmer les autres détails à partir des informations publiées." : "I can't confirm the remaining details from the published information.";

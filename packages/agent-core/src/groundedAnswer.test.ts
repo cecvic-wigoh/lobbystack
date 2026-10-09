@@ -24,6 +24,12 @@ it("does not let an unrelated answer pass even when it supplies a valid quote", 
 it("abstains when evidence is absent", () => {
  expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, [], "en").outcome).toBe("unknown");
 });
+it("accepts equivalent published ranges without accepting changed bounds", () => {
+ const pricing = [{ chunkId: "price", content: "CAD $297.00 for 1 to 10 competencies, before tax." }];
+ const priced = { text: "The 1-10 competency band costs CAD $297.00 before tax.", sourceId: "price", quote: pricing[0]!.content };
+ expect(validateGroundedAnswer({ status: "supported", claims: [priced] }, pricing, "en").outcome).toBe("supported");
+ expect(validateGroundedAnswer({ status: "supported", claims: [{ ...priced, text: priced.text.replace("1-10", "1-11") }] }, pricing, "en").reason).toBe("detail_mismatch");
+});
 it("asks for the campus rather than inventing a location", () => {
  expect(validateGroundedAnswer({ status: "clarify_campus", claims: [] }, evidence, "en")).toMatchObject({ answer: "Which campus are you asking about?", outcome: "clarification" });
 });
