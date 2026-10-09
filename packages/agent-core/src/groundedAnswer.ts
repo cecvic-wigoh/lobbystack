@@ -42,7 +42,7 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   if (/^(?:hi|hello|hey|good morning|good afternoon|good evening|thanks|thank you)[!.\s]*$/i.test(input.question.trim())) return { answer: locale === "fr" ? "Bonjour ! Comment puis-je vous aider avec nos services ou informations publiées ?" : "Hello! How can I help with our services or published information?", sources: [], outcome: "greeting" };
   if (isCollege && /^(?:where (?:is|are) (?:the )?(?:suncrest(?: college)?|college)|where (?:is|are) (?:the )?(?:college )?campus(?:es)?|what is (?:the )?(?:college['’]s )?(?:address|location))(?: located)?\??$/i.test(input.question.trim())) return validateGroundedAnswer({ status: "clarify_campus", claims: [] }, [], locale);
   const businessName = new RegExp(snapshot.displayName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
-  const search = (query: string, sourcePath?: string) => searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query: query.replace(businessName, " "), limit: 6, ...(sourcePath ? { sourcePath } : {}), ...(callId ? { callId } : {}) });
+  const search = (query: string, sourcePath?: string) => searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query: query.replace(businessName, " ").replace(/([A-Za-z])([A-Z][a-z])/g, "$1 $2"), limit: 6, ...(sourcePath ? { sourcePath } : {}), ...(callId ? { callId } : {}) });
   // Keep conversation context for references and short clarification replies only.
   // A new, self-contained question must not inherit another topic's retrieval.
   const needsContext = /\b(?:it|its|they|their|them|that|those|these|there|same)\b|\bthe (?:course|program|campus|policy|contact)\b|^(?:and|also|what about|how about)\b/i.test(input.question)
@@ -63,6 +63,18 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   if (campusDirectory) {
     const seen = new Set(evidence.matches.map(item => item.chunkId));
     evidence.matches.unshift(...campusDirectory.matches.filter(item => !seen.has(item.chunkId)).slice(0, 2));
+  }
+  // Broad questions need the business's overview, rather than tangential articles.
+  if (!isCollege) {
+    const paths = [
+      ...(/\bservices?\b|\bwhat (?:do|can) you (?:offer|help)\b/i.test(query) ? ["/services"] : []),
+      ...(/\b(?:price|prices|pricing|cost|different|difference|compare)\b|\bhow much\b/i.test(query) ? ["/pricing"] : []),
+    ];
+    const overviews = await Promise.all(paths.map(path => search(query, path)));
+    for (const overview of overviews) {
+      const seen = new Set(evidence.matches.map(item => item.chunkId));
+      evidence.matches.unshift(...overview.matches.filter(item => !seen.has(item.chunkId)).slice(0, 3));
+    }
   }
   const directoryQuestion = input.question.replace(businessName, "").replace(/[?.]/g, "").trim();
   if (/^(?:(?:what|which)(?: are)?(?: the)? campuses(?: are (?:available|there))?|(?:list|show|tell me about)(?: all| the)? campuses)(?: (?:at|for|of)(?: the college)?)?$/i.test(directoryQuestion)) {

@@ -189,3 +189,18 @@ it("uses business guidance without college lookups for a non-college client", as
  expect(vi.mocked(generateText).mock.calls[0]![0].instructions).not.toContain("nursing programs");
  expect(validateGroundedAnswer({ status: "unknown", claims: [] }, [], "en").answer).not.toContain("college");
 });
+
+it.each([
+ ["What services do you offer?", "/services"],
+ ["How is CBAPro different from CBAReview?", "/pricing"],
+ ["How much does CBAReview cost?", "/pricing"],
+])("retrieves the published business overview for %s", async (question, sourcePath) => {
+ const overview = { chunkId: "overview", sourceUrl: `https://business.test${sourcePath}`, content: "Published service details." };
+ vi.mocked(searchKnowledgeEvidence).mockImplementation(async (_domain, input) => ({ matches: input.sourcePath ? [overview] : [] }) as never);
+ mockAnswer({ text: overview.content, sourceId: overview.chunkId, quote: overview.content });
+ await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "business", displayName: "Business", defaultLocale: "en" } } as never, question });
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === sourcePath)).toBe(true);
+ const prompt = JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string);
+ expect(prompt.passages).toContainEqual(expect.objectContaining({ sourceId: overview.chunkId }));
+ if (question.includes("CBAPro")) expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("CBA Pro");
+});
