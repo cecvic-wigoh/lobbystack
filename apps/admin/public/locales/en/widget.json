@@ -20,6 +20,7 @@
     "voiceConnected": "You are speaking with the receptionist.",
     "voiceEnded": "The voice connection ended. You can keep chatting below.",
     "voiceUnavailable": "Live voice is unavailable. Try again later.",
+    "voiceRateLimited": "The temporary voice call limit has been reached. Please try again later; you can still type your question below.",
     "voiceConnecting": "Connecting…",
     "voiceRequestingMic": "Allow microphone access to continue.",
     "voiceEnd": "End call",

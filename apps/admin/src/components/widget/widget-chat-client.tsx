@@ -359,7 +359,7 @@ function VoiceButton({ className, businessSlug, visitorId, sessionToken, parentO
 
   useEffect(() => {
     if (status === "connected") onStatusChange(null);
-    if (status === "error") onStatusChange(errorKey === "connectionDropped" ? "chat.voiceEnded" : "chat.voiceUnavailable");
+    if (status === "error") onStatusChange(errorKey === "connectionDropped" ? "chat.voiceEnded" : errorKey === "rateLimited" ? "chat.voiceRateLimited" : "chat.voiceUnavailable");
   }, [errorKey, onStatusChange, status]);
 
   const active = status === "requesting_microphone" || status === "connecting" || status === "connected";
