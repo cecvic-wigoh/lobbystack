@@ -18,7 +18,7 @@ describe("FirecrawlProvider", () => {
   it.each([1000, 10000])("sizes a full import of %i pages from the site map and excludes XML from the crawl budget", async limit => {
     const fetcher = responses({ links: ["https://example.com/", "https://example.com/about", "https://example.com/sitemap.xml", "https://other.test/"] }, { id: "job" }, { status: "completed", data: [page("https://example.com/")] });
     await provider().crawl({ url: "https://example.com", limit });
-    expect(JSON.parse(fetcher.mock.calls[1]?.[1].body)).toMatchObject({ limit: 3, allowExternalLinks: false, excludePaths: [".*\\.xml$"] });
+    expect(JSON.parse(fetcher.mock.calls[1]?.[1].body)).toMatchObject({ limit: 3, allowExternalLinks: false, ignoreQueryParameters: false, excludePaths: [".*\\.xml$"] });
   });
   it("honors the configured page limit and priority exclusions", async () => {
     const fetcher = responses({ id: "job" }, { status: "completed", data: [page("https://example.com/")] });

@@ -45,7 +45,7 @@ export class FirecrawlProvider {
       // Bound the crawl to the discovered site size, rather than reserving 10,000 pages.
       if (readableUrls.size) limit = Math.min(limit, readableUrls.size + 1);
     }
-    const started = savedCrawlId ? { id: savedCrawlId } : await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: true, excludePaths: [".*\\.xml$", ...(this.config.excludePaths ?? [])], scrapeOptions: { formats: ["markdown"] } });
+    const started = savedCrawlId ? { id: savedCrawlId } : await request(`${baseUrl}/v1/crawl`, { url: url.toString(), limit, allowExternalLinks: false, allowSubdomains: false, ignoreQueryParameters: false, excludePaths: [".*\\.xml$", ...(this.config.excludePaths ?? [])], scrapeOptions: { formats: ["markdown"] } });
     if (!started.id) throw new Error("Website crawl did not return a job ID.");
     const pages = new Map<string, CrawlPage>();
     for (const savedId of savedBatchIds?.length ? savedBatchIds : [started.id]) {

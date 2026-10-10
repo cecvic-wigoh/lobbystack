@@ -8,5 +8,10 @@ export function normalizeWebsiteSourceUrl(value: string): string {
   const hostname = url.hostname.toLowerCase().replace(/\.$/, "");
   if (hostname === "localhost" || [".localhost", ".local", ".localdomain", ".home.arpa"].some((suffix) => hostname.endsWith(suffix)) || isIP(hostname.replace(/^\[|\]$/g, ""))) throw new Error("Website URL must use a public hostname.");
   const path = url.pathname === "/" ? "/" : url.pathname.replace(/\/+$/, "");
-  return `${url.origin}${path}`;
+  // Catalog/product query parameters identify different courses; tracking does not.
+  for (const key of [...url.searchParams.keys()]) {
+    if (/^utm_/i.test(key) || /^(?:gclid|fbclid)$/i.test(key)) url.searchParams.delete(key);
+  }
+  url.searchParams.sort();
+  return `${url.origin}${path}${url.searchParams.size ? `?${url.searchParams}` : ""}`;
 }
