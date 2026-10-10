@@ -251,3 +251,10 @@ it("keeps course alternatives grounded while awaiting the caller choice", () => 
  expect(validateGroundedAnswer({ status: "clarify_program", claims }, versions, "en")).toMatchObject({ outcome: "supported", sources: versions.map(source => source.sourceUrl) });
  expect(validateGroundedAnswer({ status: "clarify_program", claims: [{ ...claims[0]!, text: "BIOL 103 — Anatomy and Physiology 1" }] }, versions, "en").outcome).toBe("unknown");
 });
+
+it("checks course codes against their own source heading and facts against the quote", () => {
+ const source = { chunkId: "anatomy", content: "BIOL 102\nAnatomy and Physiology 1\nYou will study body structure and function." };
+ const claim = { text: "BIOL 102 covers body structure and function.", sourceId: source.chunkId, quote: "You will study body structure and function." };
+ expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, [source], "en").outcome).toBe("supported");
+ for (const text of ["BIOL 103 covers body structure and function.", "BIOL 102 costs $102."]) expect(validateGroundedAnswer({ status: "supported", claims: [{ ...claim, text }] }, [source], "en").outcome).toBe("unknown");
+});
