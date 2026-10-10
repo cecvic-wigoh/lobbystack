@@ -72,10 +72,10 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   // Broad questions need the business's overview, rather than tangential articles.
   if (!isCollege) {
     const paths = [
-      ...(/\bservices?\b|\bwhat (?:do|can) you (?:offer|help)\b/i.test(query) ? ["/services"] : []),
+      ...(/\bservices?\b|\bwhat (?:do|can) you (?:offer|help)\b|\bwhat (?:does|do) .{0,100}?\b(?:do|offer|provide)\b|\b(?:business|company|website) (?:overview|description)\b/i.test(query) ? ["/services"] : []),
       ...(/\b(?:price|prices|pricing|cost|different|difference|compare)\b|\bhow much\b/i.test(query) ? ["/pricing"] : []),
     ];
-    const overviews = await Promise.all(paths.map(path => search(query, path)));
+    const overviews = await Promise.all(paths.map(path => search(path === "/services" ? "services overview" : query, path)));
     for (const overview of overviews) {
       const seen = new Set(evidence.matches.map(item => item.chunkId));
       evidence.matches.unshift(...overview.matches.filter(item => !seen.has(item.chunkId)).slice(0, 3));

@@ -198,6 +198,9 @@ it("uses business guidance without college lookups for a non-college client", as
 
 it.each([
  ["What services do you offer?", "/services"],
+ ["Okay, so what does this website actually do?", "/services"],
+ ["What does CertNova do?", "/services"],
+ ["Caller asked what the CertNova — P.Eng Application Support website does. Please provide the official description of services and any published contact option for general inquiries.", "/services"],
  ["How is CBAPro different from CBAReview?", "/pricing"],
  ["How much does CBAReview cost?", "/pricing"],
 ])("retrieves the published business overview for %s", async (question, sourcePath) => {
@@ -208,5 +211,6 @@ it.each([
  expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === sourcePath)).toBe(true);
  const prompt = JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string);
  expect(prompt.passages).toContainEqual(expect.objectContaining({ sourceId: overview.chunkId }));
+ if (sourcePath === "/services") expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === "/services" && input.query === "services overview")).toBe(true);
  if (question.includes("CBAPro")) expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("CBA Pro");
 });
