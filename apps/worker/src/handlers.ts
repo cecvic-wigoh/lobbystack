@@ -1,6 +1,7 @@
 import { websitePageText } from "./websiteText";
 import { createHash, randomUUID } from "node:crypto";
 import Redis from "ioredis";
+import { z } from "zod";
 import { and, eq, inArray, isNull, lte, ne, or } from "drizzle-orm";
 
 import { hasSummarizableTranscript, type CallSummarizer } from "@lobbystack/agent-core";
@@ -394,7 +395,7 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
       return await reconcileBusinessCalendar(dependencies, businessIdOrThrow(job));
     case "email.send":
       if (!dependencies.email) {
-        if (["verify_email", "password_reset", "existing_account"].includes(String(job.payload.template))) {
+        if (job.payload.callSummary === true || ["verify_email", "password_reset", "existing_account"].includes(String(job.payload.template))) {
           throw new Error("Authentication email delivery requires SMTP configuration.");
         }
         return { status: "skipped" };
@@ -697,7 +698,8 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
       if (!callId) return { status: "skipped" };
       const businessId = businessIdOrThrow(job);
       const generated = await generateCallSummary(dependencies, { businessId, callId });
-      const result = await finalizeConversationSession(dependencies.domain, { businessId, callId, ...(generated ? { generated } : {}) });
+      const recipient = callSummaryEmailRecipient(businessId);
+      const result = await finalizeConversationSession(dependencies.domain, { businessId, callId, ...(generated ? { generated } : {}), ...(recipient ? { summaryEmailRecipient: recipient } : {}) });
       return { status: result.finalized ? "completed" : "skipped", entityId: result.sessionId ?? callId };
     }
     case "privacy.scrubMessage": {
@@ -881,6 +883,13 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
     }
   }
   throw new Error(`Worker handler is not configured for ${(job as JobEnvelope).type}.`);
+}
+
+export function callSummaryEmailRecipient(businessId: string, configured = process.env.CALL_SUMMARY_EMAIL_RECIPIENTS): string | undefined {
+  if (!configured?.trim()) return undefined;
+  // Operator-only configuration; no caller or website content can choose recipients.
+  const recipients = z.record(z.string().uuid(), z.string().email()).parse(JSON.parse(configured));
+  return recipients[businessId];
 }
 
 let sharedWebhookSender: WebhookSender | undefined;

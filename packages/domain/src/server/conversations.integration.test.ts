@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { afterAll, describe, expect, it } from "vitest";
-import { businesses, calls, contacts, conversations, conversationSessions, createDatabaseClient, transcripts, withBusinessTransaction, type Database, type DatabaseTransaction } from "@lobbystack/db";
+import { businesses, calls, contacts, conversations, conversationSessions, createDatabaseClient, outboxMessages, transcripts, withBusinessTransaction, type Database, type DatabaseTransaction } from "@lobbystack/db";
 
 import { recordCallOutcomeInTransaction } from "./callOutcome";
 import { finalizeConversationSession, loadCallSummaryInput } from "./conversations";
@@ -60,6 +60,20 @@ const fridayCall: Array<[string, string]> = [
 ];
 
 describe.skipIf(!testUrl)("call summaries against PostgreSQL under worker RLS", () => {
+  it("atomically queues one business-scoped summary email across finalization retries", async () => {
+    await rollbackTest(async (tx) => {
+      const fixture = await seedCall(tx, { turns: fridayCall });
+      const input = { ...fixture, generated: { summary: "Asked about Friday hours." }, summaryEmailRecipient: "contact@trendhubs.io" };
+      expect(await finalizeConversationSession({ db: fixture.db }, input)).toMatchObject({ finalized: true });
+      expect(await finalizeConversationSession({ db: fixture.db }, input)).toMatchObject({ finalized: false });
+      await tx.execute(sql`reset role`);
+      const deliveries = await tx.select().from(outboxMessages).where(eq(outboxMessages.dedupeKey, `call:${fixture.callId}:summary-email`));
+      expect(deliveries).toHaveLength(1);
+      expect(deliveries[0]).toMatchObject({ businessId: fixture.businessId, aggregateId: fixture.callId, topic: "email.send", payload: { to: "contact@trendhubs.io", callSummary: true, variables: { message: expect.stringContaining("Asked about Friday hours.") } } });
+      await tx.execute(sql`set local role lobbystack_worker`);
+      expect(await finalizeConversationSession({ db: fixture.db }, { businessId: randomUUID(), callId: fixture.callId, summaryEmailRecipient: "other@example.test" })).toEqual({ finalized: false });
+    });
+  });
   it("stores the generated summary and a spoken caller name once", async () => {
     await rollbackTest(async (tx) => {
       const fixture = await seedCall(tx, { turns: fridayCall });

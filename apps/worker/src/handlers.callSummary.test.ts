@@ -16,10 +16,11 @@ vi.mock("@lobbystack/domain", async (importOriginal) => {
   };
 });
 
-import { handleJob } from "./handlers";
+import { callSummaryEmailRecipient, handleJob } from "./handlers";
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
 });
 
 const domain = { db: undefined as never };
@@ -51,6 +52,32 @@ function summarizer(summarize: CallSummarizer["summarize"]): CallSummarizer {
 const usage = { provider: "openai", model: "gpt-6-luna", latencyMs: 900, inputTokens: 420, outputTokens: 30, totalTokens: 450 };
 
 describe("conversation.finalizeSession call summaries", () => {
+  it("only configures the approved business recipient and rejects malformed configuration", () => {
+    const businessId = randomUUID();
+    const configured = JSON.stringify({ [businessId]: "contact@trendhubs.io" });
+    expect(callSummaryEmailRecipient(businessId, configured)).toBe("contact@trendhubs.io");
+    expect(callSummaryEmailRecipient(randomUUID(), configured)).toBeUndefined();
+    expect(callSummaryEmailRecipient(businessId, "")).toBeUndefined();
+    expect(() => callSummaryEmailRecipient(businessId, JSON.stringify({ [businessId]: "bad-address" }))).toThrow();
+    expect(() => callSummaryEmailRecipient(businessId, "not JSON")).toThrow();
+  });
+
+  it("passes the configured recipient to atomic finalization without affecting other businesses", async () => {
+    const businessId = randomUUID();
+    vi.stubEnv("CALL_SUMMARY_EMAIL_RECIPIENTS", JSON.stringify({ [businessId]: "contact@trendhubs.io" }));
+    vi.mocked(finalizeConversationSession).mockResolvedValue({ finalized: true });
+    await handleJob(finalizeJob(businessId, randomUUID()), { domain });
+    expect(finalizeConversationSession).toHaveBeenLastCalledWith(domain, expect.objectContaining({ summaryEmailRecipient: "contact@trendhubs.io" }));
+    const otherBusiness = randomUUID();
+    const callId = randomUUID();
+    await handleJob(finalizeJob(otherBusiness, callId), { domain });
+    expect(finalizeConversationSession).toHaveBeenLastCalledWith(domain, { businessId: otherBusiness, callId });
+  });
+
+  it("retries a summary email when the email provider is unavailable", async () => {
+    const job: JobEnvelope = { ...finalizeJob(randomUUID(), randomUUID()), type: "email.send", payload: { callSummary: true, template: "operator_alert", to: "contact@trendhubs.io" } };
+    await expect(handleJob(job, { domain })).rejects.toThrow("SMTP configuration");
+  });
   it("passes the model summary and caller name into finalization and records the generation", async () => {
     const businessId = randomUUID();
     const callId = randomUUID();
