@@ -56,7 +56,27 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   // Previous questions resolve follow-ups; previous answers are never evidence.
   const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
   const query = previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
-  const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  // Program titles can outrank their fee/requirement sections. Search the requested
+  // detail within the top matching sources instead of letting overview text hide it.
+  if (isCollege) {
+    const detail = [
+      /\b(?:tuition|fees?|price|cost)\b|how much/i.test(query) ? "tuition fees cost" : "",
+      /\b(?:requirements?|prerequisites?|eligib\w*)\b/i.test(query) ? "admission requirements prerequisites English language" : "",
+      /\b(?:duration|length|start|intake|deadline)\b|how long|\bwhen\b/i.test(query) ? "intakes start date end date length deadline" : "",
+      /\b(?:learn|study|covers?)\b|(?:course|program) about/i.test(query) ? "overview learn course description" : "",
+    ].filter(Boolean).join(" ");
+    const paths = [...new Set(evidence.matches.flatMap(item => {
+      if (!item.sourceUrl) return [];
+      const path = new URL(item.sourceUrl).pathname;
+      return /^\/(?:programs|courses)\/[^/]+$/.test(path) ? [path] : [];
+    }))].slice(0, 2);
+    if (detail) {
+      const sections = await Promise.all(paths.map(path => search(detail, path)));
+      const seen = new Set(evidence.matches.map(item => item.chunkId));
+      evidence.matches.unshift(...sections.flatMap(section => section.matches.filter(item => !item.chunkId.startsWith("outline:") && !seen.has(item.chunkId)).slice(0, 2)));
+    }
+  }
   if (admissionContact) {
     const seen = new Set(evidence.matches.map(item => item.chunkId));
     evidence.matches.unshift(...admissionContact.matches.filter(item => /\/(?:contact-us|international-application-process)(?:[/?#]|$)/.test(item.sourceUrl ?? "") && !seen.has(item.chunkId)).slice(0, 3));

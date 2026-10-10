@@ -214,3 +214,21 @@ it.each([
  if (sourcePath === "/services") expect(vi.mocked(searchKnowledgeEvidence).mock.calls.some(([, input]) => input.sourcePath === "/services" && input.query === "services overview")).toBe(true);
  if (question.includes("CBAPro")) expect(vi.mocked(searchKnowledgeEvidence).mock.calls[0]![1].query).toContain("CBA Pro");
 });
+
+it("retrieves the tuition section of the matching program before drafting an answer", async () => {
+ const overview = { chunkId: "overview", sourceUrl: "https://college.test/programs/electrical-applied-certificate", content: "Electrican Applied Certificate, Nipawin." };
+ const fees = { chunkId: "fees", sourceUrl: overview.sourceUrl, content: "Tuition is approximately $3,834.00 and may change." };
+ vi.mocked(searchKnowledgeEvidence).mockImplementation(async (_domain, request) => ({ matches: request.sourcePath === "/programs/electrical-applied-certificate" ? [fees] : [overview] }) as never);
+ mockAnswer({ text: fees.content, sourceId: fees.chunkId, quote: fees.content });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What is the tuition for the Electrician Applied Certificate?" });
+ expect(result).toMatchObject({ outcome: "supported", answer: fees.content });
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ sourcePath: "/programs/electrical-applied-certificate", query: "tuition fees cost" }));
+ expect(JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string).passages[0].sourceId).toBe("fees");
+});
+
+it("does not substitute general catalogue areas for a specific subject inquiry", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ vi.mocked(generateText).mockResolvedValue({ output: { status: "unknown", claims: [] } } as never);
+ await answerGroundedQuestion({ model: {} as never, context, question: "What programs do you offer in business?" });
+ expect(vi.mocked(searchKnowledgeEvidence).mock.calls.map(call => call[1].sourcePath)).not.toContain("/programs");
+});
