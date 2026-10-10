@@ -232,3 +232,15 @@ it("does not substitute general catalogue areas for a specific subject inquiry",
  await answerGroundedQuestion({ model: {} as never, context, question: "What programs do you offer in business?" });
  expect(vi.mocked(searchKnowledgeEvidence).mock.calls.map(call => call[1].sourcePath)).not.toContain("/programs");
 });
+
+it("does not treat digits inside a brand name as a numerical claim", () => {
+ const source = { chunkId: "ed2go", sourceUrl: "https://college.test/ed2go", content: "ed2go\nWe offer over 400 highly interactive courses entirely over the Internet." };
+ expect(validateGroundedAnswer({ status: "supported", claims: [{ text: "We offer over 400 ed2go courses entirely over the Internet.", sourceId: source.chunkId, quote: "We offer over 400 highly interactive courses entirely over the Internet." }] }, [source], "en").outcome).toBe("supported");
+});
+it("pins a query-based course's prerequisites to its full URL", async () => {
+ const url = "https://courses.college.test/product?catalog=NFPA1140-1";
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [{ chunkId: "course", sourceUrl: url, content: "ICS 100 is required." }] } as never);
+ mockAnswer({ text: "ICS 100 is required.", sourceId: "course", quote: "ICS 100 is required." });
+ await answerGroundedQuestion({ model: {} as never, context, question: "What are the prerequisites for NFPA 1140?" });
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ sourceUrl: url }));
+});

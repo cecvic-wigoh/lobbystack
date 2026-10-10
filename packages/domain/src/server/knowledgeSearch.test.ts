@@ -58,6 +58,10 @@ describe("knowledge evidence", () => {
     expect(statements.filter(value => value.includes("LIMIT 12")).every(value => value.includes("right(rtrim(split_part"))).toBe(true);
     expect(statements.filter(value => !value.startsWith("SET")).every(value => value.includes("d.active = true"))).toBe(true);
   });
+  it("pins a query-based course to its exact URL inside the business boundary", async () => {
+    await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "prerequisites", sourceUrl: "https://courses.example.com/product?catalog=NFPA1140-1" });
+    expect(statements.filter(value => value.includes("LIMIT 12")).every(value => value.includes("AND d.source_url ="))).toBe(true);
+  });
   it("includes every stored directory heading while preserving source and business boundaries", async () => {
     outlines = [{ ...primary, chunkId: "outline:document:3", content: "## Campuses\n" + Array.from({ length: 9 }, (_, i) => `### Campus ${i}`).join("\n") }];
     const result = await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "campuses", sourcePath: "/contact-us" });
@@ -74,6 +78,14 @@ describe("knowledge evidence", () => {
     const result = await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "management" });
     expect(result.matches).toHaveLength(6);
     expect(result.matches.some(row => row.content.includes("MNGT 10407"))).toBe(true);
+  });
+  it("keeps a course identifier with a description retrieved from a later section", async () => {
+    lexical = semantic = [{ ...primary, sequence: 4, content: "Explore body structure and physiological function." }];
+    current = [{ ...primary, chunkId: "identity", sequence: 0, content: "BIOL 102\n# Anatomy and Physiology 1" }, ...lexical];
+    const result = await searchKnowledgeEvidence(context(), { businessId: "tenant-a", query: "Anatomy and Physiology 1" });
+    expect(result.matches[0]?.content).toContain("BIOL 102");
+    expect(result.matches[0]?.content).toContain("Explore body structure");
+    expect(result.matches[0]?.supportingChunkIds).toEqual(["identity", "chunk"]);
   });
   it("bounds a stalled embedding request and uses keyword results", async () => {
     vi.useFakeTimers();

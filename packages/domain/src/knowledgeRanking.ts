@@ -31,7 +31,16 @@ export function fuseKnowledgeRanks(lists: KnowledgePassage[][], limit = 6): Know
       ranked.set(passage.chunkId, { passage, score: (existing?.score ?? 0) + 1 / (60 + index + 1) });
     });
   }
-  return [...ranked.values()].sort((a, b) => (b.score + (documentScores.get(b.passage.documentId) ?? 0)) - (a.score + (documentScores.get(a.passage.documentId) ?? 0)) || a.passage.chunkId.localeCompare(b.passage.chunkId)).slice(0, limit).map(row => row.passage);
+  const ordered = [...ranked.values()].sort((a, b) => (b.score + (documentScores.get(b.passage.documentId) ?? 0)) - (a.score + (documentScores.get(a.passage.documentId) ?? 0)) || a.passage.chunkId.localeCompare(b.passage.chunkId)).map(row => row.passage);
+  // Repeated headings from one page must not crowd another page's actual answer out.
+  const seenDocuments = new Set<string>();
+  const primary = ordered.filter(passage => {
+    if (seenDocuments.has(passage.documentId)) return false;
+    seenDocuments.add(passage.documentId);
+    return true;
+  });
+  const primaryIds = new Set(primary.map(passage => passage.chunkId));
+  return [...primary, ...ordered.filter(passage => !primaryIds.has(passage.chunkId))].slice(0, limit);
 }
 
 // Stop words cover English, French, Spanish and Serbian (Latin script) function words, plus elided French articles like the "l" in "l'heure".
@@ -50,4 +59,11 @@ export function knowledgeLexicalQueries(terms: string[]): { any: string; all: st
   // PostgreSQL retains dots in acronyms. Query both spellings without changing source text or indexes.
   const alternatives = terms.map(term => /^[a-z]{2,6}$/.test(term) ? `(${term} | ${term.split("").join(".")})` : term);
   return { any: alternatives.join(" | "), all: alternatives.join(" & ") };
+}
+
+/** Rank the named subject before generic question words such as "online courses". */
+export function knowledgeTitleTerms(terms: string[]): string[] {
+  const intent = new Set("program programs course courses online admission admissions entry requirement requirements prerequisite prerequisites tuition fee fees price prices cost duration length start dates date deadline learn learning".split(" "));
+  const subject = terms.filter(term => !intent.has(term));
+  return subject.length ? subject : terms;
 }

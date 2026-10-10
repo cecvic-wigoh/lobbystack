@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fuseKnowledgeRanks, knowledgeLexicalQueries, knowledgeQueryTerms, withinKnowledgeBudget, type KnowledgePassage } from "./knowledgeRanking";
+import { fuseKnowledgeRanks, knowledgeLexicalQueries, knowledgeQueryTerms, knowledgeTitleTerms, withinKnowledgeBudget, type KnowledgePassage } from "./knowledgeRanking";
 import { countKnowledgeTokens } from "@lobbystack/ai";
 
 const passage = (id: string): KnowledgePassage => ({ chunkId: id, documentId: "document", title: "Management", content: "MNGT 10407", sourceUrl: "https://example.com/courses", sourceRevision: 2, sequence: 0 });
@@ -47,4 +47,19 @@ describe("knowledge ranking", () => {
     expect(knowledgeQueryTerms("where is la clinique")).toEqual(["clinique"]);
     expect(knowledgeQueryTerms("WHAT IS YOUR PO NUMBER")).toEqual([]);
   });
+});
+
+it("ranks a named subject ahead of general delivery and requirement words", () => {
+  expect(knowledgeTitleTerms(knowledgeQueryTerms("Do you offer online ed2go courses?"))).toEqual(["ed2go"]);
+  expect(knowledgeTitleTerms(knowledgeQueryTerms("What do you learn in Anatomy and Physiology 1?"))).toEqual(["anatomy", "physiology", "1"]);
+  expect(knowledgeTitleTerms(knowledgeQueryTerms("What nursing programs do you offer?"))).toEqual(["nursing"]);
+  expect(knowledgeTitleTerms(["online", "courses"])).toEqual(["online", "courses"]);
+});
+
+it("keeps another source's answer when repeated headings dominate both indexes", () => {
+  const headings = Array.from({ length: 8 }, (_, i) => ({ ...passage(`heading-${i}`), content: "Human Anatomy & Physiology 1" }));
+  const answer = { ...passage("description"), documentId: "complete-course", content: "You will explore the human body and physiological functions." };
+  const result = fuseKnowledgeRanks([[...headings, answer], headings]);
+  expect(result).toHaveLength(6);
+  expect(result.some(p => p.chunkId === answer.chunkId)).toBe(true);
 });

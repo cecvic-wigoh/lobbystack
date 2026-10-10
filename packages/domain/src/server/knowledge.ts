@@ -5,7 +5,7 @@ import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { agentRules, businessContextSnapshots, businessHours, businesses, closures, enqueueOutbox, knowledgeChunks, knowledgeDocuments, knowledgeSnippets, phoneNumbers, receptionistProfiles, services, storageObjects, websiteIngestionJobs, withBusinessTransaction, type DatabaseTransaction } from "@lobbystack/db";
 import { normalizeAppointmentChangePolicy, normalizeBookingMode, normalizeTransferMode, type BusinessContextSnapshot } from "@lobbystack/shared";
 import { buildBusinessContextSnapshot } from "../snapshot";
-import { fuseKnowledgeRanks, KNOWLEDGE_SEARCH_TOKEN_BUDGET, knowledgeLexicalQueries, knowledgeQueryTerms, withinKnowledgeBudget, type KnowledgePassage } from "../knowledgeRanking";
+import { fuseKnowledgeRanks, KNOWLEDGE_SEARCH_TOKEN_BUDGET, knowledgeLexicalQueries, knowledgeQueryTerms, knowledgeTitleTerms, withinKnowledgeBudget, type KnowledgePassage } from "../knowledgeRanking";
 import { countKnowledgeTokens } from "@lobbystack/ai";
 
 import { requireBusinessAdmin, requireBusinessMembership } from "../authz";
@@ -415,7 +415,7 @@ export async function searchKnowledge(
 
 export async function searchKnowledgeEvidence(
   context: DomainContext,
-  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string; sourcePath?: string },
+  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string; sourcePath?: string; sourceUrl?: string },
 ): Promise<{ matches: KnowledgePassage[]; mode: "hybrid" | "keyword"; outcome: "found" | "empty" | "unavailable"; failure?: "embedding_unavailable" | "search_unavailable"; durationMs: number }> {
   const startedAt = performance.now();
   const actor = { userId: input.userId, businessId: input.businessId, actorType: input.userId ? "operator" as const : "worker" as const };
@@ -428,17 +428,19 @@ export async function searchKnowledgeEvidence(
   const select = sql`SELECT ${fields} ${from}`;
   const filters = sql`c.business_id = ${input.businessId} AND d.business_id = ${input.businessId}
     AND d.active = true AND d.status = 'indexed'
+    ${input.sourceUrl ? sql`AND d.source_url = ${input.sourceUrl}` : sql``}
     ${input.sourcePath ? sql`AND right(rtrim(split_part(split_part(d.source_url, '?', 1), '#', 1), '/'), ${input.sourcePath.length}) = ${input.sourcePath}` : sql``}`;
   const execute = (statement: ReturnType<typeof sql>) => withBusinessTransaction(context.db, actor, async tx => {
     await tx.execute(sql`SET LOCAL statement_timeout = '2000ms'`);
     return (await tx.execute<KnowledgePassage>(statement)).rows;
   });
   const { any: lexicalQuery, all: allTermsQuery } = knowledgeLexicalQueries(terms);
+  const titleQuery = knowledgeLexicalQueries(knowledgeTitleTerms(terms)).any;
   const lexical = terms.length ? execute(sql`${select} WHERE ${filters}
     AND (to_tsvector('simple', c.content) @@ to_tsquery('simple', ${lexicalQuery})
       OR to_tsvector('simple', d.title) @@ to_tsquery('simple', ${lexicalQuery}))
     ORDER BY CASE WHEN ${/\bprogram\b/i.test(query)} AND d.source_url ~ '/programs/[^/?#]+$' THEN 0 ELSE 1 END,
-      ts_rank_cd(to_tsvector('simple', d.title), to_tsquery('simple', ${lexicalQuery})) DESC,
+      ts_rank(to_tsvector('simple', d.title), to_tsquery('simple', ${titleQuery})) DESC,
       ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${allTermsQuery})) DESC,
       ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${lexicalQuery})) DESC, c.id LIMIT 12`) : Promise.resolve([]);
   const semantic = (async () => {
@@ -465,13 +467,13 @@ export async function searchKnowledgeEvidence(
   ], Math.min(6, Math.max(1, input.limit ?? 6)));
   // Recheck revisions after parallel retrieval so an in-flight edit cannot label old chunks as current.
   let validationFailed = false;
-  const current = candidates.length ? await execute(sql`${select} WHERE ${filters} AND (${sql.join(candidates.map(p => sql`(c.document_id = ${p.documentId} AND d.revision = ${p.sourceRevision} AND c.sequence BETWEEN ${p.sequence - 1} AND ${p.sequence + 1})`), sql` OR `)})`).catch(() => { validationFailed = true; return []; }) : [];
+  const current = candidates.length ? await execute(sql`${select} WHERE ${filters} AND (${sql.join(candidates.map(p => sql`(c.document_id = ${p.documentId} AND d.revision = ${p.sourceRevision} AND (c.sequence = 0 OR c.sequence BETWEEN ${p.sequence - 1} AND ${p.sequence + 1}))`), sql` OR `)})`).catch(() => { validationFailed = true; return []; }) : [];
   const valid = new Map(current.map(p => [p.chunkId, p]));
   // Reserve the ranked primary passages first. Neighbors must not crowd out distinct candidates.
   let matches = withinKnowledgeBudget(candidates.filter(p => valid.has(p.chunkId)), KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
   for (let index = 0; index < matches.length; index += 1) {
     const p = matches[index]!;
-    const neighbors = current.filter(row => row.documentId === p.documentId && row.sourceRevision === p.sourceRevision && Math.abs(row.sequence - p.sequence) <= 1).sort((a, b) => a.sequence - b.sequence);
+    const neighbors = current.filter(row => row.documentId === p.documentId && row.sourceRevision === p.sourceRevision && (row.sequence === 0 || Math.abs(row.sequence - p.sequence) <= 1)).sort((a, b) => a.sequence - b.sequence);
     const expanded = { ...p, supportingChunkIds: neighbors.map(row => row.chunkId), content: neighbors.map(row => row.content).join("\n\n") };
     const proposed = matches.map((match, candidateIndex) => candidateIndex === index ? expanded : match);
     if (proposed.reduce((sum, match) => sum + countKnowledgeTokens(JSON.stringify(match) + "\n"), 0) <= KNOWLEDGE_SEARCH_TOKEN_BUDGET) matches[index] = expanded;
