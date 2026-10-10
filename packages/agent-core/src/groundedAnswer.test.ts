@@ -258,3 +258,10 @@ it("checks course codes against their own source heading and facts against the q
  expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, [source], "en").outcome).toBe("supported");
  for (const text of ["BIOL 103 covers body structure and function.", "BIOL 102 costs $102."]) expect(validateGroundedAnswer({ status: "supported", claims: [{ ...claim, text }] }, [source], "en").outcome).toBe("unknown");
 });
+
+it("includes clarification status in the factual verifier context", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "clarify_program", claims: [claim] } } as never).mockResolvedValueOnce({ output: { supported: true } } as never);
+ expect((await answerGroundedQuestion({ model: {} as never, context, question: "What are the program requirements?" })).outcome).toBe("supported");
+ expect(JSON.parse(String(vi.mocked(generateText).mock.calls[1]![0].prompt)).status).toBe("clarify_program");
+});
