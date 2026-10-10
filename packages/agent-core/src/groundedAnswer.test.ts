@@ -244,3 +244,10 @@ it("pins a query-based course's prerequisites to its full URL", async () => {
  await answerGroundedQuestion({ model: {} as never, context, question: "What are the prerequisites for NFPA 1140?" });
  expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ sourceUrl: url }));
 });
+
+it("keeps course alternatives grounded while awaiting the caller choice", () => {
+ const versions = [{ chunkId: "biol", sourceUrl: "https://college.test/biol", content: "BIOL 102\nAnatomy and Physiology 1" }, { chunkId: "aphy", sourceUrl: "https://college.test/aphy", content: "APHY 164\nAnatomy and Physiology 1" }];
+ const claims = versions.map(source => ({ text: source.content.replace("\n", " — "), sourceId: source.chunkId, quote: source.content }));
+ expect(validateGroundedAnswer({ status: "clarify_program", claims }, versions, "en")).toMatchObject({ outcome: "supported", sources: versions.map(source => source.sourceUrl) });
+ expect(validateGroundedAnswer({ status: "clarify_program", claims: [{ ...claims[0]!, text: "BIOL 103 — Anatomy and Physiology 1" }] }, versions, "en").outcome).toBe("unknown");
+});
