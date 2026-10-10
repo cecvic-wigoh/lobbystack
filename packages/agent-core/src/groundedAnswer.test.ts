@@ -265,3 +265,10 @@ it("includes clarification status in the factual verifier context", async () => 
  expect((await answerGroundedQuestion({ model: {} as never, context, question: "What are the program requirements?" })).outcome).toBe("supported");
  expect(JSON.parse(String(vi.mocked(generateText).mock.calls[1]![0].prompt)).status).toBe("clarify_program");
 });
+
+it("clarifies identical published course titles with different standalone codes without model generation", async () => {
+ const versions = [{ chunkId: "biol", title: "College - Anatomy and Physiology 1", sourceUrl: "https://college.test/courses/anatomy-1", content: "BIOL 102\nAnatomy and Physiology 1" }, { chunkId: "aphy", title: "College - Anatomy and Physiology 1", sourceUrl: "https://college.test/courses/anatomy-1-2", content: "APHY 164\nAnatomy and Physiology 1" }];
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: versions } as never);
+ expect(await answerGroundedQuestion({ model: {} as never, context, question: "What do you learn in Anatomy and Physiology 1?" })).toMatchObject({ outcome: "clarification", sources: versions.map(source => source.sourceUrl), answer: expect.stringContaining("BIOL 102") });
+ expect(vi.mocked(generateText)).not.toHaveBeenCalled();
+});

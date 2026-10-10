@@ -61,6 +61,18 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
   const query = previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
   const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  // Published titles and standalone codes identify alternatives without a model guess.
+  const requestedCourse = /^what (?:do you|will i) (?:learn|study) in (.+?)[?.!]*$/i.exec(input.question.trim())?.[1];
+  if (isCollege && requestedCourse) {
+    const courseName = (value: string) => value.toLowerCase().replace(/\band\b/g, " ").replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+    const alternatives = [...new Map(evidence.matches.flatMap(source => {
+      if (!source.sourceUrl || !new URL(source.sourceUrl).pathname.startsWith("/courses/")) return [];
+      const title = source.title?.replace(businessName, "").replace(/^[\s—-]+/, "").trim();
+      const code = /^(?:#{1,6}\s*)?([A-Z]{2,6}\s+\d{2,4}[A-Z]{0,2})\s*$/m.exec(source.content)?.[1];
+      return title && code && courseName(title) === courseName(requestedCourse) ? [[code, { title, code, url: source.sourceUrl }] as const] : [];
+    })).values()];
+    if (alternatives.length > 1) return { answer: `${alternatives.map(item => `${item.title} (${item.code})`).join("; ")}. ${locale === "fr" ? "Quel code de cours vous intéresse ?" : "Which course code do you mean?"}`, sources: alternatives.map(item => item.url), outcome: "clarification" };
+  }
   // Program titles can outrank their fee/requirement sections. Search the requested
   // detail within the top matching sources instead of letting overview text hide it.
   if (isCollege) {
