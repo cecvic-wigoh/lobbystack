@@ -8,10 +8,10 @@ import type { DomainContext } from "./context";
 import { attributeBusiness } from "./affiliates";
 
 const ONBOARDING_FOLLOWUP_SUBJECTS: Record<InterfaceLocale, string> = {
-  en: "How'd you like LobbyStack?",
-  fr: "Qu'avez-vous pensé de LobbyStack ?",
-  es: "¿Qué le pareció LobbyStack?",
-  sr: "Kako Vam se dopao LobbyStack?",
+  en: "How'd you like Trendhubs?",
+  fr: "Qu'avez-vous pensé de Trendhubs ?",
+  es: "¿Qué le pareció Trendhubs?",
+  sr: "Kako Vam se dopao Trendhubs?",
 };
 
 export type OnboardingStage =
@@ -221,7 +221,7 @@ export async function submitOnboardingAttribution(
 export const ONBOARDING_FOLLOWUP_DELAY_MS = 24 * 60 * 60_000;
 
 export type OnboardingFollowupSender = {
-  /** RFC 5322 sender, e.g. `Raphael from LobbyStack <raphael@lobbystack.com>`. Replies go here. */
+  /** RFC 5322 sender, e.g. `Raphael from Trendhubs <raphael@lobbystack.com>`. Replies go here. */
   from: string;
   /** First name used in the greeting and signature. */
   name: string;

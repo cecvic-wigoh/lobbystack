@@ -37,7 +37,7 @@ function createEmailProvider(): SmtpEmailProvider | undefined {
     secure: process.env.SMTP_SECURE === "true",
     username: process.env.SMTP_USERNAME ?? "",
     password: process.env.SMTP_PASSWORD ?? "",
-    from: process.env.EMAIL_FROM || "LobbyStack <no-reply@localhost>",
+    from: process.env.EMAIL_FROM || "Trendhubs <no-reply@localhost>",
     ...(process.env.EMAIL_REPLY_TO ? { replyTo: process.env.EMAIL_REPLY_TO } : {}),
   });
 }

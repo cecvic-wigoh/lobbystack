@@ -29,7 +29,7 @@ export function signWebhookPayload(input: { secret: string; id: string; timestam
 export function webhookHeaders(input: { secret: string; id: string; timestamp: number; body: string }): Record<string, string> {
   return {
     "content-type": "application/json",
-    "user-agent": "LobbyStack-Webhooks/1.0",
+    "user-agent": "Trendhubs-Webhooks/1.0",
     "webhook-id": input.id,
     "webhook-timestamp": String(input.timestamp),
     "webhook-signature": signWebhookPayload(input),

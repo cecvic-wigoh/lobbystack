@@ -126,13 +126,13 @@ export function DashboardFeedbackWidget({ businessId, className }: FeedbackWidge
               <div className="flex items-center justify-between gap-3">
                 <p className="min-w-0 text-sm text-muted-foreground">
                   {t("feedback.helpText")}{" "}
-                  <a className="text-primary underline underline-offset-4" href="mailto:support@lobbystack.com">
+                  <a className="text-primary underline underline-offset-4" href="mailto:contact@trendhubs.io">
                     {t("feedback.contactLink")}
                   </a>{" "}
                   {t("feedback.helpTextSeparator")}{" "}
                   <a
                     className="text-primary underline underline-offset-4"
-                    href="https://docs.lobbystack.com"
+                    href="mailto:contact@trendhubs.io"
                     rel="noreferrer"
                     target="_blank"
                   >
@@ -158,7 +158,7 @@ export function DashboardFeedbackWidget({ businessId, className }: FeedbackWidge
               render={
                 <a
                   aria-label={t("feedback.helpCenter")}
-                  href="https://docs.lobbystack.com"
+                  href="mailto:contact@trendhubs.io"
                   rel="noreferrer"
                   target="_blank"
                 />

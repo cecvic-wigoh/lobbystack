@@ -47,7 +47,7 @@
     "submitFailed": "Trenutno ne možemo da sačuvamo firmu. Pokušajte ponovo."
   },
   "website": {
-    "title": "Sada ćemo obučiti LobbyStack pomoću Vašeg sajta",
+    "title": "Sada ćemo obučiti Trendhubs pomoću Vašeg sajta",
     "description": "",
     "label": "Sajt",
     "placeholder": "mojafirma.rs",
@@ -135,7 +135,7 @@
     "continue": "Nastavi"
   },
   "attribution": {
-    "title": "Kako ste čuli za LobbyStack?",
+    "title": "Kako ste čuli za Trendhubs?",
     "description": "Tako znamo šta funkcioniše.",
     "options": {
       "ai_assistant": "ChatGPT, Claude i sl.",
@@ -186,7 +186,7 @@
         "name": "Free",
         "price": "0 $",
         "period": "",
-        "description": "Isprobajte LobbyStack uz dovoljno potrošnje da vidite kako radi.",
+        "description": "Isprobajte Trendhubs uz dovoljno potrošnje da vidite kako radi.",
         "cta": "Počnite besplatno",
         "highlights": {
           "voiceMinutes": "30 minuta razgovora u pregledaču",
@@ -357,7 +357,7 @@
     "continueFailed": "Trenutno ne možemo da nastavimo. Pokušajte ponovo.",
     "managed": {
       "title": "Vaš recepcioner pod upravljanjem",
-      "description": "Vaša agencija upravlja uslugom, naplatom i telefonom. LobbyStack plaćanje nije potrebno.",
+      "description": "Vaša agencija upravlja uslugom, naplatom i telefonom. Trendhubs plaćanje nije potrebno.",
       "price": "Mesečna usluga: $200",
       "continue": "Nastavi podešavanje"
     }

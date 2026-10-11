@@ -40,10 +40,10 @@ function assertAuthDatabaseRoles(): Promise<void> {
 }
 
 const EXISTING_ACCOUNT_SUBJECTS: Record<SupportedLocale, string> = {
-  en: "You already have a LobbyStack account",
-  fr: "Votre compte LobbyStack existe déjà",
-  es: "Ya tiene una cuenta de LobbyStack",
-  sr: "Već imate LobbyStack nalog",
+  en: "You already have a Trendhubs account",
+  fr: "Votre compte Trendhubs existe déjà",
+  es: "Ya tiene una cuenta de Trendhubs",
+  sr: "Već imate Trendhubs nalog",
 };
 
 const enabledEmailOtpPaths = new Set([
@@ -142,10 +142,10 @@ async function enqueueAuthEmail(input: {
 }): Promise<void> {
   const urlHash = createHash("sha256").update(input.url).digest("hex");
   const subject = input.purpose === "verification"
-    ? "Verify your LobbyStack email"
+    ? "Verify your Trendhubs email"
     : input.purpose === "password_reset"
-      ? "Reset your LobbyStack password"
-      : "Confirm your LobbyStack email change";
+      ? "Reset your Trendhubs password"
+      : "Confirm your Trendhubs email change";
   await withBusinessTransaction(getEmailDatabase().db, { actorType: "system" }, async (tx) => {
     await enqueueOutbox(tx, {
       topic: "email.send",
@@ -172,7 +172,7 @@ async function enqueueEmailVerificationCode(input: { userId: string; email: stri
       payload: {
         template: "verify_email",
         to: input.email,
-        subject: "Your LobbyStack verification code",
+        subject: "Your Trendhubs verification code",
         variables: { code: input.otp },
       },
     });
@@ -279,7 +279,7 @@ function createAuth(adapterDatabase?: Parameters<typeof drizzleAdapter>[0]) {
             aggregateType: "auth_email",
             aggregateId: user.id,
             dedupeKey: `auth-reset-code:${user.id}:${randomUUID()}`,
-            payload: { template: "password_reset", to: email, subject: "Reset your LobbyStack password", variables: { code: otp } },
+            payload: { template: "password_reset", to: email, subject: "Reset your Trendhubs password", variables: { code: otp } },
           });
         });
       },

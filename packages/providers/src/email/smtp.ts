@@ -89,7 +89,7 @@ function renderTemplate(template: TemplateName, subject: string, variables: Reco
       previewText: subject,
       content: [
         '<h1 style="margin:0 0 24px;font-size:28px;font-weight:600;line-height:1.25;color:#0B0B0D;text-align:center;">Verify your email address</h1>',
-        '<p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#3D3D3D;text-align:center;">Enter this verification code to finish setting up your LobbyStack account.</p>',
+        '<p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#3D3D3D;text-align:center;">Enter this verification code to finish setting up your Trendhubs account.</p>',
         `<p style="margin:0 0 24px;padding:16px 24px;background-color:#F3F4F6;border-radius:16px;font-size:32px;font-weight:600;line-height:1.25;letter-spacing:8px;color:#0B0B0D;text-align:center;">${code}</p>`,
         '<p style="margin:0 0 12px;font-size:14px;line-height:1.5;color:#6B7280;text-align:center;">This code expires in 10 minutes.</p>',
         '<p style="margin:0;font-size:14px;line-height:1.5;color:#6B7280;text-align:center;">If you did not request this code, you can safely ignore this email.</p>',
@@ -104,18 +104,18 @@ function templateBody(template: TemplateName, variables: Record<string, string>)
       return existingAccountBody(variables);
     case "verify_email":
       return variables.code
-        ? `Your LobbyStack email verification code is: ${variables.code}. It expires in 10 minutes.`
-        : `Verify your LobbyStack email address using this link: ${variables.url ?? ""}`;
+        ? `Your Trendhubs email verification code is: ${variables.code}. It expires in 10 minutes.`
+        : `Verify your Trendhubs email address using this link: ${variables.url ?? ""}`;
     case "password_reset":
       return variables.code
-        ? `Your LobbyStack password reset code is: ${variables.code}. It expires in 10 minutes.`
-        : `Reset your LobbyStack password using this link: ${variables.url ?? ""}`;
+        ? `Your Trendhubs password reset code is: ${variables.code}. It expires in 10 minutes.`
+        : `Reset your Trendhubs password using this link: ${variables.url ?? ""}`;
     case "invitation":
-      return `You have been invited to join LobbyStack. Accept the invitation here: ${variables.url ?? ""}`;
+      return `You have been invited to join Trendhubs. Accept the invitation here: ${variables.url ?? ""}`;
     case "operator_alert":
-      return variables.message ?? "LobbyStack operator notification";
+      return variables.message ?? "Trendhubs operator notification";
     case "feedback_submission":
-      return variables.body ?? "LobbyStack dashboard feedback";
+      return variables.body ?? "Trendhubs dashboard feedback";
     case "onboarding_followup":
       return onboardingFollowupBody(variables);
   }
@@ -126,13 +126,13 @@ function existingAccountBody(variables: Record<string, string>): string {
   const reset = variables.resetUrl;
   switch (variables.locale) {
     case "fr":
-      return `Vous avez déjà un compte LobbyStack. Connectez-vous pour continuer : ${signIn}. Mot de passe oublié ? ${reset}. Si vous n’avez pas demandé la création d’un compte, ignorez cet e-mail.`;
+      return `Vous avez déjà un compte Trendhubs. Connectez-vous pour continuer : ${signIn}. Mot de passe oublié ? ${reset}. Si vous n’avez pas demandé la création d’un compte, ignorez cet e-mail.`;
     case "es":
-      return `Ya tiene una cuenta de LobbyStack. Inicie sesión para continuar: ${signIn}. ¿Olvidó su contraseña? ${reset}. Si no solicitó una cuenta, ignore este correo.`;
+      return `Ya tiene una cuenta de Trendhubs. Inicie sesión para continuar: ${signIn}. ¿Olvidó su contraseña? ${reset}. Si no solicitó una cuenta, ignore este correo.`;
     case "sr":
-      return `Već imate LobbyStack nalog. Prijavite se da biste nastavili: ${signIn}. Zaboravili ste lozinku? ${reset}. Ako niste zatražili nalog, zanemarite ovaj imejl.`;
+      return `Već imate Trendhubs nalog. Prijavite se da biste nastavili: ${signIn}. Zaboravili ste lozinku? ${reset}. Ako niste zatražili nalog, zanemarite ovaj imejl.`;
     default:
-      return `You already have a LobbyStack account. Sign in to continue: ${signIn}. Forgot your password? ${reset}. If you did not request an account, ignore this email.`;
+      return `You already have a Trendhubs account. Sign in to continue: ${signIn}. Forgot your password? ${reset}. If you did not request an account, ignore this email.`;
   }
 }
 
@@ -143,7 +143,7 @@ function onboardingFollowupBody(variables: Record<string, string>): string {
     return [
       variables.firstName ? `Hola, ${variables.firstName}:` : "Hola:",
       "",
-      `Soy ${sender}, fundador de LobbyStack. Ayer configuró una recepcionista para ${business}. Gracias por probarla.`,
+      `Soy ${sender}, del equipo de Trendhubs. Ayer configuró una recepcionista para ${business}. Gracias por probarla.`,
       "",
       "Me encantaría saber qué le pareció:",
       "",
@@ -155,14 +155,14 @@ function onboardingFollowupBody(variables: Record<string, string>): string {
       "",
       "Gracias de nuevo,",
       sender,
-      "Fundador, LobbyStack",
+      "Equipo de Trendhubs",
     ].join("\n");
   }
   if (variables.locale === "sr") {
     return [
       variables.firstName ? `Zdravo, ${variables.firstName},` : "Zdravo,",
       "",
-      `Ja sam ${sender}, osnivač LobbyStacka. Juče ste podesili recepcionera za ${business}. Hvala što ste ga isprobali.`,
+      `Ja sam ${sender}, iz tima Trendhubs. Juče ste podesili recepcionera za ${business}. Hvala što ste ga isprobali.`,
       "",
       "Voleo bih da čujem Vaše utiske:",
       "",
@@ -174,14 +174,14 @@ function onboardingFollowupBody(variables: Record<string, string>): string {
       "",
       "Hvala još jednom,",
       sender,
-      "Osnivač, LobbyStack",
+      "Trendhubs tim",
     ].join("\n");
   }
   if (variables.locale === "fr") {
     return [
       variables.firstName ? `Bonjour ${variables.firstName},` : "Bonjour,",
       "",
-      `Je suis ${sender}, le fondateur de LobbyStack. Vous avez configuré une réceptionniste pour ${business} hier. Merci de l'avoir essayée.`,
+      `Je suis ${sender}, de l’équipe Trendhubs. Vous avez configuré une réceptionniste pour ${business} hier. Merci de l'avoir essayée.`,
       "",
       "J'aimerais savoir ce que vous en avez pensé :",
       "",
@@ -193,13 +193,13 @@ function onboardingFollowupBody(variables: Record<string, string>): string {
       "",
       "Merci encore,",
       sender,
-      "Fondateur, LobbyStack",
+      "Équipe Trendhubs",
     ].join("\n");
   }
   return [
     variables.firstName ? `Hi ${variables.firstName},` : "Hi,",
     "",
-    `I'm ${sender}, the founder of LobbyStack. You set up a receptionist for ${business} yesterday. Thanks for giving it a try.`,
+    `I'm ${sender}, from Trendhubs. You set up a receptionist for ${business} yesterday. Thanks for giving it a try.`,
     "",
     "I'd love to hear what you thought:",
     "",
@@ -211,13 +211,13 @@ function onboardingFollowupBody(variables: Record<string, string>): string {
     "",
     "Thanks again,",
     sender,
-    "Founder, LobbyStack",
+    "Trendhubs team",
   ].join("\n");
 }
 
 function renderEmailLayout({ previewText, content }: { previewText: string; content: string }): string {
   const escapedPreviewText = escapeHtml(previewText);
-  const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="-30 -30 278 291" role="img" aria-label="LobbyStack"><g transform="translate(0.000000,231.000000) scale(0.100000,-0.100000)" fill="#0B0B0D" stroke="none"><path d="M968 2280 c-42 -16 -195 -79 -340 -141 -144 -62 -317 -133 -383 -159 -90 -36 -130 -58 -162 -88 -85 -82 -78 2 -81 -976 -3 -968 -6 -916 63 -916 19 0 54 9 77 20 24 10 147 62 273 114 338 138 342 140 365 178 20 32 20 48 20 763 0 702 1 731 19 761 12 19 34 37 54 43 33 11 54 4 398 -133 267 -107 370 -152 387 -171 26 -31 23 42 25 -725 l2 -673 c0 -50 8 -86 19 -86 11 -12 31 -21 47 -21 24 0 296 106 358 140 11 5 30 27 43 47 l23 38 l0 654 0 836 -27 46 c-48 81 -77 98 -404 233 -170 71 -371 155 -447 187 -165 71 -208 75 -329 29z"/></g></svg>`;
+  const logoSvg = `<span style="font-size:24px;font-weight:700;color:#29235c;">Trendhubs</span>`;
 
   return `<!doctype html>
 <html lang="en">

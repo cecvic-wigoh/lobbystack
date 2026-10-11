@@ -13,8 +13,8 @@ import { requireBusinessAdmin, requireBusinessMembership } from "../authz";
 const SMS_STOP_KEYWORDS = new Set(["STOP", "STOPALL", "UNSUBSCRIBE", "END", "QUIT", "CANCEL"]);
 const SMS_START_KEYWORDS = new Set(["START", "UNSTOP", "SUBSCRIBE"]);
 const SMS_HELP_KEYWORDS = new Set(["HELP"]);
-const SMS_HELP_REPLY = "LobbyStack: For help, contact hello@lobbystack.com or visit https://lobbystack.com. Reply STOP to opt out.";
-const SMS_START_REPLY = "LobbyStack: You are subscribed again. Reply HELP for help or STOP to opt out.";
+const SMS_HELP_REPLY = "Trendhubs: For help, contact contact@trendhubs.io or visit https://trendhubs.io. Reply STOP to opt out.";
+const SMS_START_REPLY = "Trendhubs: You are subscribed again. Reply HELP for help or STOP to opt out.";
 
 export type SmsConsentUpdate = { status: "subscribed" | "opted_out"; source: string };
 export type SmsKeywordReply = { body: string; kind: "help" | "start" };

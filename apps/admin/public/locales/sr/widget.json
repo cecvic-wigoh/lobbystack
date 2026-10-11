@@ -24,7 +24,8 @@
     "voiceRequestingMic": "Dozvolite pristup mikrofonu da biste nastavili.",
     "voiceEnd": "Završi poziv",
     "leaveDetails": "Ostavite svoje podatke",
-    "leadFormSubmitted": "Hvala! Uskoro ćemo Vam se javiti."
+    "leadFormSubmitted": "Hvala! Uskoro ćemo Vam se javiti.",
+    "rateLimited": "Poslato je previše poruka. Pokušajte ponovo za trenutak."
   },
   "lead": {
     "heading": "Ostavite svoje podatke",

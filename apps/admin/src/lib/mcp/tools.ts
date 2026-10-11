@@ -56,7 +56,7 @@ import {
 import { SUPPORTED_LOCALES } from "../locale";
 import { contractSchema } from "./contract-schema";
 
-// The LobbyStack MCP tools. Each tool maps to one v1 domain operation, the
+// The Trendhubs MCP tools. Each tool maps to one v1 domain operation, the
 // same function the REST handler calls, and requires the same scope. Request
 // bodies are checked against the v1 contract schemas, so a tool accepts
 // exactly what the matching REST endpoint accepts.

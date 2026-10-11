@@ -47,7 +47,7 @@
     "submitFailed": "No pudimos guardar ese negocio en este momento. Inténtelo de nuevo."
   },
   "website": {
-    "title": "Ahora entrenemos a LobbyStack con su sitio web",
+    "title": "Ahora entrenemos a Trendhubs con su sitio web",
     "description": "",
     "label": "Sitio web",
     "placeholder": "suempresa.com",
@@ -135,7 +135,7 @@
     "continue": "Continuar"
   },
   "attribution": {
-    "title": "¿Cómo conoció LobbyStack?",
+    "title": "¿Cómo conoció Trendhubs?",
     "description": "Nos ayuda a centrarnos en lo que funciona.",
     "options": {
       "ai_assistant": "ChatGPT, Claude, etc.",
@@ -186,7 +186,7 @@
         "name": "Free",
         "price": "$0",
         "period": "",
-        "description": "Pruebe LobbyStack con suficiente uso para verlo en acción.",
+        "description": "Pruebe Trendhubs con suficiente uso para verlo en acción.",
         "cta": "Empezar gratis",
         "highlights": {
           "voiceMinutes": "30 minutos de voz en el navegador incluidos",
@@ -357,7 +357,7 @@
     "continueFailed": "No pudimos continuar en este momento. Inténtelo de nuevo.",
     "managed": {
       "title": "Tu recepcionista administrada",
-      "description": "Tu agencia administra el servicio, la facturación y el teléfono. No necesitas pagar a LobbyStack.",
+      "description": "Tu agencia administra el servicio, la facturación y el teléfono. No necesitas pagar a Trendhubs.",
       "price": "Servicio mensual: $200",
       "continue": "Continuar configuración"
     }

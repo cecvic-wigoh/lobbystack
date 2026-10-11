@@ -25,7 +25,7 @@ vi.mock("react-i18next", () => ({
         "feedback.title": "Send feedback",
         "feedback.description": "Tell us what would make this dashboard better.",
         "feedback.label": "Feedback message",
-        "feedback.placeholder": "Have an idea to improve LobbyStack? Tell the team.",
+        "feedback.placeholder": "Have an idea to improve Trendhubs? Tell the team.",
         "feedback.helpText": "Need help?",
         "feedback.helpCenter": "Help Center",
         "feedback.contactLink": "Contact us",
@@ -70,7 +70,7 @@ describe("DashboardFeedbackWidget", () => {
     expect(screen.getByLabelText("Feedback message")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Contact us" })).toBeTruthy();
     const helpCenterLink = screen.getByRole("link", { name: "Help Center" });
-    expect(helpCenterLink.getAttribute("href")).toBe("https://docs.lobbystack.com");
+    expect(helpCenterLink.getAttribute("href")).toBe("mailto:contact@trendhubs.io");
     expect(helpCenterLink.getAttribute("target")).toBe("_blank");
   });
 
