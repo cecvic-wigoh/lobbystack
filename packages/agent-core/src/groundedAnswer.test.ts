@@ -280,6 +280,7 @@ it.each(["What does Shercom do?", "Hi, I’m Cecil. What does Shercom do?", "Wha
  const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en" } } as never, question });
  expect(result).toMatchObject({ outcome: "supported", sources: [source.sourceUrl] });
  expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ businessId: "shercom", query: "about company who we are what we do" }));
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ sourcePath: "/about-us" }));
 });
 it("does not rewrite another company's overview question", async () => {
  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);

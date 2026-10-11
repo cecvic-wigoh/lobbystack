@@ -63,6 +63,11 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   const asksOverview = new RegExp(`\\bwhat does (?:${overviewName}) do\\b|\\bwhat do you do\\b|\\btell me about (?:your (?:company|business)|${overviewName})[?.!]*$`, "i").test(input.question.trim());
   const query = asksOverview ? "about company who we are what we do" : previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
   const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  if (asksOverview) {
+    const about = await Promise.all(["/about", "/about-us"].map(path => search("company overview who we are history", path)));
+    const seen = new Set(evidence.matches.map(item => item.chunkId));
+    evidence.matches.unshift(...about.flatMap(result => result.matches.filter(item => !item.chunkId.startsWith("outline:") && !seen.has(item.chunkId)).slice(0, 2)));
+  }
   // Published titles and standalone codes identify alternatives without a model guess.
   const requestedCourse = /^what (?:do you|will i) (?:learn|study) in (.+?)[?.!]*$/i.exec(input.question.trim())?.[1];
   if (isCollege && requestedCourse) {
