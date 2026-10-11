@@ -272,3 +272,18 @@ it("clarifies identical published course titles with different standalone codes 
  expect(await answerGroundedQuestion({ model: {} as never, context, question: "What do you learn in Anatomy and Physiology 1?" })).toMatchObject({ outcome: "clarification", sources: versions.map(source => source.sourceUrl), answer: expect.stringContaining("BIOL 102") });
  expect(vi.mocked(generateText)).not.toHaveBeenCalled();
 });
+
+it.each(["What does Shercom do?", "Hi, I’m Cecil. What does Shercom do?", "What do you do?"])("retrieves company overview for %s", async question => {
+ const source = { chunkId: "overview", sourceUrl: "https://shercom.test/about", content: "Shercom manufactures recycled rubber products." };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [source] } as never);
+ mockAnswer({ text: source.content, sourceId: source.chunkId, quote: source.content });
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en" } } as never, question });
+ expect(result).toMatchObject({ outcome: "supported", sources: [source.sourceUrl] });
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ businessId: "shercom", query: "about company who we are what we do" }));
+});
+it("does not rewrite another company's overview question", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "out_of_scope", claims: [] } } as never);
+ await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en" } } as never, question: "What does OpenAI do?" });
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ query: "What does OpenAI do?" }));
+});

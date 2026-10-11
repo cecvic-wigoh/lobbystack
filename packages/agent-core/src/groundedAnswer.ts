@@ -59,7 +59,9 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   const history = (needsContext ? input.history ?? [] : []).slice(-4).map(turn => ({ role: turn.role, content: turn.content.slice(0, 1000) }));
   // Previous questions resolve follow-ups; previous answers are never evidence.
   const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
-  const query = previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
+  const overviewName = [snapshot.displayName, snapshot.displayName.split(/\s+/)[0]].filter(Boolean).map(name => name!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  const asksOverview = new RegExp(`\\bwhat does (?:${overviewName}) do\\b|\\bwhat do you do\\b|\\btell me about (?:your (?:company|business)|${overviewName})[?.!]*$`, "i").test(input.question.trim());
+  const query = asksOverview ? "about company who we are what we do" : previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
   const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
   // Published titles and standalone codes identify alternatives without a model guess.
   const requestedCourse = /^what (?:do you|will i) (?:learn|study) in (.+?)[?.!]*$/i.exec(input.question.trim())?.[1];
