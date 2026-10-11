@@ -119,6 +119,18 @@ export async function prepareLiveCallTransfer(context: DomainContext, input: { b
   return reservation.allowed;
 }
 
+/** Claim once before any external dial; an unknown provider outcome must not redial. */
+export async function claimLivekitTransfer(context: DomainContext, input: { businessId: string; callId: string }) {
+  return withBusinessTransaction(context.db, { businessId: input.businessId, actorType: "worker" }, async (tx) => {
+    const [call] = await tx.select().from(calls).where(and(eq(calls.id, input.callId), eq(calls.businessId, input.businessId))).limit(1).for("update");
+    if (!call || call.provider !== "livekit" || call.transport !== "web_voice" || call.endedAt || !call.mediaStartedAt || !call.gatewaySessionId?.match(/^lobby-[a-f0-9-]{36}$/) || (call.transferState && !["none", "idle"].includes(call.transferState))) return null;
+    const remainingSeconds = Math.floor(((call.webCallMaxDurationMs ?? 300000) - (Date.now() - call.mediaStartedAt.getTime())) / 1000);
+    if (remainingSeconds < 40) return null;
+    await tx.update(calls).set({ transferState: "claiming", updatedAt: new Date() }).where(and(eq(calls.id, call.id), eq(calls.businessId, input.businessId)));
+    return { room: call.gatewaySessionId, remainingSeconds };
+  });
+}
+
 export async function recordLiveCallTransferResult(context: DomainContext, input: { businessId: string; callId: string; ok: boolean }) {
   await setTransferState(context, { businessId: input.businessId, callId: input.callId, transferState: input.ok ? "completed" : "failed" });
 }

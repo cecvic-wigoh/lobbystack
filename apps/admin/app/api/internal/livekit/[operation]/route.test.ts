@@ -1,10 +1,11 @@
 import { afterEach, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ lookup: vi.fn(), generate: vi.fn(), agent: vi.fn(), complete: vi.fn() }));
+const mocks = vi.hoisted(() => ({ lookup: vi.fn(), generate: vi.fn(), agent: vi.fn(), complete: vi.fn(), deleteRoom: vi.fn() }));
+vi.mock("@/lib/livekit", () => ({ livekitConfig: () => ({ rooms: { deleteRoom: mocks.deleteRoom } }) }));
 vi.mock("@/lib/domain-context", () => ({ createWorkerDomainContext: () => ({ db: {} }) }));
 vi.mock("@/lib/api-helpers", () => ({ asApiResponse: () => new Response(null, { status: 400 }) }));
 vi.mock("@lobbystack/db", () => ({ calls: {}, withBusinessTransaction: async (_db: unknown, _ctx: unknown, fn: (tx: unknown) => unknown) => fn({ select: () => ({ from: () => ({ where: () => ({ limit: mocks.lookup }) }) }) }) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), eq: vi.fn() }));
-vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful" }), completeCall: mocks.complete, markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
+vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: "Hello", voiceInstructions: "Helpful", transferPolicy: { mode: "never" } }), completeCall: mocks.complete, markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
 vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), answerGroundedQuestion: mocks.agent }));
 import { POST } from "./route";
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
@@ -34,4 +35,15 @@ it("records whole seconds when finishing a call", async () => {
  const request = new Request("https://lobby.example/api/internal/livekit/events", { method: "POST", headers: { authorization: `Bearer ${"s".repeat(32)}` }, body: JSON.stringify({ tenantId, callId, type: "completed" }) });
  expect((await POST(request, { params: Promise.resolve({ operation: "events" }) })).status).toBe(200);
  expect(Number.isInteger(mocks.complete.mock.calls[0]![1].providerDurationSeconds)).toBe(true);
+});
+
+it("closes the room and staff phone only when the complete caller session ends", async () => {
+ vi.stubEnv("VOICE_PROVIDER", "livekit"); vi.stubEnv("INTERNAL_SERVICE_TOKEN", "s".repeat(32));
+ const tenantId = crypto.randomUUID(); const callId = crypto.randomUUID(); const room = `lobby-${crypto.randomUUID()}`;
+ mocks.lookup.mockResolvedValueOnce([{ id: callId, gatewaySessionId: room, endedAt: null, mediaStartedAt: new Date() }]);
+ mocks.deleteRoom.mockResolvedValue(undefined);
+ const request = new Request("https://lobby.example/api/internal/livekit/events", { method: "POST", headers: { authorization: `Bearer ${"s".repeat(32)}` }, body: JSON.stringify({ tenantId, callId, type: "completed" }) });
+ expect((await POST(request, { params: Promise.resolve({ operation: "events" }) })).status).toBe(200);
+ expect(mocks.deleteRoom).toHaveBeenCalledWith(room);
+ expect(mocks.complete).toHaveBeenCalledTimes(1);
 });

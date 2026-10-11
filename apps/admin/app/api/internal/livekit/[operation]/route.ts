@@ -2,11 +2,12 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { calls, withBusinessTransaction } from "@lobbystack/db";
-import { completeCall, getCachedBusinessSnapshot, markLiveCallMediaStarted, saveLiveCallTurn } from "@lobbystack/domain";
+import { claimLivekitTransfer, completeCall, getCachedBusinessSnapshot, markLiveCallMediaStarted, prepareLiveCallTransfer, recordLiveCallTransferResult, saveLiveCallTurn } from "@lobbystack/domain";
 import { createAgentModel, answerGroundedQuestion } from "@lobbystack/agent-core";
 import { z } from "zod";
 import { asApiResponse } from "@/lib/api-helpers";
 import { createWorkerDomainContext } from "@/lib/domain-context";
+import { livekitConfig } from "@/lib/livekit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,7 +18,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
   if (process.env.VOICE_PROVIDER !== "livekit" || !expected || !presented || Buffer.byteLength(expected) !== Buffer.byteLength(presented) || !timingSafeEqual(Buffer.from(expected), Buffer.from(presented))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const operation = (await route.params).operation;
-    if (!["context", "respond", "events"].includes(operation)) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!["context", "respond", "events", "transfer"].includes(operation)) return NextResponse.json({ error: "Not found" }, { status: 404 });
     const text = await request.text();
     if (Buffer.byteLength(text) > 32 * 1024) return NextResponse.json({ error: "Request too large" }, { status: 413 });
     const input = schema.parse(JSON.parse(text));
@@ -38,6 +39,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
         const endMs = new Date(endedAt).getTime();
         if (endMs > Date.now() + 10000 || (call.mediaStartedAt && endMs < call.mediaStartedAt.getTime())) return NextResponse.json({ error: "Invalid call end time" }, { status: 400 });
         const seconds = call.mediaStartedAt ? Math.max(0, Math.ceil((endMs - call.mediaStartedAt.getTime()) / 1000)) : 0;
+        if (!call.endedAt && call.gatewaySessionId) await livekitConfig().rooms.deleteRoom(call.gatewaySessionId).catch(() => console.error("Failed to close LiveKit room"));
         await completeCall(domain, { businessId, callId: call.id, status: input.type === "failed" ? "failed" : "completed", endedAt, providerDurationSeconds: seconds, mediaDurationSeconds: seconds });
       }
       return NextResponse.json({ ok: true });
@@ -45,10 +47,37 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     const snapshot = await getCachedBusinessSnapshot(domain, { businessId });
     if (!snapshot) return NextResponse.json({ error: "Snapshot unavailable" }, { status: 409 });
     const voiceLocale = snapshot.defaultLocale === "fr" ? "fr-CA" : "en";
+    const transferNumber = snapshot.transferPolicy.transferNumber;
+    const canTransfer = Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
+    if (operation === "transfer") {
+      const unavailable = () => NextResponse.json({ status: "unavailable", message: "I couldn't connect the staff phone. Do not retry or promise a callback; offer the published contact details." });
+      if (!canTransfer) return unavailable();
+      const claimed = await claimLivekitTransfer(domain, { businessId, callId: call.id });
+      if (!claimed) return unavailable();
+      const config = livekitConfig();
+      const identity = `human-${call.id}`;
+      try {
+        if (!await prepareLiveCallTransfer(domain, { businessId, callId: call.id })) return unavailable();
+        await config.sip.createSipParticipant(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID!, transferNumber!, claimed.room, {
+          participantIdentity: identity, participantName: `${snapshot.displayName} team`, hidePhoneNumber: true,
+          waitUntilAnswered: true, playDialtone: true, ringingTimeout: 20, timeout: 30,
+          maxCallDuration: claimed.remainingSeconds,
+        });
+        // The caller may hang up while the staff phone rings.
+        const participants = await config.rooms.listParticipants(claimed.room);
+        if (!participants.some(participant => participant.identity === identity) || !participants.some(participant => participant.identity === `caller-${call.id}`)) throw new Error("Call no longer connected");
+        await recordLiveCallTransferResult(domain, { businessId, callId: call.id, ok: true });
+        return NextResponse.json({ status: "connected", message: "The staff phone has answered and is in the call. Stop speaking; a phone answer may be voicemail." });
+      } catch {
+        await config.rooms.removeParticipant(claimed.room, identity).catch(() => console.error("Transfer participant cleanup could not be confirmed"));
+        await recordLiveCallTransferResult(domain, { businessId, callId: call.id, ok: false });
+        return unavailable();
+      }
+    }
     if (operation === "context") return NextResponse.json({
-      call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000 },
+      call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000, roomTransfer: canTransfer },
       business: { id: businessId, name: snapshot.displayName, timezone: snapshot.timezone },
-      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: `${snapshot.greeting} ${snapshot.defaultLocale === "fr" ? "Je suis la réceptionniste IA." : "I’m the AI receptionist."}` }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist"] },
+      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: `${snapshot.greeting} ${snapshot.defaultLocale === "fr" ? "Je suis la réceptionniste IA." : "I’m the AI receptionist."}` }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
       knowledge: [],
     });
     if (!input.question) return NextResponse.json({ error: "Question required" }, { status: 400 });

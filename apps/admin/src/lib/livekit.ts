@@ -1,4 +1,4 @@
-import { AccessToken, AgentDispatchClient, RoomServiceClient, TrackSource } from "livekit-server-sdk";
+import { AccessToken, AgentDispatchClient, RoomServiceClient, SipClient, TrackSource } from "livekit-server-sdk";
 
 export function livekitConfig() {
   const url = process.env.LIVEKIT_URL;
@@ -6,12 +6,12 @@ export function livekitConfig() {
   const secret = process.env.LIVEKIT_API_SECRET;
   if (process.env.VOICE_PROVIDER !== "livekit" || !url || !key || !secret) throw new Error("LiveKit is not configured.");
   const http = url.replace(/^wss:/, "https:").replace(/^ws:/, "http:");
-  return { url, key, secret, rooms: new RoomServiceClient(http, key, secret), dispatch: new AgentDispatchClient(http, key, secret) };
+  return { url, key, secret, rooms: new RoomServiceClient(http, key, secret), dispatch: new AgentDispatchClient(http, key, secret), sip: new SipClient(http, key, secret) };
 }
 
 export async function createLivekitRoom(room: string) {
   const config = livekitConfig();
-  await config.rooms.createRoom({ name: room, emptyTimeout: 60, maxParticipants: 2 });
+  await config.rooms.createRoom({ name: room, emptyTimeout: 60, maxParticipants: 3 });
   return config;
 }
 
