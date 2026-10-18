@@ -70,6 +70,21 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   const catalog = isCollege ? answerProgramCatalogQuestion(await loadProgramCatalog(domain, { businessId: snapshot.businessId }).catch(() => []), { question: input.question, ...(previousQuestion ? { previousQuestion } : {}), locale }) : null;
   if (catalog?.kind === "answer") return { answer: catalog.answer, sources: catalog.sources, outcome: "supported" };
   const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  // Structured contact sections need no generative paraphrase or invented citation.
+  // Only handle a complete general-contact request; specific groups/programs still use grounding.
+  const contactQuestion = input.question.replace(businessName, "").trim();
+  if (isCollege && /^(?:who (?:should|can|do) i (?:contact|call|email|speak to|talk to) (?:about|for|regarding) (?:general )?admissions?(?: (?:to|at|for))?|what (?:is|are) (?:the )?(?:general )?admissions? (?:contact(?: information| details)?|email(?: address)?))\s*[?.!]*$/i.test(contactQuestion)) {
+    const contacts = (admissionContact?.matches ?? []).flatMap(source => {
+      if (!source.sourceUrl || new URL(source.sourceUrl).pathname !== "/contact-us") return [];
+      const section = source.content.match(/(?:^|\n)#{1,6}[ \t]+For Admissions\s*(?:&|and)\s*Applications Inquiries[ \t]*\n([\s\S]*?)(?=\n#{1,6}\s|$)/i)?.[1];
+      const emails = [...new Set(section?.match(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/gi) ?? [])];
+      return emails.length === 1 ? [{ email: emails[0]!, url: source.sourceUrl }] : [];
+    });
+    if (contacts.length && new Set(contacts.map(contact => contact.email.toLowerCase())).size === 1) return {
+      answer: locale === "fr" ? `Pour les demandes générales concernant les admissions et les candidatures, écrivez à ${contacts[0]!.email}.` : `For general admissions and applications inquiries, email ${contacts[0]!.email}.`,
+      sources: [...new Set(contacts.map(contact => contact.url))], outcome: "supported",
+    };
+  }
   if (asksOverview) {
     const about = await Promise.all(["/about", "/about-us"].map(path => search("company overview who we are history", path)));
     const seen = new Set(evidence.matches.map(item => item.chunkId));

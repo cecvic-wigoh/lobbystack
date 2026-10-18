@@ -351,3 +351,30 @@ it("resolves a spoken follow-up when the call transcript already holds the curre
  const result = await answerGroundedQuestion({ model: {} as never, context, question: "What about Melfort?", history });
  expect(result.answer).toBe("Practical Nursing: Melfort, Winter 2027 (full-time; starts February 2027).");
 });
+
+const admissionsSection = {
+ chunkId: "admissions-section", sourceUrl: "https://college.test/contact-us", content: "##### For General Inquiries\n[info@college.test](mailto:info@college.test)\n##### For Admissions &\nApplications Inquiries\n[866 638 8618](tel:866-638-8618)\n[admissions@college.test](mailto:admissions@college.test)\n## Campuses\n[campus@college.test](mailto:campus@college.test)",
+};
+it.each([
+ "Who should I contact about admission to College?",
+ "Who do I contact for admissions?",
+ "What is the admissions email address?",
+])("answers general admissions contacts from their published section: %s", async question => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [admissionsSection] } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question });
+ expect(result).toMatchObject({ outcome: "supported", answer: "For general admissions and applications inquiries, email admissions@college.test.", sources: [admissionsSection.sourceUrl] });
+ expect(generateText).not.toHaveBeenCalled();
+});
+it.each([
+ { question: "Who do I contact for international admissions?", source: admissionsSection },
+ { question: "Who do I contact for Practical Nursing admissions?", source: admissionsSection },
+ { question: "Who do I contact for admissions? Also tell me the capital of France.", source: admissionsSection },
+ { question: "Who do I contact for admissions?", source: { ...admissionsSection, sourceUrl: "https://college.test/news/old-contact" } },
+ { question: "Who do I contact for admissions?", source: { ...admissionsSection, content: "General Inquiries: info@college.test" } },
+ { question: "Who do I contact for admissions?", source: { ...admissionsSection, content: "##### For Admissions & Applications Inquiries\nfirst@college.test second@college.test" } },
+])("does not substitute an unscoped or ambiguous admissions contact: %j", async ({ question, source }) => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [source] } as never);
+ vi.mocked(generateText).mockResolvedValue({ output: { status: "unknown", claims: [] } } as never);
+ expect((await answerGroundedQuestion({ model: {} as never, context, question })).outcome).toBe("unknown");
+ expect(generateText).toHaveBeenCalled();
+});
