@@ -1,0 +1,98 @@
+catalog pages: 99
+
+Q: Which campuses offer Practical Nursing?
+[supported, 5 ms] Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028; ends February 15, 2030; application deadline April 30, 2027); Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+
+Q: When does Practical Nursing start in Melfort?
+[supported, 3 ms] Practical Nursing: Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+
+Q: What are the requirements for the Practical Nursing program in Yorkton?
+[supported, 8627 ms] The published admission requirements are Grade 12 with a minimum overall score of 65% across the listed English, math, science, and social studies/history/Native Studies subjects, plus English language proficiency. The program’s English requirement follows Saskatchewan Polytechnic language requirements and must be provided on or before the document deadline.
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+
+Q: Where can I take the continuing care assistant program?
+[supported, 9 ms] Continuing Care Assistant has published offerings at Yorkton (Term 1, Fall 2027), Tisdale (Fall 2027), Melfort (Fall 2026, Winter 2027), Online (Fall 2026, Winter 2027), Nipawin (Winter 2027), Esterhazy (Winter 2027), Fort Qu'Appelle (Fall 2026, Winter 2027) and Canora (Fall 2026, Winter 2027, Winter 2026). Which campus are you interested in?
+   https://suncrestcollege.ca/programs/continuing-care-assistant-ft https://suncrestcollege.ca/programs/continuing-care-assistant-ft-2-2 https://suncrestcollege.ca/programs/continuing-care-assistant-ft-3
+
+Q: What about Canora?
+[supported, 7 ms] Continuing Care Assistant (Part-Time) - Canora: Canora, Fall 2026 (SPCR 102 End of Life Care; starts Dec 07, 2026; ends Jan 25, 2027; Mondays (8:30AM - 2:30PM)); Canora, Fall 2026 (HUMD 187 Human Growth and Development; starts Dec 08, 2026; ends Jan 26, 2027; Tuesdays (8:30AM - 2:30PM)); Canora, Winter 2027 (SPCR 285 Special Needs 2; starts Jan 25, 2027; ends Mar 15, 2027; Mondays (8:30AM - 2:30PM)). There are 4 more published offerings.
+   https://suncrestcollege.ca/programs/continuing-care-assistant-pt-5
+
+Q: What are the admission requirements for Medical Lab Assistant?
+[supported, 5776 ms] The published academic requirements are Grade 12 with at least 70% in each of English Language Arts A30 and B30, an accepted math course, Health Science 20 or Biology 30, and Physical Science 20 or Chemistry 30; specified previous Saskatchewan courses are also accepted. Applicants must also meet the keyboarding and English-language requirements: 25 words per minute at 90% accuracy, with a five-minute test report, and the program’s English language requirements. The English language requirement for this program follows Saskatchewan Polytechnic language requirements.
+   https://suncrestcollege.ca/programs/medical-laboratory-assistant
+
+Q: What semester does the Medical Laboratory Assistant program start?
+[supported, 8 ms] Medical Laboratory Assistant: Yorkton, Fall 2027 (full-time; starts August 26, 2027; ends April 23, 2028).
+   https://suncrestcollege.ca/programs/medical-laboratory-assistant
+
+Q: What are the requirements for the welding program?
+[supported, 5199 ms] The published academic requirement is Grade 10 standing, with transcripts required; special admission and ACCUPLACER are available. The program follows Saskatchewan Polytechnic’s English language requirements.
+   https://suncrestcollege.ca/programs/welding
+
+Q: Is the electrician program offered in Melville?
+[supported, 7 ms] I couldn't find a published Electrican Applied Certificate intake for Melville. Published intakes are Nipawin (February 2028).
+   https://suncrestcollege.ca/programs/electrical-applied-certificate
+
+Q: What programs are available at the Nipawin campus?
+[supported, 6 ms] Programs with a published intake at Nipawin: Blueprint Reading, Adult 10, Adult 12, Continuing Care Assistant, Early Childhood Education Diploma, Electrican Applied Certificate, Industrial Mechanics Applied Certificate, Introduction to Community Services, Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) and Plumbing & Pipefitting Applied Certificate.
+   https://suncrestcollege.ca/programs/-2 https://suncrestcollege.ca/programs/adult-10 https://suncrestcollege.ca/programs/adult-basic-education-12
+
+Q: What programs start in Fall 2027?
+[supported, 5 ms] Programs with a published Fall 2027 intake: Blueprint Reading, Agricultural Equipment Technician, University, Business Certificate, Continuing Care Assistant, Diagnostic Medical Sonography, Heavy Equipment Truck & Transport Technician, Medical Laboratory Assistant, Office Administration, Plumbing & Pipefitting Applied Certificate, Power Engineering Technician (Fourth Class), Primary Care Paramedic and 2 more.
+   https://suncrestcollege.ca/programs/-2 https://suncrestcollege.ca/programs/ag-equipment-tech https://suncrestcollege.ca/programs/arts-science-first-year-3
+
+Q: What health programs are offered in Yorkton?
+[supported, 4 ms] Programs with a published intake at Yorkton: Continuing Care Assistant, Diagnostic Medical Sonography, Early Childhood Education, Early Childhood Education Diploma, Medical Laboratory Assistant, Practical Nursing and Pre-Diagnostic Medical Sonography.
+   https://suncrestcollege.ca/programs/continuing-care-assistant-ft https://suncrestcollege.ca/programs/continuing-care-assistant-ft-3 https://suncrestcollege.ca/programs/diagnostic-medical-sonography-ultrasound
+
+Q: How much is Practical Nursing in Yorkton?
+[supported, 4 ms] Practical Nursing, Yorkton, Winter 2028: domestic tuition $15,500.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+
+Q: What is the tuition for Practical Nursing in Melfort?
+[supported, 3 ms] Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00 (the fee table on the same page lists Tuition (total) $16,000.00). The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+[grounded-answer] answer declined { reason: 'missing_evidence', evidenceCount: 7 }
+
+Q: What is the application fee for Practical Nursing in Yorkton?
+[unknown, 1540 ms] I can't confirm that from the business's published information. Please contact the business to confirm.
+   
+
+Q: What is the cost of books for Practical Nursing in Yorkton?
+[supported, 3675 ms] The Practical Nursing fee information notes that books and supplies amounts are approximate and may change, but it does not give a book cost for Yorkton. Textbook and course-manual purchasing information is provided when students register. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+
+Q: What are the fees for Practical Nursing in Melfort?
+[supported, 4050 ms] For the Melfort Winter 2027 intake, the page lists domestic tuition of $15,000, total tuition of $16,000, annual fees of $700, and an annual health and dental fee of $252. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+   https://suncrestcollege.ca/programs/practical-nursing-diploma
+[grounded-answer] answer declined { reason: 'missing_evidence', evidenceCount: 10 }
+
+Q: What is the tuition refund policy for Practical Nursing in Yorkton?
+[unknown, 2239 ms] I can't confirm that from the business's published information. Please contact the business to confirm.
+   
+
+Q: Which campuses offer Practical Nursing and Welding?
+[supported, 11 ms] Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027); Welding: Yorkton (TTC) (Fall 2027); Welding Applied Certificate: Tisdale (LeStrat Building) (Fall 2026). Which program are you interested in?
+   https://suncrestcollege.ca/programs/practical-nursing-diploma https://suncrestcollege.ca/programs/welding https://suncrestcollege.ca/programs/welding-ac
+
+Q: How much is SPCR 105 for CCA in Melfort?
+[supported, 7 ms] Continuing Care Assistant (Part-Time) - Melfort, Melfort, Fall 2026 (SPCR 105 Personal Care 2): domestic tuition $702.00.
+   https://suncrestcollege.ca/programs/continuing-care-assistant-pt-3
+
+Q: What nursing programs do you offer?
+[supported, 4180 ms] Suncrest offers Practical Nursing, a two-year diploma program. Suncrest also offers the Bachelor of Science in Nursing, which students can complete entirely at Suncrest College in Yorkton.
+   https://suncrestcollege.ca/programs/medical-laboratory-assistant
+[grounded-answer] answer declined { reason: 'missing_evidence', evidenceCount: 6 }
+
+Q: Do you offer an architecture program?
+[unknown, 4846 ms] I can't confirm that from the business's published information. Please contact the business to confirm.
+   
+[grounded-answer] verification declined { reason: 'unsupported_paraphrase', evidenceCount: 7 }
+[grounded-answer] answer declined { reason: 'missing_evidence', evidenceCount: 7 }
+
+Q: Can you guarantee me admission?
+[unknown, 4827 ms] I can't confirm that from the business's published information. Please contact the business to confirm.
+   

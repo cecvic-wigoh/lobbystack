@@ -14,6 +14,10 @@ export type ProgramIntake = {
   schedule?: string;
   domesticTuition?: string;
   internationalTuition?: string;
+  /** The intake's "Additional Fees" section, which can differ from the intake tuition. */
+  fees?: string;
+  /** The tuition row of that fee table, e.g. "Tuition (total) $16,000.00". */
+  feeTableTuition?: string;
 };
 
 export type ProgramEntry = {
@@ -22,11 +26,13 @@ export type ProgramEntry = {
   area?: string;
   intakes: ProgramIntake[];
   requirements?: string;
+  /** A caveat the page attaches to its prices, e.g. "approximate, based on last year's program". */
+  priceNote?: string;
 };
 
 export type ProgramCatalogResult =
   | { kind: "answer"; answer: string; sources: string[] }
-  | { kind: "requirements"; passages: Array<{ chunkId: string; title: string; content: string; sourceUrl: string }> };
+  | { kind: "evidence"; passages: Array<{ chunkId: string; title: string; content: string; sourceUrl: string }>; notices?: string[]; confirm?: string };
 
 const plain = (value: string) => value
   .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
@@ -64,6 +70,22 @@ function requirementsSection(text: string): string | undefined {
   return body ? `${plain(heading[0].replace(/^#+\s*/, ""))}\n${body}`.slice(0, 3000) : undefined;
 }
 
+/** A Markdown fee table as plain "Label: amount" lines that can be quoted exactly. */
+function feeLines(table: string): string {
+  const clean = (value: string) => plain(value.replace(/<br\s*\/?>/gi, " ")).replace(/(^|\s)_+|_+(?=\s|$)/g, "$1").replace(/^[#*\s]+/, "").replace(/\s+/g, " ").trim();
+  return table.split("\n").flatMap(line => {
+    if (!line.trim().startsWith("|")) return clean(line) ? [clean(line)] : [];
+    const cells = line.split("|").map(clean).filter(Boolean);
+    return !cells.length || cells.every(cell => /^-+$/.test(cell)) ? [] : [cells.length > 1 ? `${cells[0]}: ${cells.slice(1).join(" ")}` : cells[0]!];
+  }).join("\n");
+}
+
+/** The page's own caveat about its prices, as written. */
+function priceCaveat(text: string | undefined): string | undefined {
+  const line = text?.split("\n").find(value => /tuition|fee|amount/i.test(value) && /approximat|subject to change|last year/i.test(value));
+  return line ? plain(line).replace(/^[>|\s]*\**\s*(?:Note:\s*)?/i, "").replace(/\s*\|.*$/, "").trim() : undefined;
+}
+
 /** Parse one program page (Markdown as imported) into its published intakes and requirements. */
 export function parseProgramPage(input: { url: string; title: string; text: string }): ProgramEntry {
   const text = input.text.replace(/\r\n?/g, "\n");
@@ -83,6 +105,18 @@ export function parseProgramPage(input: { url: string; title: string; text: stri
     for (const [key, label] of [["startDate", "Start Date"], ["endDate", "End Date"], ["applicationDeadline", "Application Deadline"], ["length", "Length"], ["domesticTuition", "Domestic Tuition"], ["internationalTuition", "International Tuition"]] as const) {
       const value = field(label);
       if (value) intake[key] = value;
+    }
+    // Each intake's own fee table follows its details; keep it with that intake.
+    const after = text.slice(block.index + block[0].length);
+    const feeHeading = /^#### Additional Fees[^\n]*\n/.exec(after);
+    if (feeHeading?.index === 0) {
+      const rest = after.slice(feeHeading[0].length);
+      const table = rest.slice(0, Math.min(/^#{3,4} /m.exec(rest)?.index ?? Infinity, 1500)).trim();
+      const fees = feeLines(table);
+      if (fees) intake.fees = fees;
+      const row = /^\|([^|\n]*tuition[^|\n]*)\|([^|\n]*)\|/im.exec(table);
+      const amount = row && /\$\s?[\d,]+(?:\.\d{2})?/.exec(row[2]!)?.[0];
+      if (row && amount) intake.feeTableTuition = `${plain(row[1]!.replace(/<br>/gi, " ")).replace(/^\*+/, "").trim()} ${amount.replace(/\s/g, "")}`;
     }
     add(intake);
   }
@@ -115,7 +149,8 @@ export function parseProgramPage(input: { url: string; title: string; text: stri
     add(intake);
   }
   const requirements = requirementsSection(text);
-  return { title, url: input.url, ...(area ? { area: plain(area) } : {}), intakes, ...(requirements ? { requirements } : {}) };
+  const priceNote = priceCaveat(text);
+  return { title, url: input.url, ...(area ? { area: plain(area) } : {}), intakes, ...(requirements ? { requirements } : {}), ...(priceNote ? { priceNote } : {}) };
 }
 
 const SEASONS = new Set(["fall", "autumn", "winter", "spring", "summer", "term"]);
@@ -160,7 +195,10 @@ function matchPrograms(catalog: ProgramEntry[], question: string | undefined): P
 
 const REQUIREMENTS = /\b(?:requirements?|prerequisites?|pre-requisites?|eligib\w*|qualif\w*|admission|entrance|get in(?:to)?|need to (?:apply|enrol|enroll|have))\b/i;
 const SCHEDULE = /\b(?:campus(?:es)?|where|locations?|offered|available|semesters?|terms?|intakes?|start\w*|begin\w*|when|deadline|fall|autumn|winter|spring|summer|online|virtual|in person|in-person|dates?|schedule)\b/i;
-const TUITION = /\b(?:tuition|fees?|costs?|price|how much|pay)\b/i;
+const TUITION_AMOUNT = /\b(?:tuition|costs?|price|how much|pay)\b/i;
+// Other charges come from the intake's fee table; money policies from the policy pages.
+const OTHER_CHARGES = /\b(?:application|books?|textbooks?|materials?|supplies|student fees?|health|dental|lab|shop|tech fees?|printing|exams?|consumables?|uniforms?|equipment|fees)\b/i;
+const MONEY_POLICY = /\b(?:refund\w*|deposits?|withdraw\w*|payment plans?|instal+ments?|polic(?:y|ies)|includ\w*|scholarships?|bursar(?:y|ies)|funding|loans?|grants?|sponsor\w*)\b/i;
 // Details the catalog does not hold go through the page passages instead.
 const OTHER_DETAIL = /\b(?:learn|cover\w*|(?<!what |how )about|careers?|jobs?|salary|contact|email|phone|call)\b/i;
 const CATALOG_LIST = /\b(?:programs?|courses?|study|offer\w*|available|take)\b/i;
@@ -206,12 +244,20 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   const campus = mentionedCampus(catalog, question) ?? (input.previousQuestion && !mentionedTerm(question) ? mentionedCampus(catalog, input.previousQuestion) : undefined);
   const term = mentionedTerm(question);
   const wantsSchedule = SCHEDULE.test(question) || Boolean(campus) || Boolean(term);
-  const wantsTuition = !wantsRequirements && TUITION.test(question);
-  if (!wantsRequirements && !wantsTuition && (!wantsSchedule || OTHER_DETAIL.test(question))) return null;
+  const moneyPolicy = MONEY_POLICY.test(question);
+  // "application deadline" and "health programs" are not charges; a cost word makes them one.
+  const wantsCharges = !wantsRequirements && !moneyPolicy && OTHER_CHARGES.test(question) && /\b(?:costs?|price|how much|pay|fees?)\b/i.test(question);
+  const wantsTuition = !wantsRequirements && !moneyPolicy && !wantsCharges && TUITION_AMOUNT.test(question);
+  if (!wantsRequirements && !wantsTuition && !wantsCharges && (!wantsSchedule || OTHER_DETAIL.test(question) || moneyPolicy || TUITION_AMOUNT.test(question))) return null;
   let programs = matchPrograms(catalog, question);
   if (!programs.length && input.previousQuestion && /\b(?:it|its|that|this|the program|the course|there|same|what about|how about|and)\b/i.test(question)) programs = matchPrograms(catalog, input.previousQuestion);
   const atCampus = (intake: ProgramIntake) => !campus || (campus === "online" ? isOnline(intake.campus) : campusKey(intake.campus) === campus || campusKey(intake.campus).startsWith(`${campus} `));
   const inTerm = (intake: ProgramIntake) => !term || (intake.term.toLowerCase().startsWith(term.season) && (!term.year || intake.term.includes(term.year)));
+  // A course code ("SPCR 105") narrows course-by-course offerings to that course.
+  const codeOf = (value: string) => value.replace(/[\s-]+/g, "").toUpperCase();
+  const askedCode = /\b([A-Z]{2,6})[\s-]?(\d{3})\b/i.exec(question);
+  const code = askedCode && programs.some(entry => entry.intakes.some(intake => intake.course && codeOf(intake.course).startsWith(codeOf(askedCode[0])))) ? codeOf(askedCode[0]) : undefined;
+  const forCourse = (intake: ProgramIntake) => !code || Boolean(intake.course && codeOf(intake.course).startsWith(code));
   // Several labels share a key ("Melville", "Melville (…Institute)"); say the plain one.
   const campusName = campus === "online" ? (locale === "fr" ? "en ligne" : "online") : campus ? catalog.flatMap(entry => entry.intakes.filter(atCampus).map(intake => intake.campus)).sort((left, right) => left.length - right.length)[0] ?? campus : undefined;
   const termName = term ? `${term.season[0]!.toUpperCase()}${term.season.slice(1)}${term.year ? ` ${term.year}` : ""}` : undefined;
@@ -227,7 +273,7 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     const chosen = [...distinct.values()].slice(0, 3);
     if (!chosen.length) return null;
     return {
-      kind: "requirements",
+      kind: "evidence",
       passages: chosen.map(entry => {
         const intakes = currentIntakes(entry, now).filter(atCampus);
         return {
@@ -240,19 +286,67 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     };
   }
 
+  const amount = (value: string | undefined) => /\$[\d,]+(?:\.\d{2})?/.exec(value ?? "")?.[0];
+  const differs = (intake: ProgramIntake) => Boolean(intake.domesticTuition && intake.feeTableTuition && amount(intake.feeTableTuition) !== amount(intake.domesticTuition));
+  /** The page's own price caveat for these intakes, and a request to confirm when it applies. */
+  const priceCaveats = (items: Array<{ entry: ProgramEntry; intake: ProgramIntake }>) => {
+    const notes = [...new Set(items.map(({ entry, intake }) => priceCaveat(intake.fees) ?? entry.priceNote).filter((note): note is string => Boolean(note)))];
+    const fromFeeTable = items.some(({ intake }) => priceCaveat(intake.fees));
+    const caveat = notes.length ? (locale === "fr" ? `La page précise : « ${notes.join(" ")} »` : `The ${fromFeeTable ? "fee table" : "page"} notes: "${notes.join(" ")}"`) : "";
+    const confirm = items.some(({ intake }) => differs(intake)) || notes.some(note => /approximat|last year/i.test(note))
+      ? (locale === "fr" ? "Veuillez confirmer le montant actuel auprès du collège." : "Please confirm the current amount with the college.")
+      : "";
+    return { caveat, confirm };
+  };
+
+  if (wantsCharges) {
+    // Books, application and other fees: ground on the fee table of the intake
+    // asked about (campuses publish different tables), plus requirements text
+    // where application fees are usually stated.
+    const application = /\bappl/i.test(question);
+    const chosen = programs.map(entry => ({ entry, intakes: currentIntakes(entry, now).filter(intake => atCampus(intake) && inTerm(intake) && forCourse(intake)) }))
+      .filter(item => item.intakes.some(intake => intake.fees) || (application && item.entry.requirements)).slice(0, 3);
+    if (!chosen.length) return null;
+    // The model may quote a fee table without its caveat; the server adds it.
+    const priced = chosen.flatMap(({ entry, intakes }) => intakes.filter(intake => intake.fees).map(intake => ({ entry, intake })));
+    const mismatches = priced.filter(({ intake }) => differs(intake)).map(({ intake }) => locale === "fr"
+      ? `La session de ${intake.campus} indique des droits de scolarité de ${intake.domesticTuition}, alors que son tableau des frais indique ${intake.feeTableTuition}.`
+      : `The ${intake.campus} intake lists domestic tuition ${intake.domesticTuition}, while its fee table lists ${intake.feeTableTuition}.`);
+    const { caveat, confirm } = priceCaveats(priced);
+    const notices = [...mismatches, caveat].filter(Boolean);
+    return {
+      kind: "evidence",
+      ...(notices.length ? { notices } : {}),
+      ...(confirm ? { confirm } : {}),
+      passages: chosen.map(({ entry, intakes }) => ({
+        chunkId: `catalog:${entry.url}`,
+        title: entry.title,
+        sourceUrl: entry.url,
+        content: [
+          `# ${entry.title}`,
+          ...intakes.map(intake => [`Intake: ${describeIntake(intake, now, "en")}.`, intake.domesticTuition ? `Intake domestic tuition: ${intake.domesticTuition}.` : "", intake.fees ? `Fee table for this intake:\n${intake.fees}` : ""].filter(Boolean).join("\n")),
+          application ? entry.requirements ?? "" : "",
+          entry.priceNote && !intakes.some(intake => intake.fees?.includes(entry.priceNote!.slice(0, 40))) ? `Price note: ${entry.priceNote}` : "",
+        ].filter(Boolean).join("\n"),
+      })),
+    };
+  }
+
   if (wantsTuition) {
     // Tuition is published per intake and differs by campus, e.g. Practical
-    // Nursing in Yorkton and Melfort. Answer only from intakes that state it.
-    const priced = programs.flatMap(entry => currentIntakes(entry, now).filter(intake => intake.domesticTuition && atCampus(intake) && inTerm(intake)).map(intake => ({ entry, intake })));
+    // Nursing in Yorkton and Melfort. Answer only from intakes that state it,
+    // and keep the page's own caveats and any different fee-table figure.
+    const priced = programs.flatMap(entry => currentIntakes(entry, now).filter(intake => intake.domesticTuition && atCampus(intake) && inTerm(intake) && forCourse(intake)).map(intake => ({ entry, intake })));
     if (!priced.length) return null;
     const shown = priced.slice(0, 3);
     const more = priced.length - shown.length;
     const single = new Set(shown.map(item => item.entry.title)).size === 1;
     const price = (intake: ProgramIntake) => locale === "fr"
-      ? `droits de scolarité ${intake.domesticTuition} (étudiants canadiens)${intake.internationalTuition ? `, ${intake.internationalTuition} (étudiants internationaux)` : ""}`
-      : `domestic tuition ${intake.domesticTuition}${intake.internationalTuition ? `, international tuition ${intake.internationalTuition}` : ""}`;
+      ? `droits de scolarité ${intake.domesticTuition} (étudiants canadiens)${intake.internationalTuition ? `, ${intake.internationalTuition} (étudiants internationaux)` : ""}${differs(intake) ? ` (le tableau des frais de la même page indique ${intake.feeTableTuition})` : ""}`
+      : `domestic tuition ${intake.domesticTuition}${intake.internationalTuition ? `, international tuition ${intake.internationalTuition}` : ""}${differs(intake) ? ` (the fee table on the same page lists ${intake.feeTableTuition})` : ""}`;
     const listed = shown.map(({ entry, intake }) => `${single ? "" : `${entry.title}, `}${intake.campus}, ${intake.term}${intake.course ? ` (${intake.course})` : ""}: ${price(intake)}`).join("; ");
-    const answer = `${single ? `${shown[0]!.entry.title}, ` : ""}${listed}.${more > 0 ? (locale === "fr" ? ` Il y a ${more} autres offres publiées.` : ` There ${more === 1 ? "is 1 more published offering" : `are ${more} more published offerings`}.`) : ""}`;
+    const caveats = Object.values(priceCaveats(shown)).filter(Boolean).join(" ");
+    const answer = `${single ? `${shown[0]!.entry.title}, ` : ""}${listed}.${more > 0 ? (locale === "fr" ? ` Il y a ${more} autres offres publiées.` : ` There ${more === 1 ? "is 1 more published offering" : `are ${more} more published offerings`}.`) : ""}${caveats ? ` ${caveats}` : ""}`;
     return { kind: "answer", answer, sources: [...new Set(shown.map(item => item.entry.url))] };
   }
 
@@ -261,17 +355,42 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     // Pages without published intakes are described better by the page text itself.
     if (!scheduled.length) return null;
     const name = joinNames([...new Set(scheduled.map(entry => baseTitle(entry.title)))], locale);
-    const matching = scheduled.map(entry => ({ entry, intakes: currentIntakes(entry, now).filter(intake => atCampus(intake) && inTerm(intake)) })).filter(item => item.intakes.length);
+    const matching = scheduled.map(entry => ({ entry, intakes: currentIntakes(entry, now).filter(intake => atCampus(intake) && inTerm(intake) && forCourse(intake)) })).filter(item => item.intakes.length);
+    // Several programs: keep each program's own campuses rather than one merged list.
+    const byProgram = (items: Array<{ entry: ProgramEntry; intakes: ProgramIntake[] }>) => {
+      const groups = new Map<string, Map<string, Set<string>>>();
+      for (const { entry, intakes } of items) {
+        const places = groups.get(baseTitle(entry.title)) ?? new Map<string, Set<string>>();
+        for (const intake of intakes) places.set(intake.campus, (places.get(intake.campus) ?? new Set()).add(intake.term));
+        groups.set(baseTitle(entry.title), places);
+      }
+      return [...groups].filter(([, places]) => places.size).map(([program, places]) => `${program}: ${[...places].slice(0, 6).map(([place, terms]) => `${place} (${[...terms].join(", ")})`).join(", ")}`);
+    };
+    const programCount = new Set(scheduled.map(entry => baseTitle(entry.title))).size;
     if (!matching.length) {
-      const elsewhere = [...new Set(scheduled.flatMap(entry => currentIntakes(entry, now).map(intake => `${intake.campus} (${intake.term})`)))];
+      const elsewhere = programCount > 1
+        ? byProgram(scheduled.map(entry => ({ entry, intakes: currentIntakes(entry, now) })))
+        : [...new Set(scheduled.flatMap(entry => currentIntakes(entry, now).map(intake => `${intake.campus} (${intake.term})`)))];
       const where = [campusName, termName].filter(Boolean).join(", ");
       const answer = locale === "fr"
         ? `Je ne trouve aucune session publiée pour ${name}${where ? ` (${where})` : ""}.${elsewhere.length ? ` Sessions publiées : ${elsewhere.slice(0, 6).join(", ")}.` : ""}`
-        : `I couldn't find a published ${name} intake${where ? ` for ${where}` : ""}.${elsewhere.length ? ` Published intakes are ${joinNames(elsewhere.slice(0, 6), locale)}.` : ""}`;
+        : `I couldn't find a published ${name} intake${where ? ` for ${where}` : ""}.${elsewhere.length ? (programCount > 1 ? ` Published intakes are ${elsewhere.slice(0, 4).join("; ")}.` : ` Published intakes are ${joinNames(elsewhere.slice(0, 6), locale)}.`) : ""}`;
       return { kind: "answer", answer, sources: scheduled.map(entry => entry.url).slice(0, 3) };
     }
     const intakes = matching.flatMap(item => item.intakes.map(intake => ({ entry: item.entry, intake })));
     const sources = [...new Set(matching.map(item => item.entry.url))].slice(0, 3);
+    const matchedPrograms = new Set(matching.map(item => baseTitle(item.entry.title)));
+    if (!campus && matchedPrograms.size > 4) {
+      const answer = locale === "fr"
+        ? `Plusieurs programmes correspondent : ${joinNames([...matchedPrograms], locale)}. Lequel vous intéresse ?`
+        : `Several programs match: ${joinNames([...matchedPrograms], locale)}. Which program do you mean?`;
+      return { kind: "answer", answer, sources };
+    }
+    // Each detailed line names its program; larger answers are grouped by program.
+    if (!campus && matchedPrograms.size > 1 && intakes.length > 3) {
+      const answer = `${byProgram(matching).join("; ")}.${locale === "fr" ? " Quel programme vous intéresse ?" : " Which program are you interested in?"}`;
+      return { kind: "answer", answer, sources };
+    }
     if (!campus && intakes.length > 3) {
       // Many campus pages: summarise campuses and terms; the caller can narrow it down.
       const byCampus = new Map<string, Set<string>>();
@@ -286,9 +405,13 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     const more = intakes.length - shown.length;
     const single = new Set(shown.map(item => item.entry.title)).size === 1;
     const listed = shown.map(({ entry, intake }) => `${single ? "" : `${entry.title}: `}${describeIntake(intake, now, locale)}`).join("; ");
+    // A named program with nothing at this campus or term must not go unmentioned.
+    const missing = [...new Set(scheduled.map(entry => baseTitle(entry.title)))].filter(program => !matchedPrograms.has(program));
+    const where = [campusName, termName].filter(Boolean).join(", ");
+    const absent = missing.length ? (locale === "fr" ? ` Aucune session publiée pour ${joinNames(missing, locale)}${where ? ` (${where})` : ""}.` : ` I couldn't find a published ${joinNames(missing, locale)} intake${where ? ` for ${where}` : ""}.`) : "";
     const answer = locale === "fr"
-      ? `${single ? `${shown[0]!.entry.title} : ` : ""}${listed}.${more > 0 ? ` Il y a ${more} autres offres publiées.` : ""}`
-      : `${single ? `${shown[0]!.entry.title}: ` : ""}${listed}.${more > 0 ? ` There ${more === 1 ? "is 1 more published offering" : `are ${more} more published offerings`}.` : ""}`;
+      ? `${single ? `${shown[0]!.entry.title} : ` : ""}${listed}.${more > 0 ? ` Il y a ${more} autres offres publiées.` : ""}${absent}`
+      : `${single ? `${shown[0]!.entry.title}: ` : ""}${listed}.${more > 0 ? ` There ${more === 1 ? "is 1 more published offering" : `are ${more} more published offerings`}.` : ""}${absent}`;
     return { kind: "answer", answer, sources };
   }
 

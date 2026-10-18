@@ -313,6 +313,26 @@ it("grounds requirement answers in the requested program's requirements section"
  expect(passages[0]).toMatchObject({ sourceId: passage, url: programCatalog[0]!.url });
  expect(passages[0].text).toContain("Published intakes: Yorkton, Winter 2028");
 });
+it("grounds fee questions in the campus intake's fee table instead of answering with tuition", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce([{ ...programCatalog[0]!, intakes: [{ ...programCatalog[0]!.intakes[0]!, domesticTuition: "$15,500.00", fees: "| Student Fee | $100.00 |" }, { ...programCatalog[0]!.intakes[1]!, domesticTuition: "$15,000.00", fees: "| Fees (per year) | $700.00 |" }] }]);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [...evidence] } as never);
+ const passage = "catalog:https://college.test/programs/practical-nursing-diploma";
+ mockAnswer({ text: "The Yorkton intake lists a student fee of $100.00.", sourceId: passage, quote: "| Student Fee | $100.00 |" });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What are the fees for Practical Nursing in Yorkton?" });
+ expect(result).toMatchObject({ outcome: "supported", answer: "The Yorkton intake lists a student fee of $100.00." });
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce([{ ...programCatalog[0]!, priceNote: "Amounts are approximate, based on last year's program.", intakes: [{ ...programCatalog[0]!.intakes[1]!, domesticTuition: "$15,000.00", fees: "| Tuition (total) | $16,000.00 |\n*Note: Amounts are approximate, based on last year's program.", feeTableTuition: "Tuition (total) $16,000.00" }] }]);
+ mockAnswer({ text: "The Melfort fee table lists total tuition of $16,000.00.", sourceId: passage, quote: "| Tuition (total) | $16,000.00 |" });
+ const melfort = await answerGroundedQuestion({ model: {} as never, context, question: "What are the fees for Practical Nursing in Melfort?" });
+ expect(melfort.answer).toBe("The Melfort fee table lists total tuition of $16,000.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: \"Amounts are approximate, based on last year's program.\" Please confirm the current amount with the college.");
+ // Parts the verified answer already states are not repeated.
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce([{ ...programCatalog[0]!, intakes: [{ ...programCatalog[0]!.intakes[1]!, domesticTuition: "$15,000.00", fees: "| Tuition (total) | $16,000.00 |\n*Note: Amounts are approximate, based on last year's program.", feeTableTuition: "Tuition (total) $16,000.00" }] }]);
+ mockAnswer({ text: "The Melfort intake lists $15,000.00 and the fee table $16,000.00, approximate amounts based on last year's program.", sourceId: passage, quote: "Intake domestic tuition: $15,000.00. Fee table for this intake: | Tuition (total) | $16,000.00 | *Note: Amounts are approximate, based on last year's program." });
+ const repeated = await answerGroundedQuestion({ model: {} as never, context, question: "What are the fees for Practical Nursing in Melfort?" });
+ expect(repeated.answer).toBe("The Melfort intake lists $15,000.00 and the fee table $16,000.00, approximate amounts based on last year's program. Please confirm the current amount with the college.");
+ const passages = JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string).passages;
+ expect(passages[0].text).toContain("Fee table for this intake:\n| Student Fee | $100.00 |");
+ expect(passages[0].text).not.toContain("Fees (per year)");
+});
 it("resolves a spoken follow-up when the call transcript already holds the current question", async () => {
  vi.mocked(loadProgramCatalog).mockResolvedValueOnce(programCatalog);
  const history = [

@@ -40,6 +40,15 @@ Apply
 
 #### Additional Fees
 
+## Tuition and Fees
+
+| **\\*Tuition** | _$15,500.00_ |
+| **\\*Student Fee** | _$100.00_ |
+
+\\*Note: Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.
+
+#### Courses
+
 ## Admission Requirements
 
 This is a Competitive Entry program.
@@ -68,7 +77,18 @@ Winter 2027
 
 **Domestic Tuition**$15,000.00
 
-**International Tuition**$22,000.00`,
+**International Tuition**$22,000.00
+
+#### Additional Fees
+
+## Tuition and Fees
+
+| **\\*Tuition (total)** | _$16,000.00_ |
+| **\\*Fees (per year)** | _$700.00_ |
+
+\\*Note: Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.
+
+#### Courses`,
 });
 
 const ccaMelfort = parseProgramPage({
@@ -188,10 +208,17 @@ const answer = (question: string, previousQuestion?: string) => {
 describe("parseProgramPage", () => {
   it("reads every intake of a full-time program, including tab-only campuses", () => {
     expect(practicalNursing).toMatchObject({ title: "Practical Nursing", area: "Health & Human Services" });
-    expect(practicalNursing.intakes).toEqual([
-      { campus: "Yorkton", term: "Winter 2028", commitment: "Full-Time", startDate: "February 28, 2028", endDate: "February 15, 2030", applicationDeadline: "April 30, 2027", length: "76 Weeks", domesticTuition: "$15,500.00" },
-      { campus: "Melfort", term: "Winter 2027", commitment: "Full-Time", startDate: "February 2027", endDate: "February 16, 2029", applicationDeadline: "April 30, 2026", domesticTuition: "$15,000.00", internationalTuition: "$22,000.00" },
+    expect(practicalNursing.intakes).toMatchObject([
+      { campus: "Yorkton", term: "Winter 2028", commitment: "Full-Time", startDate: "February 28, 2028", endDate: "February 15, 2030", applicationDeadline: "April 30, 2027", length: "76 Weeks", domesticTuition: "$15,500.00", feeTableTuition: "Tuition $15,500.00" },
+      { campus: "Melfort", term: "Winter 2027", commitment: "Full-Time", startDate: "February 2027", endDate: "February 16, 2029", applicationDeadline: "April 30, 2026", domesticTuition: "$15,000.00", internationalTuition: "$22,000.00", feeTableTuition: "Tuition (total) $16,000.00" },
     ]);
+  });
+
+  it("keeps each intake's own fee table and the page's price caveat", () => {
+    expect(practicalNursing.intakes[0]!.fees).toContain("Student Fee");
+    expect(practicalNursing.intakes[1]!.fees).toBe("Tuition and Fees\nTuition (total): $16,000.00\nFees (per year): $700.00\nNote: Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.");
+    expect(practicalNursing.intakes[1]!.fees).not.toContain("Student Fee");
+    expect(practicalNursing.priceNote).toBe("Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.");
   });
 
   it("reads course-by-course offerings with their course, dates and location", () => {
@@ -235,6 +262,18 @@ describe("answerProgramCatalogQuestion", () => {
     expect(reply).not.toContain("Fall 2025");
   });
 
+  it("keeps each program's own campuses when a question names two programs", () => {
+    const both = answer("Which campuses offer Practical Nursing and Welding?");
+    expect(both).toContain("Practical Nursing: Yorkton, Winter 2028");
+    expect(both).toContain("Practical Nursing: Melfort, Winter 2027");
+    expect(both).toContain("Welding: Yorkton (TTC), Fall 2027");
+    expect(answer("Which campuses offer Practical Nursing, Welding or Continuing Care Assistant?")).toBe("Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027); Continuing Care Assistant: Melfort (Winter 2027), Yorkton (Fall 2027); Welding: Yorkton (TTC) (Fall 2027). Which program are you interested in?");
+    const melfort = answer("Is Practical Nursing or Welding offered in Melfort?");
+    expect(melfort).toContain("Practical Nursing: Melfort, Winter 2027");
+    expect(melfort).toContain("I couldn't find a published Welding intake for Melfort.");
+    expect(answer("Are Practical Nursing or Welding offered in Fall 2030?")).toBe("I couldn't find a published Practical Nursing and Welding intake for Fall 2030. Published intakes are Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027); Welding: Yorkton (TTC) (Fall 2027).");
+  });
+
   it("says when a program has no published intake at a campus instead of guessing", () => {
     expect(answer("Is welding offered in Melfort?")).toBe("I couldn't find a published Welding intake for Melfort. Published intakes are Yorkton (TTC) (Fall 2027).");
   });
@@ -246,16 +285,60 @@ describe("answerProgramCatalogQuestion", () => {
 
   it("returns the requirements of the campus's program page for grounded answering", () => {
     const result = ask("What are the requirements for Continuing Care Assistant in Yorkton?");
-    expect(result).toMatchObject({ kind: "requirements", passages: [{ chunkId: "catalog:https://college.test/programs/continuing-care-assistant-ft-3", sourceUrl: ccaYorkton.url }] });
-    expect(result?.kind === "requirements" && result.passages[0]!.content).toContain("English Language Arts A30");
-    expect(result?.kind === "requirements" && result.passages).toHaveLength(1);
+    expect(result).toMatchObject({ kind: "evidence", passages: [{ chunkId: "catalog:https://college.test/programs/continuing-care-assistant-ft-3", sourceUrl: ccaYorkton.url }] });
+    expect(result?.kind === "evidence" && result.passages[0]!.content).toContain("English Language Arts A30");
+    expect(result?.kind === "evidence" && result.passages).toHaveLength(1);
   });
 
-  it("answers tuition from the intake at the campus asked about", () => {
-    expect(answer("How much is Practical Nursing in Yorkton?")).toBe("Practical Nursing, Yorkton, Winter 2028: domestic tuition $15,500.00.");
-    expect(answer("What is the tuition for Practical Nursing in Melfort?")).toBe("Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00, international tuition $22,000.00.");
+  it("answers tuition from the campus's intake with the page's caveat", () => {
+    expect(answer("How much is Practical Nursing in Yorkton?")).toBe("Practical Nursing, Yorkton, Winter 2028: domestic tuition $15,500.00. The fee table notes: \"Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.");
     expect(answer("How much does Practical Nursing cost?")).toContain("Yorkton, Winter 2028: domestic tuition $15,500.00; Melfort, Winter 2027: domestic tuition $15,000.00");
     expect(answer("How much is the dementia care course for CCA in Melfort?")).toBe("Continuing Care Assistant (Part-Time) - Melfort, Melfort, Winter 2027 (DEMC 100 Dementia Care): domestic tuition $772.50.");
+  });
+
+  it("keeps a differing fee-table tuition beside the intake amount instead of reconciling them", () => {
+    const reply = answer("What is the tuition for Practical Nursing in Melfort?");
+    expect(reply).toContain("Melfort, Winter 2027: domestic tuition $15,000.00, international tuition $22,000.00 (the fee table on the same page lists Tuition (total) $16,000.00)");
+    expect(reply).toContain("based on last year's program");
+    expect(reply).toContain("Please confirm the current amount with the college.");
+  });
+
+  it("narrows course-by-course tuition to the course code asked about", () => {
+    expect(answer("How much is DEMC 100 for CCA in Melfort?")).toBe("Continuing Care Assistant (Part-Time) - Melfort, Melfort, Winter 2027 (DEMC 100 Dementia Care): domestic tuition $772.50.");
+  });
+
+  it.each([
+    "What is the application fee for Practical Nursing in Yorkton?",
+    "What is the cost of books for Practical Nursing in Yorkton?",
+    "How much are the fees for Practical Nursing in Yorkton?",
+  ])("grounds other charges in the campus intake's fee table, not the tuition amount: %s", question => {
+    const result = ask(question);
+    expect(result?.kind).toBe("evidence");
+    const content = result?.kind === "evidence" ? result.passages.map(passage => passage.content).join("\n") : "";
+    expect(content).toContain("Intake: Yorkton, Winter 2028");
+    expect(content).toContain("Student Fee");
+    expect(content).not.toContain("Fees (per year)");
+  });
+
+  it("does not treat application deadlines or health programs as charges", () => {
+    expect(answer("When is the application deadline for Practical Nursing?")).toContain("application deadline April 30, 2027");
+    expect(answer("What health programs are offered in Melfort?")).toBe("Programs with a published intake at Melfort: Practical Nursing.");
+  });
+
+  it("attaches the fee-table mismatch and caveat to fee evidence", () => {
+    const result = ask("What are the fees for Practical Nursing in Melfort?");
+    expect(result).toMatchObject({
+      notices: ["The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00.", "The fee table notes: \"Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.\""],
+      confirm: "Please confirm the current amount with the college.",
+    });
+  });
+
+  it.each([
+    "What is the tuition refund policy for Practical Nursing in Yorkton?",
+    "Is there a payment plan for Practical Nursing tuition?",
+    "Are books included in the Practical Nursing tuition?",
+  ])("leaves money policies to the policy pages: %s", question => {
+    expect(ask(question)).toBeNull();
   });
 
   it("leaves tuition to page retrieval when no intake publishes it", () => {

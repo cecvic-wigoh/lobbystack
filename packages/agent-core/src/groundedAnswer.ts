@@ -89,7 +89,7 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   }
   // Program titles can outrank their fee/requirement sections. Search the requested
   // detail within the top matching sources instead of letting overview text hide it.
-  if (catalog?.kind === "requirements") {
+  if (catalog?.kind === "evidence") {
     const ids = new Set(catalog.passages.map(passage => passage.chunkId));
     evidence.matches = [...catalog.passages.map(passage => ({ ...passage, documentId: passage.chunkId, sourceRevision: 0, sequence: 0 })), ...evidence.matches.filter(item => !ids.has(item.chunkId))];
   } else if (isCollege) {
@@ -178,7 +178,15 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
       });
       input.onUsage?.(describeAgentUsage(verification.totalUsage, performance.now() - verificationStartedAt));
       if (!verification.output.supported) console.warn("[grounded-answer] verification declined", { reason: "unsupported_paraphrase", evidenceCount: evidence.matches.length });
-      if (verification.output.supported) return checked;
+      // Fee answers keep the page's price caveat and any intake/fee-table mismatch,
+      // adding only what the verified answer does not already say.
+      if (verification.output.supported) {
+        if (catalog?.kind !== "evidence" || !catalog.notices?.length) return checked;
+        const said = checked.answer.toLowerCase();
+        const missing = catalog.notices.filter(notice => [...notice.matchAll(/\$[\d,]+(?:\.\d{2})?|last year/gi)].some(detail => !said.includes(detail[0].toLowerCase())));
+        const extra = [...missing, ...(catalog.confirm && (missing.length || !/confirm/i.test(said)) ? [catalog.confirm] : [])];
+        return extra.length ? { ...checked, answer: `${checked.answer} ${extra.join(" ")}` } : checked;
+      }
     } catch (error) {
       if (attempt === 0 && error instanceof Error && error.name === "TimeoutError") continue;
       if (attempt === 0) throw error;

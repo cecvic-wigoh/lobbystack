@@ -1,0 +1,55 @@
+pass  Which campuses offer Practical Nursing?
+      → Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028; ends February 15, 2030; application deadline April 30, 2027); Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).
+pass  When does Practical Nursing start in Melfort?
+      → Practical Nursing: Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).
+pass  What are the requirements for the Practical Nursing program in Yorkton?
+pass  Where can I take the continuing care assistant program?
+      → Continuing Care Assistant has published offerings at Online (Fall 2026, Winter 2027), Esterhazy (Winter 2027), Fort Qu'Appelle (Fall 2026, Winter 2027), Yorkton (Fall 2027, Term 1), Melfort (Fall 2026, Winter 2027), Tisdale (Fall 2027), Nipawin (Winter 2027) and Canora (Fall 2026, Winter 2027, Winter 2026). Which campus are you interested in?
+pass  Is CCA offered in Melfort?
+      → Continuing Care Assistant (Part-Time) - Melfort: Melfort, Fall 2026 (SPCR 105 Personal Care 2; starts Nov 17, 2026; ends Dec 15, 2026; Tue & Wed (9:00am-3:00pm)); Melfort, Winter 2027 (SPCR 101 Observing, Reporting & Recording; part-time; starts Feb 10, 2027; ends Mar 09, 2027; Tue & Wed (9:00am-3:00pm)); Melfort, Winter 2027 (DEMC 100 Dementia Care; starts Mar 10, 2027; ends Apr 21, 2027; Tue & Wed (9:00am-3:00pm)). There is 1 more published offering.
+pass  What about Canora?
+      → Continuing Care Assistant (Part-Time) - Canora: Canora, Fall 2026 (SPCR 102 End of Life Care; starts Dec 07, 2026; ends Jan 25, 2027; Mondays (8:30AM - 2:30PM)); Canora, Fall 2026 (HUMD 187 Human Growth and Development; starts Dec 08, 2026; ends Jan 26, 2027; Tuesdays (8:30AM - 2:30PM)); Canora, Winter 2027 (SPCR 285 Special Needs 2; starts Jan 25, 2027; ends Mar 15, 2027; Mondays (8:30AM - 2:30PM)). There are 4 more published offerings.
+pass  What are the requirements for Continuing Care Assistant?
+pass  What semester does the Medical Laboratory Assistant program start?
+      → Medical Laboratory Assistant: Yorkton, Fall 2027 (full-time; starts August 26, 2027; ends April 23, 2028).
+pass  What are the admission requirements for Medical Lab Assistant?
+pass  Which campus has the Primary Care Paramedic program?
+      → Primary Care Paramedic - Spring 2026: Tisdale (LeStrat Building), Spring 2026 (full-time; ends October 29, 2027); Primary Care Paramedic - Fall 2027: Melville, Fall 2027 (full-time; starts August 2027; ends October 29, 2028; application deadline July 15, 2027).
+pass  When is the application deadline for Diagnostic Medical Sonography?
+      → Diagnostic Medical Sonography - Ultrasound: Yorkton, Fall 2027 (full-time; starts August 2027; ends December 2029; application deadline February 15, 2027); Pre-Diagnostic Medical Sonography: Yorkton, Term 1 (part-time).
+pass  Do you offer welding in Yorkton?
+      → Welding: Yorkton (TTC), Fall 2027 (full-time). I couldn't find a published Welding Applied Certificate intake for Yorkton.
+pass  What are the requirements for the welding program?
+pass  Is the electrician program offered in Melville?
+      → I couldn't find a published Electrican Applied Certificate intake for Melville. Published intakes are Nipawin (February 2028).
+pass  Can I study Early Childhood Education online?
+      → I couldn't find a published Early Childhood Education Diploma intake for online. Published intakes are Yorkton (Winter 2027), Yorkton (Spring 2027), Yorkton (Fall 2026), Nipawin (Fall 2026), Nipawin (Winter 2026) and Nipawin (Winter 2027).
+pass  What programs are available at the Nipawin campus?
+      → Programs with a published intake at Nipawin: Electrican Applied Certificate, Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness), Early Childhood Education Diploma, Industrial Mechanics Applied Certificate, Adult 10, Plumbing & Pipefitting Applied Certificate, Introduction to Community Services, Blueprint Reading, Continuing Care Assistant and Adult 12.
+pass  What programs start in Fall 2027?
+      → Programs with a published Fall 2027 intake: University at Suncrest, Heavy Equipment Truck & Transport Technician, Office Administration, Medical Laboratory Assistant, Agricultural Equipment Technician, Continuing Care Assistant, University, Plumbing & Pipefitting Applied Certificate, Diagnostic Medical Sonography, Blueprint Reading, Business Certificate, Welding and 2 more.
+pass  What health programs are offered in Yorkton?
+      → Programs with a published intake at Yorkton: Early Childhood Education Diploma, Medical Laboratory Assistant, Early Childhood Education, Continuing Care Assistant, Practical Nursing, Diagnostic Medical Sonography and Pre-Diagnostic Medical Sonography.
+pass  What business programs are at Tisdale?
+      → Business Certificate - Yorkton & Tisdale: Tisdale, Fall 2027 (full-time; starts August 2027).
+pass  What programs are offered online?
+      → Programs with a published online intake: Continuing Care Assistant, Office Administration, Adult 12 Online and Clearly Canadian.
+pass  How much is Practical Nursing in Yorkton?
+      → Practical Nursing, Yorkton, Winter 2028: domestic tuition $15,500.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+pass  What is the tuition for Practical Nursing in Melfort?
+      → Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00 (the fee table on the same page lists Tuition (total) $16,000.00). The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+pass  What is the application fee for Practical Nursing in Yorkton?
+pass  What is the cost of books for Practical Nursing in Yorkton?
+pass  What is the tuition refund policy for Practical Nursing in Yorkton?
+pass  How much is SPCR 105 for CCA in Melfort?
+      → Continuing Care Assistant (Part-Time) - Melfort, Melfort, Fall 2026 (SPCR 105 Personal Care 2): domestic tuition $702.00.
+pass  Which campuses offer Practical Nursing and Welding?
+      → Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027); Welding Applied Certificate: Tisdale (LeStrat Building) (Fall 2026); Welding: Yorkton (TTC) (Fall 2027). Which program are you interested in?
+pass  How much does the Medical Laboratory Assistant program cost?
+      → Medical Laboratory Assistant, Yorkton, Fall 2027: domestic tuition $11,200.00, international tuition $22,000.00. The fee table notes: "Amount indicated above are approximates only, subject to change once finalized." Please confirm the current amount with the college.
+pass  Tell me about the Electrician Applied Certificate
+pass  Do you offer an architecture program?
+pass  Where is the Yorkton campus?
+pass  What nursing programs do you offer?
+
+32/32 passed across 99 program pages (68 with published intakes).
