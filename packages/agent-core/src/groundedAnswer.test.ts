@@ -333,6 +333,13 @@ it("grounds fee questions in the campus intake's fee table instead of answering 
  expect(passages[0].text).toContain("Fee table for this intake:\n| Student Fee | $100.00 |");
  expect(passages[0].text).not.toContain("Fees (per year)");
 });
+it("answers a published fee table without retrieval or a model call", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce([{ ...programCatalog[0]!, intakes: [{ ...programCatalog[0]!.intakes[1]!, domesticTuition: "$15,000.00", fees: "Tuition (total): $16,000.00\nFees (per year): $700.00\nNote: Amounts are approximate, based on last year's program.", feeTableTuition: "Tuition (total) $16,000.00" }] }]);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What are the fees for Practical Nursing in Melfort?" });
+ expect(result).toEqual({ answer: "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: \"Amounts are approximate, based on last year's program.\" Please confirm the current amount with the college.", sources: [programCatalog[0]!.url], outcome: "supported" });
+ expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
+});
 it("resolves a spoken follow-up when the call transcript already holds the current question", async () => {
  vi.mocked(loadProgramCatalog).mockResolvedValueOnce(programCatalog);
  const history = [

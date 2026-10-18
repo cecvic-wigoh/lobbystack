@@ -41,6 +41,12 @@ pass  What is the tuition for Practical Nursing in Melfort?
 pass  What is the application fee for Practical Nursing in Yorkton?
 pass  What is the cost of books for Practical Nursing in Yorkton?
 pass  What is the tuition refund policy for Practical Nursing in Yorkton?
+pass  What are the fees for Practical Nursing in Melfort?
+      → Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+pass  What is the lab fee for Practical Nursing in Yorkton?
+      → Practical Nursing, Yorkton, Winter 2028 fee table: Lab/Shop Fee: $400.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+pass  What are the fees for Medical Laboratory Assistant?
+      → Medical Laboratory Assistant, Yorkton, Fall 2027 fee table: Tuition (Domestic): $11,200.00; Tuition (International): $22,000.00; Materials/Textbooks: $625.00; Student Fees: $450.00; Health & Dental Plan: $252.00. The fee table notes: "Amount indicated above are approximates only, subject to change once finalized." Please confirm the current amount with the college.
 pass  How much is SPCR 105 for CCA in Melfort?
       → Continuing Care Assistant (Part-Time) - Melfort, Melfort, Fall 2026 (SPCR 105 Personal Care 2): domestic tuition $702.00.
 pass  Which campuses offer Practical Nursing and Welding?
@@ -52,4 +58,4 @@ pass  Do you offer an architecture program?
 pass  Where is the Yorkton campus?
 pass  What nursing programs do you offer?
 
-32/32 passed across 99 program pages (68 with published intakes).
+35/35 passed across 99 program pages (68 with published intakes).

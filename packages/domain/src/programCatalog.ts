@@ -80,6 +80,19 @@ function feeLines(table: string): string {
   }).join("\n");
 }
 
+/** "Label: $amount" lines of a plain fee table. */
+function feeItems(fees: string): Array<{ label: string; value: string }> {
+  return fees.split("\n").flatMap(line => {
+    const item = /^([^:]+):\s*(.*\$\s?[\d,].*)$/.exec(line);
+    if (!item || /^note\b/i.test(item[1]!)) return [];
+    // "Tuition (Domestic) (International): $11,200.00 $22,000.00" is two lines in one row.
+    const tags = [...item[1]!.matchAll(/\(([^)]+)\)/g)].map(tag => tag[1]!);
+    const amounts = item[2]!.match(/\$\s?[\d,]+(?:\.\d{2})?/g) ?? [];
+    const base = item[1]!.replace(/\s*\([^)]*\)/g, "").trim();
+    return tags.length > 1 && tags.length === amounts.length ? tags.map((tag, index) => ({ label: `${base} (${tag})`, value: amounts[index]! })) : [{ label: item[1]!.trim(), value: item[2]!.trim() }];
+  });
+}
+
 /** The page's own caveat about its prices, as written. */
 function priceCaveat(text: string | undefined): string | undefined {
   const line = text?.split("\n").find(value => /tuition|fee|amount/i.test(value) && /approximat|subject to change|last year/i.test(value));
@@ -198,6 +211,8 @@ const SCHEDULE = /\b(?:campus(?:es)?|where|locations?|offered|available|semester
 const TUITION_AMOUNT = /\b(?:tuition|costs?|price|how much|pay)\b/i;
 // Other charges come from the intake's fee table; money policies from the policy pages.
 const OTHER_CHARGES = /\b(?:application|books?|textbooks?|materials?|supplies|student fees?|health|dental|lab|shop|tech fees?|printing|exams?|consumables?|uniforms?|equipment|fees)\b/i;
+// Words naming one fee line; a question without any asks about the whole table.
+const FEE_ITEMS = new Set(["application", "book", "books", "textbook", "textbooks", "material", "materials", "supplies", "student", "health", "dental", "lab", "shop", "tech", "technology", "printing", "exam", "exams", "test", "consumable", "consumables", "uniform", "uniforms", "equipment"]);
 const MONEY_POLICY = /\b(?:refund\w*|deposits?|withdraw\w*|payment plans?|instal+ments?|polic(?:y|ies)|includ\w*|scholarships?|bursar(?:y|ies)|funding|loans?|grants?|sponsor\w*)\b/i;
 // Details the catalog does not hold go through the page passages instead.
 const OTHER_DETAIL = /\b(?:learn|cover\w*|(?<!what |how )about|careers?|jobs?|salary|contact|email|phone|call)\b/i;
@@ -290,7 +305,9 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   const differs = (intake: ProgramIntake) => Boolean(intake.domesticTuition && intake.feeTableTuition && amount(intake.feeTableTuition) !== amount(intake.domesticTuition));
   /** The page's own price caveat for these intakes, and a request to confirm when it applies. */
   const priceCaveats = (items: Array<{ entry: ProgramEntry; intake: ProgramIntake }>) => {
-    const notes = [...new Set(items.map(({ entry, intake }) => priceCaveat(intake.fees) ?? entry.priceNote).filter((note): note is string => Boolean(note)))];
+    // Campus tables repeat the same caveat with small wording differences; say it once.
+    const sameNote = (note: string) => words(note).filter(word => word !== "etc").join(" ");
+    const notes = [...new Map(items.map(({ entry, intake }) => priceCaveat(intake.fees) ?? entry.priceNote).filter((note): note is string => Boolean(note)).map(note => [sameNote(note), note])).values()];
     const fromFeeTable = items.some(({ intake }) => priceCaveat(intake.fees));
     const caveat = notes.length ? (locale === "fr" ? `La page précise : « ${notes.join(" ")} »` : `The ${fromFeeTable ? "fee table" : "page"} notes: "${notes.join(" ")}"`) : "";
     const confirm = items.some(({ intake }) => differs(intake)) || notes.some(note => /approximat|last year/i.test(note))
@@ -300,6 +317,25 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   };
 
   if (wantsCharges) {
+    // A general fee question, or one naming a line the intake's fee table
+    // publishes, is answered by copying those published lines; the model is
+    // not asked to restate a table it could misquote or decline.
+    const askedItems = words(question).filter(word => FEE_ITEMS.has(word)).map(stem);
+    const tabled = programs.flatMap(entry => currentIntakes(entry, now).filter(intake => intake.fees && atCampus(intake) && inTerm(intake) && forCourse(intake)).map(intake => {
+      const lines = feeItems(intake.fees!);
+      return { entry, intake, lines: askedItems.length ? lines.filter(line => words(line.label).some(word => askedItems.some(item => word.includes(item) || stem(word) === item))) : lines };
+    }));
+    if (tabled.length && tabled.every(item => item.lines.length)) {
+      const shown = tabled.slice(0, 2);
+      const single = new Set(shown.map(item => item.entry.title)).size === 1;
+      const listed = shown.map(({ entry, intake, lines }) => `${single ? "" : `${entry.title}, `}${intake.campus}, ${intake.term}${locale === "fr" ? " — tableau des frais" : " fee table"}: ${lines.map(line => `${line.label}: ${line.value}`).join("; ")}`).join(". ");
+      const mismatches = shown.filter(({ intake }) => differs(intake)).map(({ intake }) => locale === "fr"
+        ? `La session de ${intake.campus} indique des droits de scolarité de ${intake.domesticTuition}, alors que son tableau des frais indique ${intake.feeTableTuition}.`
+        : `The ${intake.campus} intake lists domestic tuition ${intake.domesticTuition}, while its fee table lists ${intake.feeTableTuition}.`);
+      const { caveat, confirm } = priceCaveats(shown);
+      const answer = [`${single ? `${shown[0]!.entry.title}, ` : ""}${listed}.`, ...mismatches, caveat, confirm].filter(Boolean).join(" ");
+      return { kind: "answer", answer, sources: [...new Set(shown.map(item => item.entry.url))] };
+    }
     // Books, application and other fees: ground on the fee table of the intake
     // asked about (campuses publish different tables), plus requirements text
     // where application fees are usually stated.

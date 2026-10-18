@@ -44,6 +44,10 @@ const cases: Case[] = [
   { question: "What is the application fee for Practical Nursing in Yorkton?", kind: "evidence", includes: ["Intake: Yorkton, Winter 2028", "Student Fee"], excludes: ["Fees (per year)"] },
   { question: "What is the cost of books for Practical Nursing in Yorkton?", kind: "evidence", includes: ["Intake: Yorkton, Winter 2028", "Books and Supplies"], excludes: ["Melfort"] },
   { question: "What is the tuition refund policy for Practical Nursing in Yorkton?", kind: null },
+  // Published fee tables are copied, with Melfort's two figures, the prior-year caveat and confirmation advice.
+  { question: "What are the fees for Practical Nursing in Melfort?", kind: "answer", includes: ["Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00", "intake lists domestic tuition $15,000.00", "based on last year's program", "Please confirm the current amount"], excludes: ["Yorkton"] },
+  { question: "What is the lab fee for Practical Nursing in Yorkton?", kind: "answer", includes: ["Lab/Shop Fee: $400.00"], excludes: ["Melfort", "Student Fee"] },
+  { question: "What are the fees for Medical Laboratory Assistant?", kind: "answer", includes: ["Tuition (Domestic): $11,200.00", "Tuition (International): $22,000.00", "Materials/Textbooks: $625.00"] },
   { question: "How much is SPCR 105 for CCA in Melfort?", kind: "answer", includes: ["SPCR 105 Personal Care 2", "$702.00"], excludes: ["DEMC 100", "SPCR 101"] },
   // Two programs keep their own campuses.
   { question: "Which campuses offer Practical Nursing and Welding?", kind: "answer", includes: ["Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027)", "Welding: Yorkton (TTC) (Fall 2027)", "Welding Applied Certificate: Tisdale"] },

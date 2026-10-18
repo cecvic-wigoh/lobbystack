@@ -24,13 +24,13 @@
  {
   "question": "What are the requirements for the Practical Nursing program in Yorkton?",
   "result": {
-   "answer": "The published admission requirements are Grade 12 with a minimum overall score of 65% across the listed English, math, science, and social studies/history/Native Studies subjects, plus English language proficiency. The program’s English requirement follows Saskatchewan Polytechnic language requirements and must be provided on or before the document deadline.",
+   "answer": "The published requirements for Practical Nursing are Grade 12 with at least 65% overall across the listed subjects: 30-level English Language Arts; one of the specified Math 30 courses; one of Biology 30, Chemistry 30 or Physics 30; and one of Social Studies 30, History 30 or Native Studies 30. Applicants must also meet Saskatchewan Polytechnic’s English language requirements and provide the English language requirement by the document deadline; the program is competitive entry, and required transcripts and English-language documentation must be submitted before the application deadline.",
    "sources": [
     "https://suncrestcollege.ca/programs/practical-nursing-diploma"
    ],
    "outcome": "supported"
   },
-  "ms": 8627
+  "ms": 8522
  },
  {
   "question": "Where can I take the continuing care assistant program?",
@@ -43,7 +43,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 9
+  "ms": 8
  },
  {
   "question": "What about Canora?",
@@ -69,13 +69,13 @@
  {
   "question": "What are the admission requirements for Medical Lab Assistant?",
   "result": {
-   "answer": "The published academic requirements are Grade 12 with at least 70% in each of English Language Arts A30 and B30, an accepted math course, Health Science 20 or Biology 30, and Physical Science 20 or Chemistry 30; specified previous Saskatchewan courses are also accepted. Applicants must also meet the keyboarding and English-language requirements: 25 words per minute at 90% accuracy, with a five-minute test report, and the program’s English language requirements. The English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+   "answer": "The published academic requirements are Grade 12 with at least 70% in each of English Language Arts A30 and B30, one of the listed math options, one of the listed health science or biology options, and one of the listed physical science or chemistry options; specified previous Saskatchewan biology, chemistry, and math requirements are also accepted. Applicants must also meet the published keyboarding requirement and the program’s English-language requirement.",
    "sources": [
     "https://suncrestcollege.ca/programs/medical-laboratory-assistant"
    ],
    "outcome": "supported"
   },
-  "ms": 5776
+  "ms": 6902
  },
  {
   "question": "What semester does the Medical Laboratory Assistant program start?",
@@ -86,18 +86,18 @@
    ],
    "outcome": "supported"
   },
-  "ms": 8
+  "ms": 9
  },
  {
   "question": "What are the requirements for the welding program?",
   "result": {
-   "answer": "The published academic requirement is Grade 10 standing, with transcripts required; special admission and ACCUPLACER are available. The program follows Saskatchewan Polytechnic’s English language requirements.",
+   "answer": "The Welding program’s published academic requirement is Grade 10 academic standing, with transcripts required; special admission and ACCUPLACER are available. The program follows Saskatchewan Polytechnic’s English language requirements, and a non-refundable $60.00 application fee is required for processing.",
    "sources": [
     "https://suncrestcollege.ca/programs/welding"
    ],
    "outcome": "supported"
   },
-  "ms": 5199
+  "ms": 6518
  },
  {
   "question": "Is the electrician program offered in Melville?",
@@ -108,7 +108,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 7
+  "ms": 8
  },
  {
   "question": "What programs are available at the Nipawin campus?",
@@ -121,7 +121,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 6
+  "ms": 7
  },
  {
   "question": "What programs start in Fall 2027?",
@@ -134,7 +134,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 5
+  "ms": 6
  },
  {
   "question": "What health programs are offered in Yorkton?",
@@ -169,7 +169,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 3
+  "ms": 4
  },
  {
   "question": "What is the application fee for Practical Nursing in Yorkton?",
@@ -180,29 +180,29 @@
    "reason": "missing_evidence",
    "evidenceCount": 7
   },
-  "ms": 1540
+  "ms": 1801
  },
  {
   "question": "What is the cost of books for Practical Nursing in Yorkton?",
   "result": {
-   "answer": "The Practical Nursing fee information notes that books and supplies amounts are approximate and may change, but it does not give a book cost for Yorkton. Textbook and course-manual purchasing information is provided when students register. I can't confirm the remaining details from the published information. The fee table notes: \"Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
-   "sources": [
-    "https://suncrestcollege.ca/programs/practical-nursing-diploma"
-   ],
-   "outcome": "supported"
+   "answer": "I can't confirm that from the business's published information. Please contact the business to confirm.",
+   "sources": [],
+   "outcome": "unknown",
+   "reason": "quote_mismatch",
+   "evidenceCount": 7
   },
-  "ms": 3675
+  "ms": 2715
  },
  {
   "question": "What are the fees for Practical Nursing in Melfort?",
   "result": {
-   "answer": "For the Melfort Winter 2027 intake, the page lists domestic tuition of $15,000, total tuition of $16,000, annual fees of $700, and an annual health and dental fee of $252. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
+   "answer": "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
    "sources": [
     "https://suncrestcollege.ca/programs/practical-nursing-diploma"
    ],
    "outcome": "supported"
   },
-  "ms": 4050
+  "ms": 8
  },
  {
   "question": "What is the tuition refund policy for Practical Nursing in Yorkton?",
@@ -213,7 +213,7 @@
    "reason": "missing_evidence",
    "evidenceCount": 10
   },
-  "ms": 2239
+  "ms": 2120
  },
  {
   "question": "Which campuses offer Practical Nursing and Welding?",
@@ -226,7 +226,7 @@
    ],
    "outcome": "supported"
   },
-  "ms": 11
+  "ms": 8
  },
  {
   "question": "How much is SPCR 105 for CCA in Melfort?",
@@ -237,18 +237,18 @@
    ],
    "outcome": "supported"
   },
-  "ms": 7
+  "ms": 6
  },
  {
   "question": "What nursing programs do you offer?",
   "result": {
-   "answer": "Suncrest offers Practical Nursing, a two-year diploma program. Suncrest also offers the Bachelor of Science in Nursing, which students can complete entirely at Suncrest College in Yorkton.",
+   "answer": "Suncrest College offers Practical Nursing, a two-year diploma program. It also offers the Bachelor of Science in Nursing degree, which students can complete entirely at Suncrest College in Yorkton.",
    "sources": [
     "https://suncrestcollege.ca/programs/medical-laboratory-assistant"
    ],
    "outcome": "supported"
   },
-  "ms": 4180
+  "ms": 4502
  },
  {
   "question": "Do you offer an architecture program?",
@@ -259,7 +259,7 @@
    "reason": "missing_evidence",
    "evidenceCount": 6
   },
-  "ms": 4846
+  "ms": 6690
  },
  {
   "question": "Can you guarantee me admission?",
@@ -270,6 +270,6 @@
    "reason": "missing_evidence",
    "evidenceCount": 7
   },
-  "ms": 4827
+  "ms": 6631
  }
 ]

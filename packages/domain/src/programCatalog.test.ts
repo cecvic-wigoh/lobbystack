@@ -214,6 +214,12 @@ describe("parseProgramPage", () => {
     ]);
   });
 
+  it("splits a combined domestic/international fee row", () => {
+    const mla = parseProgramPage({ url: "https://college.test/programs/mla", title: "MLA", text: "# Medical Laboratory Assistant\n\n#### Yorkton\n\nFull-Time\n\nFall 2027\n\n**Domestic Tuition**$11,200.00\n\n#### Additional Fees\n\n| **\\*Tuition (Domestic)**<br>**(International)** | _$11,200.00_<br>_$22,000.00_ |\n| **\\*Materials/Textbooks** | _$625.00_ |\n\n#### Courses" });
+    expect(answerProgramCatalogQuestion([mla], { question: "What are the fees for Medical Laboratory Assistant?", now })).toMatchObject({ kind: "answer", answer: "Medical Laboratory Assistant, Yorkton, Fall 2027 fee table: Tuition (Domestic): $11,200.00; Tuition (International): $22,000.00; Materials/Textbooks: $625.00." });
+    expect(answerProgramCatalogQuestion([mla], { question: "How much are books for Medical Laboratory Assistant?", now })).toMatchObject({ answer: "Medical Laboratory Assistant, Yorkton, Fall 2027 fee table: Materials/Textbooks: $625.00." });
+  });
+
   it("keeps each intake's own fee table and the page's price caveat", () => {
     expect(practicalNursing.intakes[0]!.fees).toContain("Student Fee");
     expect(practicalNursing.intakes[1]!.fees).toBe("Tuition and Fees\nTuition (total): $16,000.00\nFees (per year): $700.00\nNote: Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.");
@@ -307,11 +313,18 @@ describe("answerProgramCatalogQuestion", () => {
     expect(answer("How much is DEMC 100 for CCA in Melfort?")).toBe("Continuing Care Assistant (Part-Time) - Melfort, Melfort, Winter 2027 (DEMC 100 Dementia Care): domestic tuition $772.50.");
   });
 
+  it("answers fee questions from the campus intake's published fee lines, keeping both tuition figures and the caveat", () => {
+    const caveat = "The fee table notes: \"Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.";
+    expect(answer("What are the fees for Practical Nursing in Melfort?")).toBe(`Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. ${caveat}`);
+    expect(answer("How much is the student fee for Practical Nursing in Yorkton?")).toBe(`Practical Nursing, Yorkton, Winter 2028 fee table: Student Fee: $100.00. ${caveat}`);
+    // Same question, same published answer: no model step can drop it.
+    expect(new Set(Array.from({ length: 5 }, () => answer("What are the fees for Practical Nursing in Melfort?"))).size).toBe(1);
+  });
+
   it.each([
     "What is the application fee for Practical Nursing in Yorkton?",
     "What is the cost of books for Practical Nursing in Yorkton?",
-    "How much are the fees for Practical Nursing in Yorkton?",
-  ])("grounds other charges in the campus intake's fee table, not the tuition amount: %s", question => {
+  ])("grounds charges the fee table does not list in that intake's table, not the tuition amount: %s", question => {
     const result = ask(question);
     expect(result?.kind).toBe("evidence");
     const content = result?.kind === "evidence" ? result.passages.map(passage => passage.content).join("\n") : "";
@@ -326,7 +339,7 @@ describe("answerProgramCatalogQuestion", () => {
   });
 
   it("attaches the fee-table mismatch and caveat to fee evidence", () => {
-    const result = ask("What are the fees for Practical Nursing in Melfort?");
+    const result = ask("What is the cost of books for Practical Nursing in Melfort?");
     expect(result).toMatchObject({
       notices: ["The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00.", "The fee table notes: \"Tuition, Books and Supplies amounts are approximate, based on last year's program and may change at anytime.\""],
       confirm: "Please confirm the current amount with the college.",

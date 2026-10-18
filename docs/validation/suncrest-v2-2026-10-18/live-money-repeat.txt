@@ -1,30 +1,36 @@
-[supported, 7524 ms] What are the fees for Practical Nursing in Melfort? (run 1)
-   For the Melfort intake, the published fee table lists total tuition of $16,000.00, fees of $700.00 per year, and a Health & Dental Fee of $252.00 per year. The page notes that tuition, books and supplies, and health and dental amounts are approximate, based on last year's program, and may change at anytime. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. Please confirm the current amount with the college.
-[unknown, 9117 ms] What are the fees for Practical Nursing in Melfort? (run 2)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[supported, 6855 ms] What are the fees for Practical Nursing in Melfort? (run 3)
-   For the Melfort intake, the page lists domestic tuition of $15,000.00; its fee table lists total tuition of $16,000.00, fees of $700.00 per year, and a health and dental fee of $252.00 per year. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[supported, 3978 ms] What is the cost of books for Practical Nursing in Yorkton? (run 1)
-   The Practical Nursing page says book and supply amounts are approximate and may change; it does not specify a book cost in the available details. Textbook and course-manual purchasing information is provided when students register. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[supported, 3884 ms] What is the cost of books for Practical Nursing in Yorkton? (run 2)
-   The Yorkton Practical Nursing page does not specify a book cost; it says textbook and course-manual purchasing information is provided when you register. The page notes that books and supplies amounts are approximate and may change, but gives no amount in the provided intake details. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[unknown, 4294 ms] What is the cost of books for Practical Nursing in Yorkton? (run 3)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[unknown, 1672 ms] What is the application fee for Practical Nursing in Yorkton? (run 1)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[unknown, 1898 ms] What is the application fee for Practical Nursing in Yorkton? (run 2)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[supported, 3821 ms] What is the application fee for Practical Nursing in Yorkton? (run 3)
-   The published fee table lists a $100 Student Fee for the Yorkton Winter 2028 intake, but it does not identify an application fee. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[unknown, 3170 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 1)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[unknown, 2143 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 2)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[unknown, 1952 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 3)
-   I can't confirm that from the business's published information. Please contact the business to confirm.
-[supported, 8 ms] What is the tuition for Practical Nursing in Melfort? (run 1)
+[supported, 40 ms] What are the fees for Practical Nursing in Melfort? (run 1)
+   Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 3 ms] What are the fees for Practical Nursing in Melfort? (run 2)
+   Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 2 ms] What are the fees for Practical Nursing in Melfort? (run 3)
+   Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 2 ms] What are the fees for Practical Nursing in Yorkton? (run 1)
+   Practical Nursing, Yorkton, Winter 2028 fee table: Tuition: $15,500.00; Student Fee: $100.00; Health & Dental Fee: $252.00; Lab/Shop Fee: $400.00; Tech Fee: $100.00; Printing Fee: $400.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 2 ms] What are the fees for Practical Nursing in Yorkton? (run 2)
+   Practical Nursing, Yorkton, Winter 2028 fee table: Tuition: $15,500.00; Student Fee: $100.00; Health & Dental Fee: $252.00; Lab/Shop Fee: $400.00; Tech Fee: $100.00; Printing Fee: $400.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 2 ms] What are the fees for Practical Nursing in Yorkton? (run 3)
+   Practical Nursing, Yorkton, Winter 2028 fee table: Tuition: $15,500.00; Student Fee: $100.00; Health & Dental Fee: $252.00; Lab/Shop Fee: $400.00; Tech Fee: $100.00; Printing Fee: $400.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 2 ms] What is the tuition for Practical Nursing in Melfort? (run 1)
    Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00 (the fee table on the same page lists Tuition (total) $16,000.00). The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[supported, 5 ms] What is the tuition for Practical Nursing in Melfort? (run 2)
+[supported, 2 ms] What is the tuition for Practical Nursing in Melfort? (run 2)
    Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00 (the fee table on the same page lists Tuition (total) $16,000.00). The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
-[supported, 5 ms] What is the tuition for Practical Nursing in Melfort? (run 3)
+[supported, 2 ms] What is the tuition for Practical Nursing in Melfort? (run 3)
    Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00 (the fee table on the same page lists Tuition (total) $16,000.00). The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 6498 ms] What is the cost of books for Practical Nursing in Yorkton? (run 1)
+   The Yorkton Practical Nursing page does not give a book-cost amount; it says textbook and course-manual purchasing information is provided when you register. The page notes that books and supplies amounts are approximate and may change at any time. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 4792 ms] What is the cost of books for Practical Nursing in Yorkton? (run 2)
+   The listed intake notes that books and supplies amounts are approximate and may change, but it does not state a book cost. Textbook and course-manual purchasing information is provided when students register. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 4585 ms] What is the cost of books for Practical Nursing in Yorkton? (run 3)
+   The published intake details do not give a book-cost amount; they say books and supplies estimates are approximate and may change. Textbook and course-manual purchasing information is provided when students register. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[supported, 5163 ms] What is the application fee for Practical Nursing in Yorkton? (run 1)
+   The published Yorkton intake lists a $100.00 Student Fee, but it does not identify an application fee. I can't confirm the remaining details from the published information. The fee table notes: "Tuition, Books and Supplies, Health and Dental, etc amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+[unknown, 2198 ms] What is the application fee for Practical Nursing in Yorkton? (run 2)
+   I can't confirm that from the business's published information. Please contact the business to confirm.
+[unknown, 2145 ms] What is the application fee for Practical Nursing in Yorkton? (run 3)
+   I can't confirm that from the business's published information. Please contact the business to confirm.
+[unknown, 2958 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 1)
+   I can't confirm that from the business's published information. Please contact the business to confirm.
+[unknown, 2753 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 2)
+   I can't confirm that from the business's published information. Please contact the business to confirm.
+[unknown, 2324 ms] What is the tuition refund policy for Practical Nursing in Yorkton? (run 3)
+   I can't confirm that from the business's published information. Please contact the business to confirm.

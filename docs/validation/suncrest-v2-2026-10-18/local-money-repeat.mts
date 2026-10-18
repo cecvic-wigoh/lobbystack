@@ -9,7 +9,7 @@ const worker = createDatabaseClient("lobbystack_worker", { ...process.env });
 const domain = { db: worker.db, embeddings: createEmbeddingProvider()! };
 const model = createAgentModel({ ...process.env, AI_CHAT_REASONING_EFFORT: "low" })!;
 const snapshot = { businessId: "00000000-0000-4000-8000-00000000c011", displayName: "Suncrest College", defaultLocale: "en", timezone: "America/Regina" };
-const questions = ["What are the fees for Practical Nursing in Melfort?", "What is the cost of books for Practical Nursing in Yorkton?", "What is the application fee for Practical Nursing in Yorkton?", "What is the tuition refund policy for Practical Nursing in Yorkton?", "What is the tuition for Practical Nursing in Melfort?"];
+const questions = ["What are the fees for Practical Nursing in Melfort?", "What are the fees for Practical Nursing in Yorkton?", "What is the tuition for Practical Nursing in Melfort?", "What is the cost of books for Practical Nursing in Yorkton?", "What is the application fee for Practical Nursing in Yorkton?", "What is the tuition refund policy for Practical Nursing in Yorkton?"];
 const results = [];
 try {
   for (const question of questions) for (let run = 1; run <= 3; run++) {
