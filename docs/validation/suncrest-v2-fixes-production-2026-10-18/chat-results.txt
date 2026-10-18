@@ -1,0 +1,53 @@
+Browser tab: 12, Title: "Suncrest College | Meet your AI receptionist", URL: "https://admin-production-ad1d.up.railway.app/en/demo/suncrest".
+0 AXWebArea Suncrest College | Meet your AI receptionist, URL: admin-production-ad1d.up.railway.app/en/demo/suncrest
+	1 container Notifications alt+T
+	2 container
+		3 image Suncrest College
+		4 text AI RECEPTIONIST PREVIEW
+		5 link Description: College website, Value: suncrestcollege.ca/
+		6 text A WELCOMING FIRST CONVERSATION
+		7 heading Your next chapter. Let’s talk about it., Value: 1
+			8 text Your next chapter.
+			9 text Let’s talk about it.
+		10 text Meet Suncrest’s AI receptionist. Ask about programs, admissions, and student life—in your own words.
+		11 text START WITH SOMETHING YOU’RE CURIOUS ABOUT
+		12 button Find my next step Who should I contact about admission to Suncrest College?
+			13 text Find my next step
+			14 text Who should I contact about admission to Suncrest College?
+		15 button Explore a course What does the 1072 Awareness course cover?
+			16 text Explore a course
+			17 text What does the 1072 Awareness course cover?
+		18 button Understand requirements Can I take ACCUPLACER before applying for a program?
+			19 text Understand requirements
+			20 text Can I take ACCUPLACER before applying for a program?
+		21 text Answers grounded in the college’s published information. When a detail can’t be confirmed, we’ll say so.
+		22 container
+			23 container Choose how to talk
+				24 checkbox Talk naturally, Value: 0
+				25 checkbox Type a question, Value: 1
+			29 container Chat with Suncrest College
+				30 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm
+					31 container Notifications alt+T
+					32 container
+						33 text Suncrest College
+						34 text Your AI receptionist
+						35 button Talk to us live
+						39 text Who should I contact about admission to Suncrest College? For general admissions and applications inquiries, email admissions@suncrestcollege.ca.
+						40 text Sources: 
+						41 link Description: 1, Value: suncrestcollege.ca/contact-us
+						42 text Who do I contact for admissions? For general admissions and applications inquiries, email admissions@suncrestcollege.ca.
+						43 text Sources: 
+						44 link Description: 1, Value: suncrestcollege.ca/contact-us
+						45 text What are the fees for Practical Nursing in Melfort? Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+						46 text Sources: 
+						47 link Description: 1, Value: suncrestcollege.ca/programs/practical-nursing-diploma
+						48 text What is the admissions email address? For general admissions and applications inquiries, email admissions@suncrestcollege.ca.
+						49 text Sources: 
+						50 link Description: 1, Value: suncrestcollege.ca/contact-us
+						51 text What is the capital of France? I can help with the business's information and services only.
+						37 text field (settable) Description: Type your message..., ID: base-ui-_R_lav5ubsivb_
+						38 button (disabled) Send
+			27 text AI receptionist · Voice and chat
+		28 text Built for Suncrest College Programs. People. Possibilities. Demonstration · October 2026
+
+The focused UI element is 30 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm

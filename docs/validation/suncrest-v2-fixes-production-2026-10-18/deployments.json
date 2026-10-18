@@ -1,0 +1,21 @@
+[
+  {
+    "component": "admin",
+    "deploymentId": "05708f3f-36df-4e55-9255-abcc1f8165bc",
+    "status": "SUCCESS",
+    "commit": "7c548038fa5641c05fd34ba29e814b264a8650a3"
+  },
+  {
+    "component": "worker",
+    "deploymentId": "dced527e-8797-4fa3-a070-e9e88dc6bc7c",
+    "status": "SUCCESS",
+    "commit": "7c548038fa5641c05fd34ba29e814b264a8650a3"
+  },
+  {
+    "component": "livekit-voice",
+    "agentId": "CA_QYUz6BvyPBiS",
+    "version": "KFzbY2nVR7hS",
+    "status": "Running",
+    "commit": "c74e4ff3946492924191f9a9a0dcd7cd85bc6349"
+  }
+]
