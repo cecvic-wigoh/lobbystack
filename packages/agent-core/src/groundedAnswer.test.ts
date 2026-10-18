@@ -56,6 +56,7 @@ it.each([
  { channel: "web_chat", provider: "openai.responses", modelId: "gpt-6-luna", fast: false },
  { channel: "web_voice", provider: "openai.responses", modelId: "other-model", fast: false },
  { channel: "web_voice", provider: "other.chat", modelId: "gpt-6-luna", fast: false },
+ { channel: "web_voice", provider: "openai.chat", modelId: "gpt-6-luna", fast: false },
 ])("uses a fast voice draft without reducing factual verification: %j", async ({ channel, provider, modelId, fast }) => {
  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
  mockAnswer(claim);
