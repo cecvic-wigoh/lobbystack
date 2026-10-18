@@ -36,8 +36,11 @@ const cases: Case[] = [
   { question: "What health programs are offered in Yorkton?", kind: "answer", includes: ["Practical Nursing", "Medical Laboratory Assistant"], excludes: ["Business", "Welding"] },
   { question: "What business programs are at Tisdale?", kind: "answer", includes: ["Business Certificate", "Tisdale, Fall 2027"] },
   { question: "What programs are offered online?", kind: "answer", includes: ["Continuing Care Assistant", "Office Administration"] },
-  // Left to page retrieval: tuition, descriptions, unpublished programs and campus addresses.
-  { question: "How much is Practical Nursing in Yorkton?", kind: null },
+  // Tuition differs by campus; Melfort's fee table ($16,000.00 total) must not answer for Yorkton.
+  { question: "How much is Practical Nursing in Yorkton?", kind: "answer", includes: ["Yorkton, Winter 2028", "$15,500.00"], excludes: ["Melfort", "16,000"] },
+  { question: "What is the tuition for Practical Nursing in Melfort?", kind: "answer", includes: ["Melfort, Winter 2027", "$15,000.00"], excludes: ["Yorkton"] },
+  { question: "How much does the Medical Laboratory Assistant program cost?", kind: "answer", includes: ["Yorkton, Fall 2027", "$11,200.00", "$22,000.00"] },
+  // Left to page retrieval: descriptions, unpublished programs and campus addresses.
   { question: "Tell me about the Electrician Applied Certificate", kind: null },
   { question: "Do you offer an architecture program?", kind: null },
   { question: "Where is the Yorkton campus?", kind: null },

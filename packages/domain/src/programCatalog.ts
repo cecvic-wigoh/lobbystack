@@ -12,6 +12,8 @@ export type ProgramIntake = {
   applicationDeadline?: string;
   length?: string;
   schedule?: string;
+  domesticTuition?: string;
+  internationalTuition?: string;
 };
 
 export type ProgramEntry = {
@@ -78,7 +80,7 @@ export function parseProgramPage(input: { url: string; title: string; text: stri
     const body = block[4]!;
     const field = (label: string) => { const value = new RegExp(`\\*\\*${label}\\*\\*\\s*([^\\n*]+)`).exec(body)?.[1]; return value ? plain(value) : undefined; };
     const intake: ProgramIntake = { campus: plain(block[1]!), term: plain(block[3]!), commitment: block[2]! };
-    for (const [key, label] of [["startDate", "Start Date"], ["endDate", "End Date"], ["applicationDeadline", "Application Deadline"], ["length", "Length"]] as const) {
+    for (const [key, label] of [["startDate", "Start Date"], ["endDate", "End Date"], ["applicationDeadline", "Application Deadline"], ["length", "Length"], ["domesticTuition", "Domestic Tuition"], ["internationalTuition", "International Tuition"]] as const) {
       const value = field(label);
       if (value) intake[key] = value;
     }
@@ -108,6 +110,8 @@ export function parseProgramPage(input: { url: string; title: string; text: stri
     if (dates?.[1]) intake.endDate = dates[1];
     const schedule = field("Schedule");
     if (schedule) intake.schedule = schedule;
+    const tuition = field("Domestic Tuition");
+    if (tuition) intake.domesticTuition = tuition;
     add(intake);
   }
   const requirements = requirementsSection(text);
@@ -156,8 +160,9 @@ function matchPrograms(catalog: ProgramEntry[], question: string | undefined): P
 
 const REQUIREMENTS = /\b(?:requirements?|prerequisites?|pre-requisites?|eligib\w*|qualif\w*|admission|entrance|get in(?:to)?|need to (?:apply|enrol|enroll|have))\b/i;
 const SCHEDULE = /\b(?:campus(?:es)?|where|locations?|offered|available|semesters?|terms?|intakes?|start\w*|begin\w*|when|deadline|fall|autumn|winter|spring|summer|online|virtual|in person|in-person|dates?|schedule)\b/i;
+const TUITION = /\b(?:tuition|fees?|costs?|price|how much|pay)\b/i;
 // Details the catalog does not hold go through the page passages instead.
-const OTHER_DETAIL = /\b(?:tuition|fees?|costs?|price|how much|pay|learn|cover\w*|(?<!what |how )about|careers?|jobs?|salary|contact|email|phone|call)\b/i;
+const OTHER_DETAIL = /\b(?:learn|cover\w*|(?<!what |how )about|careers?|jobs?|salary|contact|email|phone|call)\b/i;
 const CATALOG_LIST = /\b(?:programs?|courses?|study|offer\w*|available|take)\b/i;
 
 const isOnline = (campus: string) => /^(?:online|virtual|remote)/i.test(campus.trim());
@@ -201,7 +206,8 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   const campus = mentionedCampus(catalog, question) ?? (input.previousQuestion && !mentionedTerm(question) ? mentionedCampus(catalog, input.previousQuestion) : undefined);
   const term = mentionedTerm(question);
   const wantsSchedule = SCHEDULE.test(question) || Boolean(campus) || Boolean(term);
-  if (!wantsRequirements && (!wantsSchedule || OTHER_DETAIL.test(question))) return null;
+  const wantsTuition = !wantsRequirements && TUITION.test(question);
+  if (!wantsRequirements && !wantsTuition && (!wantsSchedule || OTHER_DETAIL.test(question))) return null;
   let programs = matchPrograms(catalog, question);
   if (!programs.length && input.previousQuestion && /\b(?:it|its|that|this|the program|the course|there|same|what about|how about|and)\b/i.test(question)) programs = matchPrograms(catalog, input.previousQuestion);
   const atCampus = (intake: ProgramIntake) => !campus || (campus === "online" ? isOnline(intake.campus) : campusKey(intake.campus) === campus || campusKey(intake.campus).startsWith(`${campus} `));
@@ -232,6 +238,22 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
         };
       }),
     };
+  }
+
+  if (wantsTuition) {
+    // Tuition is published per intake and differs by campus, e.g. Practical
+    // Nursing in Yorkton and Melfort. Answer only from intakes that state it.
+    const priced = programs.flatMap(entry => currentIntakes(entry, now).filter(intake => intake.domesticTuition && atCampus(intake) && inTerm(intake)).map(intake => ({ entry, intake })));
+    if (!priced.length) return null;
+    const shown = priced.slice(0, 3);
+    const more = priced.length - shown.length;
+    const single = new Set(shown.map(item => item.entry.title)).size === 1;
+    const price = (intake: ProgramIntake) => locale === "fr"
+      ? `droits de scolarité ${intake.domesticTuition} (étudiants canadiens)${intake.internationalTuition ? `, ${intake.internationalTuition} (étudiants internationaux)` : ""}`
+      : `domestic tuition ${intake.domesticTuition}${intake.internationalTuition ? `, international tuition ${intake.internationalTuition}` : ""}`;
+    const listed = shown.map(({ entry, intake }) => `${single ? "" : `${entry.title}, `}${intake.campus}, ${intake.term}${intake.course ? ` (${intake.course})` : ""}: ${price(intake)}`).join("; ");
+    const answer = `${single ? `${shown[0]!.entry.title}, ` : ""}${listed}.${more > 0 ? (locale === "fr" ? ` Il y a ${more} autres offres publiées.` : ` There ${more === 1 ? "is 1 more published offering" : `are ${more} more published offerings`}.`) : ""}`;
+    return { kind: "answer", answer, sources: [...new Set(shown.map(item => item.entry.url))] };
   }
 
   if (programs.length) {
@@ -271,7 +293,7 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   }
 
   // No program named: list programs offered at a campus or in a term.
-  if (!wantsRequirements && (campus || term) && CATALOG_LIST.test(question)) {
+  if (!wantsRequirements && !wantsTuition && (campus || term) && CATALOG_LIST.test(question)) {
     const campusWords = new Set(catalog.flatMap(entry => entry.intakes.flatMap(intake => words(intake.campus))));
     const subject = words(question).filter(word => word.length > 3 && !GENERIC.has(word) && !SEASONS.has(word) && !QUESTION_WORDS.has(word) && !campusWords.has(word)).map(stem);
     const byArea = (entry: ProgramEntry) => words(`${entry.area ?? ""} ${baseTitle(entry.title)}`).some(word => subject.includes(stem(word)));

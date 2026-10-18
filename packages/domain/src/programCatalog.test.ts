@@ -64,7 +64,11 @@ Winter 2027
 
 **Start Date**February 2027
 
-**End Date**February 16, 2029`,
+**End Date**February 16, 2029
+
+**Domestic Tuition**$15,000.00
+
+**International Tuition**$22,000.00`,
 });
 
 const ccaMelfort = parseProgramPage({
@@ -92,6 +96,10 @@ Tue & Wed (9:00am-3:00pm)
 Location:
 
 Melfort
+
+Domestic Tuition:
+
+$772.50
 
 Capacity:
 
@@ -181,13 +189,13 @@ describe("parseProgramPage", () => {
   it("reads every intake of a full-time program, including tab-only campuses", () => {
     expect(practicalNursing).toMatchObject({ title: "Practical Nursing", area: "Health & Human Services" });
     expect(practicalNursing.intakes).toEqual([
-      { campus: "Yorkton", term: "Winter 2028", commitment: "Full-Time", startDate: "February 28, 2028", endDate: "February 15, 2030", applicationDeadline: "April 30, 2027", length: "76 Weeks" },
-      { campus: "Melfort", term: "Winter 2027", commitment: "Full-Time", startDate: "February 2027", endDate: "February 16, 2029", applicationDeadline: "April 30, 2026" },
+      { campus: "Yorkton", term: "Winter 2028", commitment: "Full-Time", startDate: "February 28, 2028", endDate: "February 15, 2030", applicationDeadline: "April 30, 2027", length: "76 Weeks", domesticTuition: "$15,500.00" },
+      { campus: "Melfort", term: "Winter 2027", commitment: "Full-Time", startDate: "February 2027", endDate: "February 16, 2029", applicationDeadline: "April 30, 2026", domesticTuition: "$15,000.00", internationalTuition: "$22,000.00" },
     ]);
   });
 
   it("reads course-by-course offerings with their course, dates and location", () => {
-    expect(ccaMelfort.intakes[0]).toEqual({ campus: "Melfort", term: "Winter 2027", commitment: "Part-Time", course: "DEMC 100 Dementia Care", startDate: "Mar 10, 2027", endDate: "Apr 21, 2027", schedule: "Tue & Wed (9:00am-3:00pm)" });
+    expect(ccaMelfort.intakes[0]).toEqual({ campus: "Melfort", term: "Winter 2027", commitment: "Part-Time", course: "DEMC 100 Dementia Care", startDate: "Mar 10, 2027", endDate: "Apr 21, 2027", schedule: "Tue & Wed (9:00am-3:00pm)", domesticTuition: "$772.50" });
   });
 
   it("keeps the admission requirements section and stops at the next topic", () => {
@@ -243,8 +251,19 @@ describe("answerProgramCatalogQuestion", () => {
     expect(result?.kind === "requirements" && result.passages).toHaveLength(1);
   });
 
+  it("answers tuition from the intake at the campus asked about", () => {
+    expect(answer("How much is Practical Nursing in Yorkton?")).toBe("Practical Nursing, Yorkton, Winter 2028: domestic tuition $15,500.00.");
+    expect(answer("What is the tuition for Practical Nursing in Melfort?")).toBe("Practical Nursing, Melfort, Winter 2027: domestic tuition $15,000.00, international tuition $22,000.00.");
+    expect(answer("How much does Practical Nursing cost?")).toContain("Yorkton, Winter 2028: domestic tuition $15,500.00; Melfort, Winter 2027: domestic tuition $15,000.00");
+    expect(answer("How much is the dementia care course for CCA in Melfort?")).toBe("Continuing Care Assistant (Part-Time) - Melfort, Melfort, Winter 2027 (DEMC 100 Dementia Care): domestic tuition $772.50.");
+  });
+
+  it("leaves tuition to page retrieval when no intake publishes it", () => {
+    expect(ask("How much is welding in Yorkton?")).toBeNull();
+    expect(ask("How much are programs at Melfort?")).toBeNull();
+  });
+
   it("leaves other questions to page retrieval", () => {
-    expect(ask("How much is Practical Nursing in Yorkton?")).toBeNull();
     expect(ask("Tell me about Practical Nursing")).toBeNull();
     expect(ask("Do you offer an architecture program?")).toBeNull();
     expect(ask("Where is the Yorkton campus?")).toBeNull();
