@@ -1,6 +1,6 @@
 import { generateText, Output, type LanguageModel } from "ai";
 import { z } from "zod";
-import { searchKnowledgeEvidence } from "@lobbystack/domain";
+import { answerProgramCatalogQuestion, loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import type { AgentToolContext } from "./tools";
 import { describeAgentUsage, type AgentUsage } from "./model";
 
@@ -58,10 +58,17 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     || (!/^(?:what|which|who|where|when|why|how|can|could|do|does|is|are|will|would|tell|list|show)\b/i.test(input.question.trim()) && input.question.trim().split(/\s+/).length <= 8);
   const history = (needsContext ? input.history ?? [] : []).slice(-4).map(turn => ({ role: turn.role, content: turn.content.slice(0, 1000) }));
   // Previous questions resolve follow-ups; previous answers are never evidence.
-  const previousQuestion = history.filter(turn => turn.role === "user").at(-1)?.content;
+  // A call transcript can already hold the question being answered; skip it.
+  const spoken = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  const asked = spoken(input.question);
+  const previousQuestion = history.filter(turn => turn.role === "user" && !(spoken(turn.content) === asked || (spoken(turn.content).length > 0 && asked.includes(spoken(turn.content))))).at(-1)?.content;
   const overviewName = [snapshot.displayName, snapshot.displayName.split(/\s+/)[0]].filter(Boolean).map(name => name!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
   const asksOverview = new RegExp(`\\bwhat does (?:${overviewName}) do\\b|\\bwhat do you do\\b|\\btell me about (?:your (?:company|business)|${overviewName})[?.!]*$`, "i").test(input.question.trim());
   const query = asksOverview ? "about company who we are what we do" : previousQuestion ? `${input.question}\nPrevious question: ${previousQuestion}` : input.question;
+  // Campus, term and requirement questions are answered from every program page
+  // at once; a handful of retrieved passages cannot list them completely.
+  const catalog = isCollege ? answerProgramCatalogQuestion(await loadProgramCatalog(domain, { businessId: snapshot.businessId }).catch(() => []), { question: input.question, ...(previousQuestion ? { previousQuestion } : {}), locale }) : null;
+  if (catalog?.kind === "answer") return { answer: catalog.answer, sources: catalog.sources, outcome: "supported" };
   const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
   if (asksOverview) {
     const about = await Promise.all(["/about", "/about-us"].map(path => search("company overview who we are history", path)));
@@ -82,7 +89,10 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   }
   // Program titles can outrank their fee/requirement sections. Search the requested
   // detail within the top matching sources instead of letting overview text hide it.
-  if (isCollege) {
+  if (catalog?.kind === "requirements") {
+    const ids = new Set(catalog.passages.map(passage => passage.chunkId));
+    evidence.matches = [...catalog.passages.map(passage => ({ ...passage, documentId: passage.chunkId, sourceRevision: 0, sequence: 0 })), ...evidence.matches.filter(item => !ids.has(item.chunkId))];
+  } else if (isCollege) {
     const detail = [
       /\b(?:tuition|fees?|price|cost)\b|how much/i.test(query) ? "tuition fees cost" : "",
       /\b(?:requirements?|prerequisites?|eligib\w*)\b/i.test(query) ? "admission requirements prerequisites English language" : "",

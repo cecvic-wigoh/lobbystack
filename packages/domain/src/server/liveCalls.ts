@@ -1,6 +1,6 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 
-import { calls, contacts, enqueueOutbox, withBusinessTransaction } from "@lobbystack/db";
+import { calls, contacts, enqueueOutbox, transcripts, withBusinessTransaction } from "@lobbystack/db";
 
 import { reserveOutboundCallAttempt } from "./billing";
 import type { DomainContext } from "./context";
@@ -106,6 +106,15 @@ export async function saveLiveCallTurn(context: DomainContext, input: { business
   const text = input.text.trim();
   if (!text) return;
   await upsertTranscript(context, { businessId: input.businessId, callId: input.callId, sequence: input.sequence, speaker: input.speaker, text, final: true });
+}
+
+/** Recent call turns, oldest first, so a spoken follow-up can be resolved. */
+export async function listLiveCallHistory(context: DomainContext, input: { businessId: string; callId: string; limit?: number }): Promise<Array<{ role: "user" | "assistant"; content: string }>> {
+  const rows = await withBusinessTransaction(context.db, { businessId: input.businessId, actorType: "worker" }, async (tx) =>
+    await tx.select({ speaker: transcripts.speaker, text: transcripts.text }).from(transcripts)
+      .where(and(eq(transcripts.businessId, input.businessId), eq(transcripts.callId, input.callId), eq(transcripts.final, true)))
+      .orderBy(desc(transcripts.sequence)).limit(input.limit ?? 6));
+  return rows.reverse().map(row => ({ role: row.speaker === "caller" ? "user" as const : "assistant" as const, content: row.text }));
 }
 
 /**

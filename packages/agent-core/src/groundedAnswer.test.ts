@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { generateText } from "ai";
-import { searchKnowledgeEvidence } from "@lobbystack/domain";
+import { loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
-vi.mock("@lobbystack/domain", () => ({ searchKnowledgeEvidence: vi.fn() }));
+vi.mock("@lobbystack/domain", async () => ({ searchKnowledgeEvidence: vi.fn(), loadProgramCatalog: vi.fn(async () => []), answerProgramCatalogQuestion: (await import("../../domain/src/programCatalog")).answerProgramCatalogQuestion }));
 vi.mock("ai", async importOriginal => ({ ...await importOriginal<typeof import("ai")>(), generateText: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
@@ -287,4 +287,40 @@ it("does not rewrite another company's overview question", async () => {
  vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "out_of_scope", claims: [] } } as never);
  await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en" } } as never, question: "What does OpenAI do?" });
  expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ query: "What does OpenAI do?" }));
+});
+
+const programCatalog = [{
+ title: "Practical Nursing",
+ url: "https://college.test/programs/practical-nursing-diploma",
+ intakes: [{ campus: "Yorkton", term: "Winter 2028", commitment: "Full-Time", startDate: "February 28, 2028" }, { campus: "Melfort", term: "Winter 2027", commitment: "Full-Time", startDate: "February 2027" }],
+ requirements: "Admission Requirements\nGrade 12 with a minimum overall score of 65%.",
+}];
+it("answers campus and term questions from the program catalog without retrieval", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(programCatalog);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Which campuses offer Practical Nursing?" });
+ expect(result).toEqual({ answer: "Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028); Melfort, Winter 2027 (full-time; starts February 2027).", sources: [programCatalog[0]!.url], outcome: "supported" });
+ expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
+});
+it("grounds requirement answers in the requested program's requirements section", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(programCatalog);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [...evidence] } as never);
+ const passage = "catalog:https://college.test/programs/practical-nursing-diploma";
+ mockAnswer({ text: "Practical Nursing requires Grade 12 with a minimum overall score of 65%.", sourceId: passage, quote: "Grade 12 with a minimum overall score of 65%." });
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What are the requirements for Practical Nursing in Yorkton?" });
+ expect(result).toMatchObject({ outcome: "supported", sources: [programCatalog[0]!.url] });
+ const passages = JSON.parse(vi.mocked(generateText).mock.calls[0]![0].prompt as string).passages;
+ expect(passages[0]).toMatchObject({ sourceId: passage, url: programCatalog[0]!.url });
+ expect(passages[0].text).toContain("Published intakes: Yorkton, Winter 2028");
+});
+it("resolves a spoken follow-up when the call transcript already holds the current question", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(programCatalog);
+ const history = [
+  { role: "user" as const, content: "Is Practical Nursing offered in Yorkton?" },
+  { role: "assistant" as const, content: "Yes, Winter 2028." },
+  { role: "user" as const, content: "What about Melfort?" },
+  { role: "assistant" as const, content: "Let me check." },
+ ];
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What about Melfort?", history });
+ expect(result.answer).toBe("Practical Nursing: Melfort, Winter 2027 (full-time; starts February 2027).");
 });

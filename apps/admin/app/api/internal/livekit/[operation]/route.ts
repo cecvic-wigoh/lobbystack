@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { calls, withBusinessTransaction } from "@lobbystack/db";
-import { claimLivekitTransfer, completeCall, getCachedBusinessSnapshot, markLiveCallMediaStarted, prepareLiveCallTransfer, recordLiveCallTransferResult, saveLiveCallTurn } from "@lobbystack/domain";
+import { claimLivekitTransfer, completeCall, getCachedBusinessSnapshot, listLiveCallHistory, markLiveCallMediaStarted, prepareLiveCallTransfer, recordLiveCallTransferResult, saveLiveCallTurn } from "@lobbystack/domain";
 import { createAgentModel, answerGroundedQuestion } from "@lobbystack/agent-core";
 import { z } from "zod";
 import { asApiResponse } from "@/lib/api-helpers";
@@ -74,16 +74,19 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
         return unavailable();
       }
     }
+    // Disclose once in the greeting; skip it when the configured greeting already does.
+    const disclosure = snapshot.defaultLocale === "fr" ? "Je suis la réceptionniste IA." : "I’m the AI receptionist.";
+    const greeting = /\b(?:AI|IA)\b|virtual|virtuelle/i.test(snapshot.greeting) ? snapshot.greeting : `${snapshot.greeting} ${disclosure}`;
     if (operation === "context") return NextResponse.json({
       call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000, roomTransfer: canTransfer },
       business: { id: businessId, name: snapshot.displayName, timezone: snapshot.timezone },
-      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: `${snapshot.greeting} ${snapshot.defaultLocale === "fr" ? "Je suis la réceptionniste IA." : "I’m the AI receptionist."}` }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
+      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: greeting }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
       knowledge: [],
     });
     if (!input.question) return NextResponse.json({ error: "Question required" }, { status: 400 });
     const model = createAgentModel({ ...process.env, AI_CHAT_REASONING_EFFORT: "low" });
     if (!model) return NextResponse.json({ error: "AI unavailable" }, { status: 503 });
-    const result = await answerGroundedQuestion({ model, context: { domain, snapshot, channel: "web_voice", callId: call.id }, question: input.question });
+    const result = await answerGroundedQuestion({ model, context: { domain, snapshot, channel: "web_voice", callId: call.id }, question: input.question, history: await listLiveCallHistory(domain, { businessId, callId: call.id }) });
     return NextResponse.json(result);
   } catch (error) { return asApiResponse(error); }
 }

@@ -27,6 +27,11 @@ const cases = [
   "Do you offer online ed2go courses?",
   "What does the 1A Truck Driver Training MELT course cover?",
   "What is the cancellation policy for corporate training courses?",
+  "Which campuses offer Practical Nursing?",
+  "Is the Continuing Care Assistant program offered in Melfort?",
+  "What programs start in Fall 2027?",
+  "What programs are available at the Nipawin campus?",
+  "What are the admission requirements for Medical Lab Assistant?",
 ];
 (async () => {
   try {
