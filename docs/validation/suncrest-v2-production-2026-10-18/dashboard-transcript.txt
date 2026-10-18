@@ -1,0 +1,96 @@
+Browser tab: 13, Title: "Trendhubs", URL: "https://admin-production-ad1d.up.railway.app/calls/7ee3d0db-bf34-4065-82f5-55b2d454bf8c".
+1 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/calls/7ee3d0db-bf34-4065-82f5-55b2d454bf8c
+	2 container
+		3 container Notifications alt+T
+		4 link Description: Skip to main content, Value: admin-production-ad1d.up.railway.app/calls/7ee3d0db-bf34-4065-82f5-55b2d454bf8c#dashboard-main-content
+		5 container
+			6 content list
+				7 pop up button (collapsed) Suncrest College, ID: base-ui-_r_3_, Secondary Actions: Expand
+			8 container
+				9 text General
+				10 content list
+					11 link Description: Home, Value: admin-production-ad1d.up.railway.app/, ID: base-ui-_R_dcl7civb_
+					12 link Description: Calls, Value: admin-production-ad1d.up.railway.app/calls, ID: base-ui-_R_dkl7civb_
+					13 link Description: Contacts, Value: admin-production-ad1d.up.railway.app/contacts, ID: base-ui-_R_dsl7civb_
+			14 container
+				15 text Agent
+				16 content list
+					17 link Description: AI settings, Value: admin-production-ad1d.up.railway.app/agent, ID: base-ui-_R_qd57civb_
+					18 link Description: Knowledge, Value: admin-production-ad1d.up.railway.app/agent/knowledge, ID: base-ui-_R_ql57civb_
+					19 link Description: Services, Value: admin-production-ad1d.up.railway.app/agent/services, ID: base-ui-_R_qt57civb_
+					20 link Description: Rules, Value: admin-production-ad1d.up.railway.app/agent/rules, ID: base-ui-_R_r557civb_
+			21 container
+				22 text Manage
+				23 content list
+					24 link Description: Analytics, Value: admin-production-ad1d.up.railway.app/analytics, ID: base-ui-_R_ddl7civb_
+					25 link Description: Integrations, Value: admin-production-ad1d.up.railway.app/integrations, ID: base-ui-_R_dll7civb_
+					26 link Description: Settings, Value: admin-production-ad1d.up.railway.app/settings/usage, ID: base-ui-_R_dtl7civb_
+			27 button Open setup guide
+				28 text Getting started
+				29 text 2 / 4 completed
+			30 content list
+				31 pop up button (collapsed) C cecil@trendhubs.io, ID: base-ui-_R_777civb_, Secondary Actions: Expand
+			32 button Toggle sidebar
+		33 container
+			34 button Test Call
+			35 link Description: Affiliate Program, Value: admin-production-ad1d.up.railway.app/affiliate, ID: base-ui-_r_8_
+			36 pop up button (collapsed) Description: Feedback, ID: base-ui-_r_c_, Secondary Actions: Expand
+			37 link Description: Help Center, Value: mailto:contact@trendhubs.io, ID: base-ui-_r_e_
+			38 container dashboard-main-content
+				39 link Description: Calls, Value: admin-production-ad1d.up.railway.app/calls
+				40 heading Web caller, Value: 1
+					41 text Web caller
+				42 text From
+				43 text Web call
+				44 text Duration
+				45 text 1m 59s
+				46 text Started
+				47 text Oct 18, 2026, 7:09 PM
+				48 text ID
+				49 text 7ee3d0db-bf34-40…
+				50 button Copy
+				51 container
+					52 heading Call events, Value: 2
+						53 text Call events
+					54 text Received Oct 18 ,  7:09 PM Connected Oct 18 ,  7:09 PM Completed Oct 18 ,  7:11 PM
+				55 tab group
+					56 tab (selected, settable, boolean) Transcript, Value: 1, ID: base-ui-_r_f_
+					57 tab (selectable, settable, boolean) Recording, Value: 0, ID: base-ui-_r_g_
+					58 tab (selectable, settable, boolean) Details, Value: 0, ID: base-ui-_r_h_
+				59 container Description: Transcript, ID: base-ui-_r_i_
+					60 text Assistant
+					61 text Thanks for calling Suncrest College. I’m the AI receptionist.
+					62 text Caller
+					63 text Hi.
+					64 text Caller
+					65 text Which campuses offer the Practical Nursing program?
+					66 text Assistant
+					67 text Let me check which campuses offer that program for you.
+					68 text Assistant
+					69 text Practical Nursing is offered at the Yorkton campus and the Melfort campus. The listed intakes and deadlines are published there.
+					70 text Caller
+					71 text What about the fees at the Melfort campus?
+					72 text Assistant
+					73 text Let me check the published fee details for the Melfort campus.
+					74 text Assistant
+					75 text For Melfort Practical Nursing, the published fees show total tuition of $16,000, plus about $700 per year in fees, and $252 per year for health and dental. There’s a discrepancy with a domestic tuition figure of $15,000, so please confirm the current amount with the college.
+					76 text Caller
+					77 text And how much is the tuition for Practical Nursing in Yorkton?
+					78 text Assistant
+					79 text Let me check the published tuition details
+					80 text Caller
+					81 text Sorry, different question: when does the Medical Laboratory Assistant program start?
+					82 text Assistant
+					83 text Let me check the published start date for that program.
+					84 text Assistant
+					85 text It starts in Fall 2027 at the Yorkton campus, with a published start date of August 26, 2027.
+					86 text Caller
+					87 text Am I talking to a real person?
+					88 text Assistant
+					89 text You’re speaking with an AI receptionist, not a real person. I can help with general reception tasks and look up published information.
+					90 text Caller
+					91 text Okay, that's everything. Thank you, goodbye.
+					92 text Assistant
+					93 text You’re welcome. Goodbye, and have a nice day.
+
+The focused UI element is 1 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/calls/7ee3d0db-bf34-4065-82f5-55b2d454bf8c

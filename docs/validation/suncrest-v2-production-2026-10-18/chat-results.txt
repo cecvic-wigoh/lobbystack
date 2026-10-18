@@ -1,0 +1,60 @@
+Browser tab: 12, Title: "Suncrest College | Meet your AI receptionist", URL: "https://admin-production-ad1d.up.railway.app/en/demo/suncrest".
+1 AXWebArea Suncrest College | Meet your AI receptionist, URL: admin-production-ad1d.up.railway.app/en/demo/suncrest
+	2 container Notifications alt+T
+	3 container
+		4 image Suncrest College
+		5 text AI RECEPTIONIST PREVIEW
+		6 link Description: College website, Value: suncrestcollege.ca/
+		7 text A WELCOMING FIRST CONVERSATION
+		8 heading Your next chapter. Let’s talk about it., Value: 1
+			9 text Your next chapter.
+			10 text Let’s talk about it.
+		11 text Meet Suncrest’s AI receptionist. Ask about programs, admissions, and student life—in your own words.
+		12 text START WITH SOMETHING YOU’RE CURIOUS ABOUT
+		13 button Find my next step Who should I contact about admission to Suncrest College?
+			14 text Find my next step
+			15 text Who should I contact about admission to Suncrest College?
+		16 button Explore a course What does the 1072 Awareness course cover?
+			17 text Explore a course
+			18 text What does the 1072 Awareness course cover?
+		19 button Understand requirements Can I take ACCUPLACER before applying for a program?
+			20 text Understand requirements
+			21 text Can I take ACCUPLACER before applying for a program?
+		22 text Answers grounded in the college’s published information. When a detail can’t be confirmed, we’ll say so.
+		23 container
+			24 container Choose how to talk
+				25 checkbox Talk naturally, Value: 0
+				26 checkbox Type a question, Value: 1
+			30 container Chat with Suncrest College
+				31 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm
+					32 container Notifications alt+T
+					33 container
+						34 text Suncrest College
+						35 text Your AI receptionist
+						36 button Talk to us live
+						40 text Which campuses offer Practical Nursing and Welding? Practical Nursing: Yorkton (Winter 2028), Melfort (Winter 2027); Welding: Yorkton (TTC) (Fall 2027); Welding Applied Certificate: Tisdale (LeStrat Building) (Fall 2026). Which program are you interested in?
+						41 text Sources: 
+						42 link Description: 1, Value: suncrestcollege.ca/programs/practical-nursing-diploma
+						43 text  · 
+						44 link Description: 2, Value: suncrestcollege.ca/programs/welding
+						45 text  · 
+						46 link Description: 3, Value: suncrestcollege.ca/programs/welding-ac
+						47 text What are the fees for Practical Nursing in Melfort? Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+						48 text Sources: 
+						49 link Description: 1, Value: suncrestcollege.ca/programs/practical-nursing-diploma
+						50 text What are the fees for Practical Nursing in Melfort? Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+						51 text Sources: 
+						52 link Description: 1, Value: suncrestcollege.ca/programs/practical-nursing-diploma
+						53 text What are the fees for Practical Nursing in Melfort? Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,000.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The Melfort intake lists domestic tuition $15,000.00, while its fee table lists Tuition (total) $16,000.00. The fee table notes: "Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime." Please confirm the current amount with the college.
+						54 text Sources: 
+						55 link Description: 1, Value: suncrestcollege.ca/programs/practical-nursing-diploma
+						56 text What is the application fee for Practical Nursing in Yorkton? I can't confirm that from the business's published information. Please contact the business to confirm. Who should I contact about admission to Suncrest College? I can't confirm that from the business's published information. Please contact the business to confirm. What is the admissions email address? The admissions email address is admissions@suncrestcollege.ca.
+						57 text Sources: 
+						58 link Description: 1, Value: suncrestcollege.ca/contact-us
+						59 text What is the capital of France? I can help with the business's information and services only.
+						38 text field (settable) Description: Type your message..., ID: base-ui-_R_lav5ubsivb_
+						39 button (disabled) Send
+			28 text AI receptionist · Voice and chat
+		29 text Built for Suncrest College Programs. People. Possibilities. Demonstration · October 2026
+
+The focused UI element is 31 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm

@@ -1,0 +1,1540 @@
+{
+  "room": "lobby-7994ee5a-394e-4886-9827-15d7e87718f9",
+  "script": [
+    {
+      "id": "q1-campuses",
+      "text": "Hi. Which campuses offer the Practical Nursing program?"
+    },
+    {
+      "id": "q2-followup-fees",
+      "text": "What about the fees at the Melfort campus?"
+    },
+    {
+      "id": "q3-tuition-yorkton",
+      "text": "And how much is the tuition for Practical Nursing in Yorkton?",
+      "interruptAfterMs": 1500
+    },
+    {
+      "id": "q3b-interrupt",
+      "text": "Sorry, different question. When does the Medical Laboratory Assistant program start?"
+    },
+    {
+      "id": "q4-person",
+      "text": "Am I talking to a real person?"
+    },
+    {
+      "id": "q5-goodbye",
+      "text": "Okay, that's everything. Thank you, goodbye."
+    }
+  ],
+  "events": [
+    {
+      "ms": 2065,
+      "event": "session_started",
+      "detail": {
+        "room": "lobby-7994ee5a-394e-4886-9827-15d7e87718f9"
+      }
+    },
+    {
+      "ms": 3464,
+      "event": "caller_joined"
+    },
+    {
+      "ms": 3787,
+      "event": "agent_audio_subscribed",
+      "detail": {
+        "participant": "agent-AJ_NJg6oPSiqXzf"
+      }
+    },
+    {
+      "ms": 5580,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 9382,
+      "event": "transcript",
+      "detail": {
+        "text": "Thanks for calling Suncrest College. I’m the AI receptionist.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.segment_id": "SG_a428bee9-6ee",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7"
+        }
+      }
+    },
+    {
+      "ms": 9731,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 10533,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "greeting"
+      }
+    },
+    {
+      "ms": 10533,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q1-campuses"
+      }
+    },
+    {
+      "ms": 12168,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_5242244b-8b4",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 12475,
+      "event": "transcript",
+      "detail": {
+        "text": "Hi",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_5242244b-8b4",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 12477,
+      "event": "transcript",
+      "detail": {
+        "text": "Hi.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_5242244b-8b4",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 12692,
+      "event": "transcript",
+      "detail": {
+        "text": "Hi.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_5242244b-8b4",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 12693,
+      "event": "transcript",
+      "detail": {
+        "text": "Hi.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "true",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_5242244b-8b4"
+        }
+      }
+    },
+    {
+      "ms": 14838,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q1-campuses"
+      }
+    },
+    {
+      "ms": 15982,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 16442,
+      "event": "transcript",
+      "detail": {
+        "text": "Which",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 16465,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 16477,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f7ddabed-f84"
+        }
+      }
+    },
+    {
+      "ms": 16495,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 16558,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_f7ddabed-f84"
+        }
+      }
+    },
+    {
+      "ms": 16602,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical Nursing",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f7ddabed-f84"
+        }
+      }
+    },
+    {
+      "ms": 16619,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical Nursing program",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 16643,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical Nursing program?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_f7ddabed-f84"
+        }
+      }
+    },
+    {
+      "ms": 16935,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical Nursing program?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f7ddabed-f84",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 16936,
+      "event": "transcript",
+      "detail": {
+        "text": "Which campuses offer the Practical Nursing program?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "true",
+          "lk.segment_id": "SG_f7ddabed-f84"
+        }
+      }
+    },
+    {
+      "ms": 17021,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 20280,
+      "event": "transcript",
+      "detail": {
+        "text": "Let me check which campuses offer that program for you.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_d0e18638-e10",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7"
+        }
+      }
+    },
+    {
+      "ms": 20491,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 21431,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 28048,
+      "event": "transcript",
+      "detail": {
+        "text": "Practical Nursing is offered at the Yorkton campus and the Melfort campus. The listed intakes and deadlines are published there.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.segment_id": "SG_19f39a08-e94",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 28291,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 30116,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "q1-campuses"
+      }
+    },
+    {
+      "ms": 30116,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q2-followup-fees"
+      }
+    },
+    {
+      "ms": 33161,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q2-followup-fees"
+      }
+    },
+    {
+      "ms": 34259,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_8739a08d-fa5"
+        }
+      }
+    },
+    {
+      "ms": 34452,
+      "event": "transcript",
+      "detail": {
+        "text": "What",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 34453,
+      "event": "transcript",
+      "detail": {
+        "text": "What about",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 34459,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 34460,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 34461,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5"
+        }
+      }
+    },
+    {
+      "ms": 34467,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 34469,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the M",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 34472,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melf",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 34552,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melfort",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 34554,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melfort campus",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5"
+        }
+      }
+    },
+    {
+      "ms": 34555,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melfort campus?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5"
+        }
+      }
+    },
+    {
+      "ms": 34788,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melfort campus?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_8739a08d-fa5"
+        }
+      }
+    },
+    {
+      "ms": 34790,
+      "event": "transcript",
+      "detail": {
+        "text": "What about the fees at the Melfort campus?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "true",
+          "lk.segment_id": "SG_8739a08d-fa5",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 34981,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 38487,
+      "event": "transcript",
+      "detail": {
+        "text": "Let me check the published fee details for the Melfort campus.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.segment_id": "SG_ebe94f84-237",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 38831,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 39600,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 55857,
+      "event": "transcript",
+      "detail": {
+        "text": "For Melfort Practical Nursing, the published fees show total tuition of $16,000, plus about $700 per year in fees, and $252 per year for health and dental. There’s a discrepancy with a domestic tuition figure of $15,000, so please confirm the current amount with the college.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.segment_id": "SG_aa892469-926"
+        }
+      }
+    },
+    {
+      "ms": 58602,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 60451,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "q2-followup-fees"
+      }
+    },
+    {
+      "ms": 60452,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q3-tuition-yorkton"
+      }
+    },
+    {
+      "ms": 64458,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q3-tuition-yorkton"
+      }
+    },
+    {
+      "ms": 67260,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 67570,
+      "event": "transcript",
+      "detail": {
+        "text": "And",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67572,
+      "event": "transcript",
+      "detail": {
+        "text": "And how",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67573,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 67578,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 67581,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 67581,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67588,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 67589,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 67599,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 67608,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67612,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in York",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 67612,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in Yorkton",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 67615,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in Yorkton?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67815,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in Yorkton?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_1bd5ed05-842"
+        }
+      }
+    },
+    {
+      "ms": 67815,
+      "event": "transcript",
+      "detail": {
+        "text": "And how much is the tuition for Practical Nursing in Yorkton?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_1bd5ed05-842",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "true"
+        }
+      }
+    },
+    {
+      "ms": 68032,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 69546,
+      "event": "interrupt_while_agent_speaking",
+      "detail": {
+        "agentSpeaking": true
+      }
+    },
+    {
+      "ms": 69547,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q3b-interrupt"
+      }
+    },
+    {
+      "ms": 70607,
+      "event": "transcript",
+      "detail": {
+        "text": "Let me check the published tuition details for",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.segment_id": "SG_59b43b5e-040"
+        }
+      }
+    },
+    {
+      "ms": 71361,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 75297,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q3b-interrupt"
+      }
+    },
+    {
+      "ms": 75458,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 75674,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75674,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry,",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 75684,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 75684,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 75689,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question:",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75691,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 75694,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75739,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 75740,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75778,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 75778,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75780,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant program",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 75781,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant program start",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 75783,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant program start?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 76023,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant program start?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_b8957a57-ef3",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 76033,
+      "event": "transcript",
+      "detail": {
+        "text": "Sorry, different question: when does the Medical Laboratory Assistant program start?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "true",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_b8957a57-ef3"
+        }
+      }
+    },
+    {
+      "ms": 76142,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 79124,
+      "event": "transcript",
+      "detail": {
+        "text": "Let me check the published start date for that program.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_de20702e-a41",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7"
+        }
+      }
+    },
+    {
+      "ms": 79731,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 80141,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 85748,
+      "event": "transcript",
+      "detail": {
+        "text": "It starts in Fall 2027 at the Yorkton campus, with a published start date of August 26, 2027.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_55b5483d-975",
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7"
+        }
+      }
+    },
+    {
+      "ms": 87621,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 89452,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "q3b-interrupt"
+      }
+    },
+    {
+      "ms": 89453,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q4-person"
+      }
+    },
+    {
+      "ms": 92056,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q4-person"
+      }
+    },
+    {
+      "ms": 92926,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 93157,
+      "event": "transcript",
+      "detail": {
+        "text": "Am",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93158,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93165,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 93165,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 93168,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93170,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a real",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93178,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a real person",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_ab3c80a5-f93",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 93181,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a real person?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_ab3c80a5-f93",
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 93441,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a real person?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93444,
+      "event": "transcript",
+      "detail": {
+        "text": "Am I talking to a real person?",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "true",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_ab3c80a5-f93"
+        }
+      }
+    },
+    {
+      "ms": 93702,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 101375,
+      "event": "transcript",
+      "detail": {
+        "text": "You’re speaking with an AI receptionist, not a real person. I can help with general reception tasks and look up published information.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_1a1f2173-f9f"
+        }
+      }
+    },
+    {
+      "ms": 101591,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 104100,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "q4-person"
+      }
+    },
+    {
+      "ms": 104101,
+      "event": "caller_speech_start",
+      "detail": {
+        "id": "q5-goodbye"
+      }
+    },
+    {
+      "ms": 107850,
+      "event": "caller_speech_end",
+      "detail": {
+        "id": "q5-goodbye"
+      }
+    },
+    {
+      "ms": 108923,
+      "event": "transcript",
+      "detail": {
+        "text": "",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 109162,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109164,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay,",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109165,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 109168,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109171,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 109175,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 109178,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb"
+        }
+      }
+    },
+    {
+      "ms": 109186,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you,",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109189,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you, goodbye",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 109191,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109378,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.segment_id": "SG_884d9883-f27",
+          "lk.transcription_final": "false"
+        }
+      }
+    },
+    {
+      "ms": 109378,
+      "event": "transcript",
+      "detail": {
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "participant": "caller-7ee3d0db-bf34-4065-82f5-55b2d454bf8c",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AMNi4PF4jQ8sxb",
+          "lk.transcription_final": "true",
+          "lk.segment_id": "SG_884d9883-f27"
+        }
+      }
+    },
+    {
+      "ms": 109762,
+      "event": "agent_speech_start"
+    },
+    {
+      "ms": 112209,
+      "event": "transcript",
+      "detail": {
+        "text": "You’re welcome. Goodbye, and have a nice day.",
+        "participant": "agent-AJ_NJg6oPSiqXzf",
+        "attributes": {
+          "lk.transcribed_track_id": "TR_AM8sauTJPyqJn7",
+          "lk.transcription_final": "false",
+          "lk.segment_id": "SG_f4515321-6bc"
+        }
+      }
+    },
+    {
+      "ms": 112852,
+      "event": "agent_speech_end"
+    },
+    {
+      "ms": 116183,
+      "event": "agent_reply_done",
+      "detail": {
+        "label": "q5-goodbye"
+      }
+    },
+    {
+      "ms": 122183,
+      "event": "caller_leaving"
+    },
+    {
+      "ms": 122288,
+      "event": "room_disconnected"
+    },
+    {
+      "ms": 123201,
+      "event": "end_session",
+      "detail": {
+        "status": 204
+      }
+    }
+  ],
+  "durationMs": 123218
+}
