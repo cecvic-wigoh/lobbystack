@@ -365,3 +365,41 @@ describe("answerProgramCatalogQuestion", () => {
     expect(ask("Where is the Yorkton campus?")).toBeNull();
   });
 });
+
+const academicRequirements = `Admission Requirements
+Application Deadline is April 30 2026. This is a Competitive Entry program.
+Practical Nursing Admission Requirements
+- Grade 12 with a minimum overall score of 65% in the following four subjects:
+ - 30-level English Language Arts
+ - Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*
+ - one of Biology 30, Chemistry 30 or Physics 30
+ - one of Social Studies 30, History 30 or Native Studies 30
+- English Language Proficiency
+ - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.
+ - English Language requirement must be provided on or before the document deadline
+_Click on the tab below, to learn more on the additional requirements upon acceptance to the program._
+Practical Nursing Program Requirements
+Immunization records are required before clinical placement.`;
+const academicProgram = { ...practicalNursing, requirements: academicRequirements };
+it("copies a complete published academic/language list without historical application prose", () => {
+ const result = answerProgramCatalogQuestion([academicProgram], { question: "What are the admission requirements for Practical Nursing in Yorkton?", now });
+ expect(result).toMatchObject({ kind: "answer", sources: [practicalNursing.url] });
+ if (result?.kind !== "answer") throw new Error("Published list missing");
+ for (const phrase of ["minimum overall score of 65%", "Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*", "Biology 30, Chemistry 30 or Physics 30", "Social Studies 30, History 30 or Native Studies 30", "Saskatchewan Polytechnic language requirements", "on or before the document deadline", "additional requirements upon acceptance"]) expect(result.answer).toContain(phrase);
+ expect(result.answer).not.toContain("April 30 2026");
+});
+it.each([
+ "Am I eligible for Practical Nursing in Yorkton?",
+ "What are the requirements for Practical Nursing in Winter 2035?",
+ "What are the requirements for Practical Nursing and what does it cost?",
+ "What are the requirements for Practical Nursing for international students?",
+])("keeps interpretation and special cases on the grounded path: %s", question => {
+ expect(answerProgramCatalogQuestion([academicProgram], { question, now })?.kind).not.toBe("answer");
+});
+it.each([
+ academicRequirements.replace("English Language Proficiency", "Language"),
+ academicRequirements.replace("document deadline", "deadline"),
+ academicRequirements.replace("_Click on the tab below, to learn more on the additional requirements upon acceptance to the program._", ""),
+])("does not return an incomplete or unbounded requirements list", requirements => {
+ expect(answerProgramCatalogQuestion([{ ...academicProgram, requirements }], { question: "What are the requirements for Practical Nursing in Yorkton?", now })?.kind).toBe("evidence");
+});

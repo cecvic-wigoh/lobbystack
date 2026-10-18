@@ -378,3 +378,32 @@ it.each([
  expect((await answerGroundedQuestion({ model: {} as never, context, question })).outcome).toBe("unknown");
  expect(generateText).toHaveBeenCalled();
 });
+
+const applicationCatalog = [{ ...programCatalog[0]!, intakes: programCatalog[0]!.intakes.map(intake => ({ ...intake, fees: "Tuition: $15,500.00" })) }];
+it("quickly preserves uncertainty for an unlisted program application fee without substituting tuition", async () => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(applicationCatalog);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context: { ...context as object, channel: "web_voice" } as never, question: "What is the application fee for Practical Nursing in Yorkton?" });
+ expect(result).toMatchObject({ outcome: "unknown", sources: [], answer: expect.stringContaining("can't confirm an application fee") });
+ expect(result.answer).not.toContain("15,500");
+ expect(generateText).not.toHaveBeenCalled();
+});
+it("still verifies an application fee published outside the program's fee table", async () => {
+ const source = { chunkId: "application-policy", sourceUrl: "https://college.test/applications", content: "The application fee for all programs is $75." };
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(applicationCatalog);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [source] } as never);
+ mockAnswer({ text: source.content, quote: source.content, sourceId: source.chunkId });
+ const result = await answerGroundedQuestion({ model: {} as never, context: { ...context as object, channel: "web_voice" } as never, question: "What is the application fee for Practical Nursing in Yorkton?" });
+ expect(result).toMatchObject({ outcome: "supported", sources: [source.sourceUrl], answer: source.content });
+ expect(generateText).toHaveBeenCalledTimes(2);
+});
+it.each([
+ { channel: "web_chat", question: "What is the application fee for Practical Nursing in Yorkton?" },
+ { channel: "web_voice", question: "What is the application fee for Practical Nursing in Yorkton and what is tuition?" },
+])("preserves the grounded path for chat and multipart fee questions: %j", async ({ channel, question }) => {
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce(applicationCatalog);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "unknown", claims: [] } } as never);
+ await answerGroundedQuestion({ model: {} as never, context: { ...context as object, channel } as never, question });
+ expect(generateText).toHaveBeenCalled();
+});

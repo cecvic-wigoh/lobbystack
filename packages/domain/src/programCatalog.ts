@@ -287,6 +287,17 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     }
     const chosen = [...distinct.values()].slice(0, 3);
     if (!chosen.length) return null;
+    // Copy only a complete academic/language list, bounded by the page's explicit
+    // acceptance-requirements notice. Historical application prose stays outside it.
+    const entry = chosen.length === 1 ? chosen[0] : undefined;
+    const academic = entry?.requirements?.match(/(?:^|\n)(- Grade \d+[^\n]*\n[\s\S]*?)(?=\n_?Click on the tab below,[^\n]*additional requirements upon acceptance)/i)?.[1]?.trim();
+    if (locale === "en" && /^what (?:are|is) (?:the )?(?:(?:admission|entry|academic) )?(?:requirements?|prerequisites?) for .+[?.!]*$/i.test(question.trim())
+      && !/\b(?:fees?|tuition|cost|start|deadlines?|duration|international|domestic|mature|transfer|my)\b/i.test(question)
+      && entry && academic && /English Language Proficiency/i.test(academic) && /document deadline/i.test(academic)
+      && academic.split(/\s+/).length <= 160
+      && (!campus || entry.intakes.some(atCampus)) && (!term || currentIntakes(entry, now).some(intake => atCampus(intake) && inTerm(intake)))) {
+      return { kind: "answer", answer: `${entry.title} — published academic and English-language requirements:\n${academic}\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.`, sources: [entry.url] };
+    }
     return {
       kind: "evidence",
       passages: chosen.map(entry => {

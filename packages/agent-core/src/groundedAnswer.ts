@@ -150,6 +150,13 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     }
   }
   const directoryQuestion = input.question.replace(businessName, "").replace(/[?.]/g, "").trim();
+  // No price can be stated when neither the matched intake nor the retrieved
+  // passages name an application fee. Preserve uncertainty without a model rewrite.
+  if (input.context.channel === "web_voice" && catalog?.kind === "evidence" && /^what (?:is|are) (?:the )?application fees? for .+[?.!]*$/i.test(input.question.trim())
+    && !/\b(?:and|also|tuition|books)\b/i.test(input.question)
+    && !evidence.matches.some(source => /\b(?:application|admissions?|registrations?)[\s-]+(?:processing[\s-]+)?(?:fees?|charges?|costs?)\b|\b(?:fees?|charges?|costs?)[\s\S]{0,60}\b(?:to apply|for applications?)\b/i.test(source.content))) {
+    return { answer: locale === "fr" ? "Je ne peux pas confirmer les frais de demande à partir des informations publiées récupérées pour ce programme. Veuillez confirmer ces frais auprès du collège." : "I can't confirm an application fee from the published information retrieved for this program. Please confirm it with the college.", sources: [], outcome: "unknown" };
+  }
   if (/^(?:(?:what|which)(?: are)?(?: the)? campuses(?: are (?:available|there))?|(?:list|show|tell me about)(?: all| the)? campuses)(?: (?:at|for|of)(?: the college)?)?$/i.test(directoryQuestion)) {
     const outline = campusDirectory?.matches.find(item => item.chunkId.startsWith("outline:"));
     const section = outline?.content.match(/(?:^|\n)## Campuses\n([\s\S]*?)(?=\n#{1,2} |$)/)?.[1];
