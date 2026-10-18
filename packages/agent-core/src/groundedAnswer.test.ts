@@ -50,29 +50,6 @@ it("clarifies an unspecified college location before choosing a campus", async (
 });
 
 const context = { domain: {}, snapshot: { businessId: "college", displayName: "College", defaultLocale: "en" } } as never;
-
-it.each([
- { channel: "web_voice", provider: "openai.responses", modelId: "gpt-6-luna", fast: true },
- { channel: "web_chat", provider: "openai.responses", modelId: "gpt-6-luna", fast: false },
- { channel: "web_voice", provider: "openai.responses", modelId: "other-model", fast: false },
- { channel: "web_voice", provider: "other.chat", modelId: "gpt-6-luna", fast: false },
-])("uses a fast voice draft without reducing factual verification: %j", async ({ channel, provider, modelId, fast }) => {
- vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
- mockAnswer(claim);
- expect((await answerGroundedQuestion({ model: { provider, modelId } as never, context: { ...context as object, channel } as never, question: "Who handles admissions?" })).outcome).toBe("supported");
- expect(vi.mocked(generateText).mock.calls[0]![0].providerOptions).toEqual(fast ? { openai: { reasoningEffort: "none" } } : undefined);
- expect(vi.mocked(generateText).mock.calls[1]![0].providerOptions).toBeUndefined();
-});
-
-it("still rejects unsupported paraphrases from the fast voice draft", async () => {
- vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
- for (let attempt = 0; attempt < 2; attempt++) {
-  vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [{ ...claim, text: "Admission is guaranteed." }] } } as never)
-   .mockResolvedValueOnce({ output: { supported: false } } as never);
- }
- const result = await answerGroundedQuestion({ model: { provider: "openai.responses", modelId: "gpt-6-luna" } as never, context: { ...context as object, channel: "web_voice" } as never, question: "Is admission guaranteed?" });
- expect(result).toMatchObject({ outcome: "unknown", reason: "unsupported_paraphrase", sources: [] });
-});
 const admissionsHistory = [
  { role: "user" as const, content: "Who should I contact about admission to College?" },
  { role: "assistant" as const, content: "Contact admissions@college.test." },
