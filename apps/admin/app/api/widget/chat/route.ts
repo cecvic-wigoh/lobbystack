@@ -117,7 +117,7 @@ export async function POST(request: Request) {
               model: model!,
               context: { domain: context, snapshot: { ...snapshot, defaultLocale: language === "French" ? "fr" : "en" }, channel: "web_chat", conversationId },
               question: body.content,
-              history: history.slice(0, -1).slice(-4).map(row => ({ role: row.direction === "inbound" ? "user" : "assistant", content: row.body })),
+              history: history.slice(0, -1).slice(-16).map(row => ({ role: row.direction === "inbound" ? "user" : "assistant", content: row.body })),
               onUsage: usage => usageEvents.push(usage),
             });
             const citations = result.sources.map((url, index) => `[${index + 1}](${url})`).join(" · ");

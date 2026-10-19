@@ -67,7 +67,7 @@ function requirementsSection(text: string): string | undefined {
   const rest = text.slice(heading.index + heading[0].length);
   const end = /^#{1,3} (?![^\n]*(?:Admission|Requirement))[^\n]*$/m.exec(rest);
   const body = plain(rest.slice(0, end ? end.index : undefined)).replace(/\n{2,}/g, "\n").replace(/^\* \* \*$/gm, "").replace(/\n{2,}/g, "\n").trim();
-  return body ? `${plain(heading[0].replace(/^#+\s*/, ""))}\n${body}`.slice(0, 3000) : undefined;
+  return body ? `${plain(heading[0].replace(/^#+\s*/, ""))}\n${body}`.slice(0, 12000) : undefined;
 }
 
 /** A Markdown fee table as plain "Label: amount" lines that can be quoted exactly. */
@@ -210,7 +210,7 @@ const REQUIREMENTS = /\b(?:requirements?|prerequisites?|pre-requisites?|eligib\w
 const SCHEDULE = /\b(?:campus(?:es)?|where|locations?|offered|available|semesters?|terms?|intakes?|start\w*|begin\w*|when|deadline|fall|autumn|winter|spring|summer|online|virtual|in person|in-person|dates?|schedule)\b/i;
 const TUITION_AMOUNT = /\b(?:tuition|costs?|price|how much|pay)\b/i;
 // Other charges come from the intake's fee table; money policies from the policy pages.
-const OTHER_CHARGES = /\b(?:application|books?|textbooks?|materials?|supplies|student fees?|health|dental|lab|shop|tech fees?|printing|exams?|consumables?|uniforms?|equipment|fees)\b/i;
+const OTHER_CHARGES = /\b(?:application|books?|textbooks?|materials?|supplies|student fees?|health|dental|lab|shop|tech fees?|printing|exams?|consumables?|uniforms?|equipment|fees?)\b/i;
 // Words naming one fee line; a question without any asks about the whole table.
 const FEE_ITEMS = new Set(["application", "book", "books", "textbook", "textbooks", "material", "materials", "supplies", "student", "health", "dental", "lab", "shop", "tech", "technology", "printing", "exam", "exams", "test", "consumable", "consumables", "uniform", "uniforms", "equipment"]);
 const MONEY_POLICY = /\b(?:refund\w*|deposits?|withdraw\w*|payment plans?|instal+ments?|polic(?:y|ies)|includ\w*|scholarships?|bursar(?:y|ies)|funding|loans?|grants?|sponsor\w*)\b/i;
@@ -250,13 +250,27 @@ function currentIntakes(entry: ProgramEntry, now: Date) {
  * requirement passages for the program asked about. Returns null when the
  * question is not a catalog question or names no published program.
  */
-export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { question: string; previousQuestion?: string; now?: Date; locale?: "en" | "fr" }): ProgramCatalogResult | null {
+export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { question: string; previousQuestion?: string; previousQuestions?: string[]; now?: Date; locale?: "en" | "fr" }): ProgramCatalogResult | null {
   if (!catalog.length) return null;
   const now = input.now ?? new Date();
   const locale = input.locale ?? "en";
   const question = input.question;
   const wantsRequirements = REQUIREMENTS.test(question);
-  const campus = mentionedCampus(catalog, question) ?? (input.previousQuestion && !mentionedTerm(question) ? mentionedCampus(catalog, input.previousQuestion) : undefined);
+  let programs = matchPrograms(catalog, question);
+  // Only caller turns name the current program; old assistant answers are not evidence.
+  // Stop at the newest named program so a topic switch cannot inherit the old campus.
+  const previous = input.previousQuestions ?? (input.previousQuestion ? [input.previousQuestion] : []);
+  let programContext: string[] = [];
+  if (!programs.length && /\b(?:it|its|that|this|the program|the course|there|same|what about|how about|and)\b/i.test(question)) {
+    for (let index = previous.length - 1; index >= 0; index -= 1) {
+      const matched = matchPrograms(catalog, previous[index]);
+      if (!matched.length) continue;
+      programs = matched;
+      programContext = previous.slice(index);
+      break;
+    }
+  }
+  const campus = mentionedCampus(catalog, question) ?? (!mentionedTerm(question) ? programContext.map(turn => mentionedCampus(catalog, turn)).filter(Boolean).at(-1) : undefined);
   const term = mentionedTerm(question);
   const wantsSchedule = SCHEDULE.test(question) || Boolean(campus) || Boolean(term);
   const moneyPolicy = MONEY_POLICY.test(question);
@@ -264,8 +278,6 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
   const wantsCharges = !wantsRequirements && !moneyPolicy && OTHER_CHARGES.test(question) && /\b(?:costs?|price|how much|pay|fees?)\b/i.test(question);
   const wantsTuition = !wantsRequirements && !moneyPolicy && !wantsCharges && TUITION_AMOUNT.test(question);
   if (!wantsRequirements && !wantsTuition && !wantsCharges && (!wantsSchedule || OTHER_DETAIL.test(question) || moneyPolicy || TUITION_AMOUNT.test(question))) return null;
-  let programs = matchPrograms(catalog, question);
-  if (!programs.length && input.previousQuestion && /\b(?:it|its|that|this|the program|the course|there|same|what about|how about|and)\b/i.test(question)) programs = matchPrograms(catalog, input.previousQuestion);
   const atCampus = (intake: ProgramIntake) => !campus || (campus === "online" ? isOnline(intake.campus) : campusKey(intake.campus) === campus || campusKey(intake.campus).startsWith(`${campus} `));
   const inTerm = (intake: ProgramIntake) => !term || (intake.term.toLowerCase().startsWith(term.season) && (!term.year || intake.term.includes(term.year)));
   // A course code ("SPCR 105") narrows course-by-course offerings to that course.

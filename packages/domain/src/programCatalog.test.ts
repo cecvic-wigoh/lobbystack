@@ -403,3 +403,32 @@ it.each([
 ])("does not return an incomplete or unbounded requirements list", requirements => {
  expect(answerProgramCatalogQuestion([{ ...academicProgram, requirements }], { question: "What are the requirements for Practical Nursing in Yorkton?", now })?.kind).toBe("evidence");
 });
+
+describe("program switches and chained follow-ups", () => {
+  const catalog = [
+    { title: "Practical Nursing", url: "https://college.test/programs/nursing", intakes: [{ campus: "Melfort", term: "Winter 2027", fees: "Tuition: $16,000.00" }] },
+    { title: "Diagnostic Medical Sonography - Ultrasound", url: "https://college.test/programs/sonography", requirements: "Admission Requirements\nPost-secondary anatomy courses required.", intakes: [{ campus: "Yorkton", term: "Fall 2027", fees: "Tuition: $11,200.00" }] },
+  ];
+  const previousQuestions = ["Tell me about Practical Nursing in Melfort.", "Tell me about Diagnostic Medical Sonography ultrasound diploma.", "What are the requirements to this program?"];
+  it.each(["What is the fee structure for this program?", "And what are its fees?", "What about its fees again?"])("uses the newest named program for %s", question => {
+    const result = answerProgramCatalogQuestion(catalog, { question, previousQuestions });
+    expect(result).toMatchObject({ kind: "answer", sources: [catalog[1]!.url] });
+    if (result?.kind === "answer") {
+      expect(result.answer).toContain("11,200");
+      expect(result.answer).not.toMatch(/Melfort|16,000|Practical Nursing/);
+    }
+  });
+  it("does not carry the old campus into a new explicitly named program", () => {
+    const result = answerProgramCatalogQuestion(catalog, { question: "What are the fees for Diagnostic Medical Sonography?", previousQuestion: previousQuestions[0]! });
+    expect(result).toMatchObject({ kind: "answer", sources: [catalog[1]!.url] });
+  });
+  it("does not assign an unrecognized named program to an earlier program", () => {
+    expect(answerProgramCatalogQuestion(catalog, { question: "What are the fees for Aerospace Engineering?", previousQuestions })).toBeNull();
+  });
+});
+
+it("retains later numbered admission requirements in long program sections", () => {
+ const entry = parseProgramPage({ title: "Long admissions", url: "https://college.test/programs/long-admissions", text: `# Long admissions\n## Admission Requirements\n1. Academic prerequisites.\n${"Published prerequisite explanation. ".repeat(100)}\n5. Standard First Aid with CPR Level C and AED.\n6. Applicant Declaration.\n7. Readiness Video.\n## Courses\nUnrelated course details.` });
+ expect(entry.requirements).toContain("7. Readiness Video.");
+ expect(entry.requirements).not.toContain("Unrelated course details");
+});

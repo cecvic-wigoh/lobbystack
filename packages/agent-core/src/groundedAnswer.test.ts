@@ -407,3 +407,28 @@ it.each([
  await answerGroundedQuestion({ model: {} as never, context: { ...context as object, channel } as never, question });
  expect(generateText).toHaveBeenCalled();
 });
+
+it("keeps this-program follow-ups on the newest named program through repeated questions", async () => {
+ const sonography = { title: "Diagnostic Medical Sonography - Ultrasound", url: "https://college.test/programs/sonography", requirements: "Admission Requirements\nPost-secondary anatomy and physiology courses are required.", intakes: [{ campus: "Yorkton", term: "Fall 2027", fees: "Tuition: $11,200.00" }] };
+ vi.mocked(loadProgramCatalog).mockResolvedValue([programCatalog[0]!, sonography]);
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ const history: Array<{ role: "user" | "assistant"; content: string }> = [
+  { role: "user", content: "Tell me about Practical Nursing in Melfort." },
+  { role: "assistant", content: "Practical Nursing is offered in Melfort." },
+  { role: "user", content: "Tell me about Diagnostic Medical Sonography ultrasound diploma." },
+  { role: "assistant", content: "It is a diploma program." },
+  { role: "user", content: "Okay, what are the admission requirements to this program?" },
+ ];
+ mockAnswer({ text: "Post-secondary anatomy and physiology courses are required.", sourceId: `catalog:${sonography.url}`, quote: "Post-secondary anatomy and physiology courses are required." });
+ const requirements = await answerGroundedQuestion({ model: {} as never, context, question: history.at(-1)!.content, history });
+ expect(requirements).toMatchObject({ outcome: "supported", sources: [sonography.url] });
+ history.push({ role: "assistant", content: requirements.answer });
+ for (const question of ["Okay, what is the fee structure for this program?", "And what are its fees again?"]) {
+  history.push({ role: "user", content: question });
+  const result = await answerGroundedQuestion({ model: {} as never, context, question, history });
+  expect(result).toMatchObject({ outcome: "supported", sources: [sonography.url] });
+  expect(result.answer).toContain("11,200");
+  expect(result.answer).not.toMatch(/Practical Nursing|Melfort|16,000/);
+  history.push({ role: "assistant", content: result.answer });
+ }
+});

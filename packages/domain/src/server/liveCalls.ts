@@ -113,7 +113,7 @@ export async function listLiveCallHistory(context: DomainContext, input: { busin
   const rows = await withBusinessTransaction(context.db, { businessId: input.businessId, actorType: "worker" }, async (tx) =>
     await tx.select({ speaker: transcripts.speaker, text: transcripts.text }).from(transcripts)
       .where(and(eq(transcripts.businessId, input.businessId), eq(transcripts.callId, input.callId), eq(transcripts.final, true)))
-      .orderBy(desc(transcripts.sequence)).limit(input.limit ?? 6));
+      .orderBy(desc(transcripts.sequence)).limit(input.limit ?? 16));
   return rows.reverse().map(row => ({ role: row.speaker === "caller" ? "user" as const : "assistant" as const, content: row.text }));
 }
 
