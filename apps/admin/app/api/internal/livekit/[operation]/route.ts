@@ -2,12 +2,13 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { calls, withBusinessTransaction } from "@lobbystack/db";
-import { claimLivekitTransfer, completeCall, getCachedBusinessSnapshot, listLiveCallHistory, markLiveCallMediaStarted, prepareLiveCallTransfer, recordLiveCallTransferResult, saveLiveCallTurn } from "@lobbystack/domain";
+import { createVoiceFollowUpTask, completeCall, getCachedBusinessSnapshot, listLiveCallHistory, markLiveCallMediaStarted, saveLiveCallTurn } from "@lobbystack/domain";
 import { createAgentModel, answerGroundedQuestion } from "@lobbystack/agent-core";
 import { z } from "zod";
 import { asApiResponse } from "@/lib/api-helpers";
 import { createWorkerDomainContext } from "@/lib/domain-context";
 import { livekitConfig } from "@/lib/livekit";
+import { screenedTransfer } from "@/lib/screened-transfer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
   if (process.env.VOICE_PROVIDER !== "livekit" || !expected || !presented || Buffer.byteLength(expected) !== Buffer.byteLength(presented) || !timingSafeEqual(Buffer.from(expected), Buffer.from(presented))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const operation = (await route.params).operation;
-    if (!["context", "respond", "events", "transfer"].includes(operation)) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!["context", "respond", "events", "transfer", "transfer-dial", "transfer-accept", "transfer-cancel", "message"].includes(operation)) return NextResponse.json({ error: "Not found" }, { status: 404 });
     const text = await request.text();
     if (Buffer.byteLength(text) > 32 * 1024) return NextResponse.json({ error: "Request too large" }, { status: 413 });
     const input = schema.parse(JSON.parse(text));
@@ -27,7 +28,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     const domain = createWorkerDomainContext();
     const call = await withBusinessTransaction(domain.db, { businessId, actorType: "worker" }, async tx => (await tx.select().from(calls).where(and(eq(calls.id, input.callId), eq(calls.businessId, businessId), eq(calls.provider, "livekit"))).limit(1))[0]);
     if (!call) return NextResponse.json({ error: "Call not found" }, { status: 404 });
-    if (call.endedAt && operation !== "events") return NextResponse.json({ error: "Call ended" }, { status: 410 });
+    if (call.endedAt && !["events", "transfer-cancel"].includes(operation)) return NextResponse.json({ error: "Call ended" }, { status: 410 });
     if (operation === "events") {
       if (input.type === "active") await markLiveCallMediaStarted(domain, { businessId, callId: call.id });
       if (input.type === "transcript") {
@@ -39,7 +40,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
         const endMs = new Date(endedAt).getTime();
         if (endMs > Date.now() + 10000 || (call.mediaStartedAt && endMs < call.mediaStartedAt.getTime())) return NextResponse.json({ error: "Invalid call end time" }, { status: 400 });
         const seconds = call.mediaStartedAt ? Math.max(0, Math.ceil((endMs - call.mediaStartedAt.getTime()) / 1000)) : 0;
-        if (!call.endedAt && call.gatewaySessionId) await livekitConfig().rooms.deleteRoom(call.gatewaySessionId).catch(() => console.error("Failed to close LiveKit room"));
+        if (!call.endedAt && call.gatewaySessionId) await Promise.allSettled([livekitConfig().rooms.deleteRoom(call.gatewaySessionId), livekitConfig().rooms.deleteRoom(`${call.gatewaySessionId}-transfer`)]);
         await completeCall(domain, { businessId, callId: call.id, status: input.type === "failed" ? "failed" : "completed", endedAt, providerDurationSeconds: seconds, mediaDurationSeconds: seconds });
       }
       return NextResponse.json({ ok: true });
@@ -49,38 +50,23 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     const voiceLocale = snapshot.defaultLocale === "fr" ? "fr-CA" : "en";
     const transferNumber = snapshot.transferPolicy.transferNumber;
     const canTransfer = Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
-    if (operation === "transfer") {
-      const unavailable = () => NextResponse.json({ status: "unavailable", message: "I couldn't connect the staff phone. Do not retry or promise a callback; offer the published contact details." });
-      if (!canTransfer) return unavailable();
-      const claimed = await claimLivekitTransfer(domain, { businessId, callId: call.id });
-      if (!claimed) return unavailable();
-      const config = livekitConfig();
-      const identity = `human-${call.id}`;
-      try {
-        if (!await prepareLiveCallTransfer(domain, { businessId, callId: call.id })) return unavailable();
-        await config.sip.createSipParticipant(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID!, transferNumber!, claimed.room, {
-          participantIdentity: identity, participantName: `${snapshot.displayName} team`, hidePhoneNumber: true,
-          waitUntilAnswered: true, playDialtone: true, ringingTimeout: 20, timeout: 30,
-          maxCallDuration: claimed.remainingSeconds,
-        });
-        // The caller may hang up while the staff phone rings.
-        const participants = await config.rooms.listParticipants(claimed.room);
-        if (!participants.some(participant => participant.identity === identity) || !participants.some(participant => participant.identity === `caller-${call.id}`)) throw new Error("Call no longer connected");
-        await recordLiveCallTransferResult(domain, { businessId, callId: call.id, ok: true });
-        return NextResponse.json({ status: "connected", message: "The staff phone has answered and is in the call. Stop speaking; a phone answer may be voicemail." });
-      } catch {
-        await config.rooms.removeParticipant(claimed.room, identity).catch(() => console.error("Transfer participant cleanup could not be confirmed"));
-        await recordLiveCallTransferResult(domain, { businessId, callId: call.id, ok: false });
-        return unavailable();
-      }
+    if (operation.startsWith("transfer")) {
+      if ((!canTransfer && operation !== "transfer-cancel") || !call.gatewaySessionId?.match(/^lobby-[a-f0-9-]{36}$/)) return NextResponse.json({ status: "unavailable", message: "Transfer unavailable. Offer to take a message; do not retry." });
+      return NextResponse.json(await screenedTransfer(operation, { businessId, callId: call.id, room: call.gatewaySessionId, target: transferNumber ?? "", name: snapshot.displayName }));
+    }
+    if (operation === "message") {
+      const message = z.object({ name: z.string().trim().min(1).max(120), callbackPhone: z.string().regex(/^\+[1-9]\d{7,14}$/), message: z.string().trim().min(1).max(2000), permissionToContact: z.literal(true) }).safeParse(input.payload);
+      if (!message.success) return NextResponse.json({ error: "A confirmed message and callback number are required." }, { status: 400 });
+      await createVoiceFollowUpTask(domain, { businessId, callId: call.id, callerName: message.data.name, callbackPhone: message.data.callbackPhone, message: message.data.message, channel: "web_voice" });
+      return NextResponse.json({ status: "saved", message: "The message and confirmed callback number were saved for the team." });
     }
     // Disclose once in the greeting; skip it when the configured greeting already does.
     const disclosure = snapshot.defaultLocale === "fr" ? "Je suis la réceptionniste IA." : "I’m the AI receptionist.";
     const greeting = /\b(?:AI|IA)\b|virtual|virtuelle/i.test(snapshot.greeting) ? snapshot.greeting : `${snapshot.greeting} ${disclosure}`;
     if (operation === "context") return NextResponse.json({
-      call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000, roomTransfer: canTransfer },
+      call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000, roomTransfer: canTransfer, messageCapture: true },
       business: { id: businessId, name: snapshot.displayName, timezone: snapshot.timezone },
-      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: greeting }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
+      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: greeting }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", "captureLead", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
       knowledge: [],
     });
     if (!input.question) return NextResponse.json({ error: "Question required" }, { status: 400 });

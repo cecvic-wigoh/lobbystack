@@ -1,7 +1,7 @@
 import { beforeEach, expect, it, vi } from "vitest";
 const state = vi.hoisted(() => ({ call: undefined as Record<string, unknown> | undefined, transaction: vi.fn() }));
 vi.mock("@lobbystack/db", async original => ({ ...(await original<typeof import("@lobbystack/db")>()), withBusinessTransaction: state.transaction }));
-import { claimLivekitTransfer } from "./liveCalls";
+import { advanceLivekitTransfer, claimLivekitTransfer } from "./liveCalls";
 const input = { businessId: "biz_1", callId: "call_1" };
 const context = { db: {} } as Parameters<typeof claimLivekitTransfer>[0];
 beforeEach(() => {
@@ -27,4 +27,14 @@ it.each([
 it("does not claim a call absent from the scoped workspace", async () => {
   state.call = undefined;
   expect(await claimLivekitTransfer(context, input)).toBeNull();
+});
+
+it("advances screening exactly once and rejects stale or ended phases", async () => {
+  state.call!.transferState = "preparing";
+  const phase = { ...input, from: "preparing", to: "ringing" };
+  expect(await advanceLivekitTransfer(context, phase)).toMatchObject({ room: state.call!.gatewaySessionId });
+  expect(state.call!.transferState).toBe("ringing");
+  expect(await advanceLivekitTransfer(context, phase)).toBeNull();
+  state.call!.endedAt = new Date();
+  expect(await advanceLivekitTransfer(context, { ...input, from: "ringing", to: "screening" })).toBeNull();
 });

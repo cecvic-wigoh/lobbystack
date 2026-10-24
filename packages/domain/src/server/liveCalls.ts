@@ -134,9 +134,21 @@ export async function claimLivekitTransfer(context: DomainContext, input: { busi
     const [call] = await tx.select().from(calls).where(and(eq(calls.id, input.callId), eq(calls.businessId, input.businessId))).limit(1).for("update");
     if (!call || call.provider !== "livekit" || call.transport !== "web_voice" || call.endedAt || !call.mediaStartedAt || !call.gatewaySessionId?.match(/^lobby-[a-f0-9-]{36}$/) || (call.transferState && !["none", "idle"].includes(call.transferState))) return null;
     const remainingSeconds = Math.floor(((call.webCallMaxDurationMs ?? 300000) - (Date.now() - call.mediaStartedAt.getTime())) / 1000);
-    if (remainingSeconds < 40) return null;
+    if (remainingSeconds < 60) return null;
     await tx.update(calls).set({ transferState: "claiming", updatedAt: new Date() }).where(and(eq(calls.id, call.id), eq(calls.businessId, input.businessId)));
     return { room: call.gatewaySessionId, remainingSeconds };
+  });
+}
+
+/** Atomically claims a screening phase; retries cannot dial or merge twice. */
+export async function advanceLivekitTransfer(context: DomainContext, input: { businessId: string; callId: string; from: string; to: string }) {
+  return withBusinessTransaction(context.db, { businessId: input.businessId, actorType: "worker" }, async tx => {
+    const [call] = await tx.select().from(calls).where(and(eq(calls.id, input.callId), eq(calls.businessId, input.businessId))).limit(1).for("update");
+    if (!call || call.endedAt || call.provider !== "livekit" || call.transport !== "web_voice" || call.transferState !== input.from || !call.mediaStartedAt) return null;
+    const remainingSeconds = Math.floor(((call.webCallMaxDurationMs ?? 300000) - (Date.now() - call.mediaStartedAt.getTime())) / 1000);
+    if (remainingSeconds < 1) return null;
+    await tx.update(calls).set({ transferState: input.to, updatedAt: new Date() }).where(and(eq(calls.id, call.id), eq(calls.businessId, input.businessId)));
+    return { room: call.gatewaySessionId!, remainingSeconds };
   });
 }
 
