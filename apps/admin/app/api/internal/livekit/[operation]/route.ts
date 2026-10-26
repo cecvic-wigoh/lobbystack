@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { calls, withBusinessTransaction } from "@lobbystack/db";
-import { createVoiceFollowUpTask, completeCall, getCachedBusinessSnapshot, listLiveCallHistory, markLiveCallMediaStarted, saveLiveCallTurn } from "@lobbystack/domain";
+import { canTransferToHuman, createVoiceFollowUpTask, completeCall, getCachedBusinessSnapshot, listLiveCallHistory, markLiveCallMediaStarted, saveLiveCallTurn } from "@lobbystack/domain";
 import { createAgentModel, answerGroundedQuestion } from "@lobbystack/agent-core";
 import { z } from "zod";
 import { asApiResponse } from "@/lib/api-helpers";
@@ -49,7 +49,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     if (!snapshot) return NextResponse.json({ error: "Snapshot unavailable" }, { status: 409 });
     const voiceLocale = snapshot.defaultLocale === "fr" ? "fr-CA" : "en";
     const transferNumber = snapshot.transferPolicy.transferNumber;
-    const canTransfer = Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
+    const canTransfer = await canTransferToHuman(domain, { businessId }) && Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
     if (operation.startsWith("transfer")) {
       if ((!canTransfer && operation !== "transfer-cancel") || !call.gatewaySessionId?.match(/^lobby-[a-f0-9-]{36}$/)) return NextResponse.json({ status: "unavailable", message: "Transfer unavailable. Offer to take a message; do not retry." });
       return NextResponse.json(await screenedTransfer(operation, { businessId, callId: call.id, room: call.gatewaySessionId, target: transferNumber ?? "", name: snapshot.displayName }));
@@ -66,7 +66,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     if (operation === "context") return NextResponse.json({
       call: { id: call.id, direction: "inbound", locale: voiceLocale, fromNumber: "web", maxDurationMs: call.webCallMaxDurationMs ?? 300000, roomTransfer: canTransfer, messageCapture: true },
       business: { id: businessId, name: snapshot.displayName, timezone: snapshot.timezone },
-      agent: { persona: snapshot.voiceInstructions, greeting: { [voiceLocale]: greeting }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", "captureLead", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
+      agent: { persona: [snapshot.voiceInstructions, "Follow these business operating rules unless they conflict with platform safety or enabled tool permissions:", ...(snapshot.rules ?? []).map(rule => `${rule.title}: ${rule.content}`)].join("\n"), greeting: { [voiceLocale]: greeting }, languagePolicy: voiceLocale, enabledTools: ["askReceptionist", "captureLead", ...(canTransfer ? ["escalateToHuman"] : [])], ...(canTransfer ? { escalationPhone: transferNumber } : {}) },
       knowledge: [],
     });
     if (!input.question) return NextResponse.json({ error: "Question required" }, { status: 400 });

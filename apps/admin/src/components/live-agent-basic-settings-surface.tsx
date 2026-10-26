@@ -79,17 +79,20 @@ export function AgentBasicSettingsPage({
   const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["agent-settings", businessId],
-    queryFn: () => requestJson<{ business: { defaultLocale: RuntimeLocale } | null; profile: { greeting: string; transferNumber: string | null; transferMode: string; appointmentChangePolicy: AppointmentChangePolicy | null; bookingMode: BookingMode } | null }>(`/api/agent?businessId=${encodeURIComponent(businessId)}`),
+    queryFn: () => requestJson<{ business: { defaultLocale: RuntimeLocale } | null; profile: { callSummaryEmail?: string | null; greeting: string; transferNumber: string | null; transferMode: string; appointmentChangePolicy: AppointmentChangePolicy | null; bookingMode: BookingMode } | null }>(`/api/agent?businessId=${encodeURIComponent(businessId)}`),
     enabled: Boolean(businessId),
   });
   const configuration = query.data;
   const isLoadingConfiguration = !businessId || query.isLoading;
-  async function saveProfile({ defaultLocale: locale, ...patch }: { businessId: string; defaultLocale?: RuntimeLocale; greeting?: string; transferNumber?: string | null; transferMode?: string; appointmentChangePolicy?: AppointmentChangePolicy; bookingMode?: BookingMode }) {
+  async function saveProfile({ defaultLocale: locale, ...patch }: { businessId: string; defaultLocale?: RuntimeLocale; greeting?: string; callSummaryEmail?: string | null; transferNumber?: string | null; transferMode?: string; appointmentChangePolicy?: AppointmentChangePolicy; bookingMode?: BookingMode }) {
     await requestJson(`/api/agent?businessId=${encodeURIComponent(businessId)}`, { method: "PATCH", body: JSON.stringify({ ...patch, ...(locale ? { locale } : {}) }) });
     await queryClient.invalidateQueries({ queryKey: ["agent-settings", businessId] });
   }
   const persistedProfile = configuration?.profile;
 
+  const [summaryEmail, setSummaryEmail] = useState("");
+  const [summaryEmailSaving, setSummaryEmailSaving] = useState(false);
+  const [summaryEmailStatus, setSummaryEmailStatus] = useState<string | null>(null);
   const [greeting, setGreeting] = useState("");
   const [defaultLocale, setDefaultLocale] = useState<RuntimeLocale>("en");
   const [transferNumber, setTransferNumber] = useState("");
@@ -115,6 +118,7 @@ export function AgentBasicSettingsPage({
       return;
     }
     setGreeting(profile.greeting);
+    setSummaryEmail(profile.callSummaryEmail ?? "");
     setDefaultLocale(configuration.business?.defaultLocale ?? "en");
     setTransferNumber(profile.transferNumber ?? "");
     setTransferNumberInputValue(profile.transferNumber ?? "");
@@ -414,6 +418,23 @@ export function AgentBasicSettingsPage({
               </ItemActions>
             </Item>
 
+
+            <Item className="rounded-none border-x-0 border-t-0 border-b border-border last:border-b-0" variant="default">
+              <ItemContent>
+                <ItemTitle><label htmlFor="agent-summary-email">{t("agent:fields.callSummaryEmail.label")}</label></ItemTitle>
+                <ItemDescription>{t("agent:fields.callSummaryEmail.hint")}</ItemDescription>
+                <form className="flex flex-wrap gap-2 pt-2" onSubmit={async event => {
+                  event.preventDefault(); setSummaryEmailSaving(true); setSummaryEmailStatus(null);
+                  try { await saveProfile({ businessId, callSummaryEmail: summaryEmail.trim() || null }); setSummaryEmailStatus(t("agent:fields.callSummaryEmail.saved")); }
+                  catch { setSummaryEmailStatus(t("agent:fields.callSummaryEmail.failed")); }
+                  finally { setSummaryEmailSaving(false); }
+                }}>
+                  <Input id="agent-summary-email" type="email" maxLength={254} className="max-w-sm" disabled={!canManageTenant || isLoadingConfiguration || summaryEmailSaving} value={summaryEmail} onChange={event => setSummaryEmail(event.target.value)} />
+                  <Button type="submit" disabled={!canManageTenant || isLoadingConfiguration || summaryEmailSaving}>{t(summaryEmailSaving ? "agent:fields.callSummaryEmail.saving" : "agent:fields.callSummaryEmail.save")}</Button>
+                </form>
+                {summaryEmailStatus ? <p role="status" className="text-sm">{summaryEmailStatus}</p> : null}
+              </ItemContent>
+            </Item>
 
             <Item
               className="rounded-none border-x-0 border-t-0 border-b border-border last:border-b-0"

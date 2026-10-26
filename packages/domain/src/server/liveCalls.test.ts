@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
+  canTransfer: vi.fn(),
   completeCall: vi.fn(),
   setTransferState: vi.fn(),
   startCall: vi.fn(),
@@ -16,6 +17,7 @@ vi.mock("@lobbystack/db", async (original) => ({
   enqueueOutbox: mocks.enqueueOutbox,
 }));
 
+vi.mock("./transferAccess", () => ({ canTransferToHuman: mocks.canTransfer }));
 vi.mock("./voice", () => ({ completeCall: mocks.completeCall, setTransferState: mocks.setTransferState, startCall: mocks.startCall, upsertTranscript: mocks.upsertTranscript }));
 vi.mock("./billing", () => ({ reserveOutboundCallAttempt: mocks.reserveOutboundCallAttempt }));
 vi.mock("./unitEconomics", () => ({ recordUnitEconomicsEvent: mocks.recordUnitEconomicsEvent }));
@@ -28,6 +30,7 @@ const call = { businessId: "biz_1", callId: "call_1" };
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.canTransfer.mockResolvedValue(true);
   mocks.completeCall.mockResolvedValue(true);
 });
 
@@ -79,6 +82,12 @@ describe("finishLiveCall", () => {
 });
 
 describe("prepareLiveCallTransfer", () => {
+  it("does not reserve or change call state when the tier forbids transfers", async () => {
+    mocks.canTransfer.mockResolvedValue(false);
+    await expect(prepareLiveCallTransfer(context, call)).resolves.toBe(false);
+    expect(mocks.reserveOutboundCallAttempt).not.toHaveBeenCalled();
+    expect(mocks.setTransferState).not.toHaveBeenCalled();
+  });
   it("reserves a transfer attempt before the call is referred", async () => {
     mocks.reserveOutboundCallAttempt.mockResolvedValue({ allowed: true });
     await expect(prepareLiveCallTransfer(context, call)).resolves.toBe(true);

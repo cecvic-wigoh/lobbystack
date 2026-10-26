@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getActiveOnboardingState, resolveOnboardingRoute } from "@lobbystack/domain";
+import { authorizePlatformAdmin, getActiveOnboardingState, resolveOnboardingRoute } from "@lobbystack/domain";
 import { RootDocument, appMetadata } from "@/app/root-document";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { getSession } from "@/lib/auth";
+import { createDomainContext } from "@/lib/domain-context";
 import { getAppDatabase } from "@/lib/api-helpers";
 import { localizePublicPath } from "@/lib/locale-path";
 import { localeFromRequestHeaders, PATHNAME_HEADER } from "@/lib/locale-request";
@@ -20,12 +21,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { locale, source } = localeFromRequestHeaders(requestHeaders);
   const session = await getSession(new Headers(requestHeaders));
   if (!session) redirect(localizePublicPath("/login", locale));
+  let platformAdmin = false;
+  try { await authorizePlatformAdmin(createDomainContext(), session.user.id); platformAdmin = true; }
+  catch (error) { if ((error as { status?: number }).status !== 403) throw error; }
   const onboarding = await getActiveOnboardingState(getAppDatabase().db, session.user.id);
-  if (onboarding.stage !== "complete") redirect(resolveOnboardingRoute(onboarding.stage));
+  if (onboarding.stage !== "complete" && !(platformAdmin && requestHeaders.get(PATHNAME_HEADER) === "/platform")) redirect(resolveOnboardingRoute(onboarding.stage));
   return (
     <RootDocument locale={locale} localeSource={source} namespaces={routeNamespaces(requestHeaders.get(PATHNAME_HEADER) ?? "/")}>
       <DashboardShell
         user={{
+          platformAdmin,
           email: session.user.email ?? "",
           name: session.user.name ?? session.user.email ?? "",
         }}

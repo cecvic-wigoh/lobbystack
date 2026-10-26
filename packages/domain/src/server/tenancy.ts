@@ -225,6 +225,7 @@ export async function acceptInvitation(
       set: { role: invitation.role, status: "active", updatedAt: new Date() },
     });
     await tx.update(businessInvitations).set({ status: "accepted", acceptedByUserId: input.userId, acceptedAt: new Date(), updatedAt: new Date() }).where(eq(businessInvitations.id, invitation.id));
+    await tx.update(users).set({ activeBusinessId: invitation.businessId, updatedAt: new Date() }).where(eq(users.id, input.userId));
     return { businessId: invitation.businessId, role: invitation.role };
   });
 }

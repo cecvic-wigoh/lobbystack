@@ -264,10 +264,18 @@
     "transferNumber": {
       "label": "Numéro de transfert par défaut",
       "placeholder": "+1 555-123-4567",
-      "hint": "Le numéro que votre réceptionniste doit utiliser lorsqu'il transfère un appel à une personne.",
+      "hint": "Les transferts humains nécessitent Pro ou Entreprise sur les offres hébergées. Si personne ne peut accepter, l’IA propose de prendre un message.",
       "errors": {
         "invalid": "Entrez un numéro de transfert complet et valide avant d'enregistrer."
       }
+    },
+    "callSummaryEmail": {
+      "label": "Courriel des résumés d’appel",
+      "hint": "Recevez le résumé et la transcription complète après chaque appel. Laissez vide pour utiliser le destinataire configuré par l’opérateur, le cas échéant.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Destinataire enregistré.",
+      "failed": "Impossible d’enregistrer le destinataire."
     }
   },
   "booking": {

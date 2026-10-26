@@ -2,6 +2,8 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { calls, contacts, enqueueOutbox, transcripts, withBusinessTransaction } from "@lobbystack/db";
 
+import { canTransferToHuman } from "./transferAccess";
+
 import { reserveOutboundCallAttempt } from "./billing";
 import type { DomainContext } from "./context";
 import { recordProspectDemoCallOutcome } from "./demos";
@@ -122,6 +124,7 @@ export async function listLiveCallHistory(context: DomainContext, input: { busin
  * the plan has no attempts left, so the agent can take a message instead.
  */
 export async function prepareLiveCallTransfer(context: DomainContext, input: { businessId: string; callId: string }): Promise<boolean> {
+  if (!await canTransferToHuman(context, input)) return false;
   await setTransferState(context, { businessId: input.businessId, callId: input.callId, transferState: "requested" });
   const reservation = await reserveOutboundCallAttempt(context, { businessId: input.businessId, sourceKey: `outbound_call:${input.callId}` });
   await setTransferState(context, { businessId: input.businessId, callId: input.callId, transferState: reservation.allowed ? "preparing" : "released" });

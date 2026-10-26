@@ -13,5 +13,33 @@
     "feedbackSending": "Envoi...",
     "feedbackSent": "Commentaire envoyé",
     "feedbackFailed": "Impossible d'envoyer le commentaire"
+  },
+  "platform": {
+    "title": "Administration de la plateforme",
+    "description": "Créez les espaces clients et gérez leurs réceptionnistes IA.",
+    "createTitle": "Créer un espace client",
+    "inviteHint": "Le client reçoit une invitation et utilise son propre courriel et mot de passe. Aucun mot de passe n’est partagé.",
+    "name": "Nom de l’entreprise",
+    "email": "Courriel de l’administrateur client",
+    "timezone": "Fuseau horaire",
+    "businessType": "Type d’entreprise",
+    "saving": "Création…",
+    "create": "Créer et inviter",
+    "created": "Espace créé et invitation mise en file.",
+    "customers": "Espaces clients",
+    "search": "Rechercher un client",
+    "loading": "Chargement…",
+    "status": "Statut",
+    "onboarding": "Étape de configuration",
+    "actions": "Actions",
+    "open": "Ouvrir l’espace",
+    "empty": "Aucun client trouvé.",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "openHint": "L’accès administrateur est enregistré. Utilisez les paramètres IA, les connaissances, les règles et Paramètres → Équipe pour gérer le client.",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "ready": "Prêt",
+    "setupNeeded": "Configuration requise"
   }
 }

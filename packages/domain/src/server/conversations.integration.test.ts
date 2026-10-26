@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { afterAll, describe, expect, it } from "vitest";
-import { businesses, calls, contacts, conversations, conversationSessions, createDatabaseClient, outboxMessages, transcripts, withBusinessTransaction, type Database, type DatabaseTransaction } from "@lobbystack/db";
+import { businesses, receptionistProfiles, calls, contacts, conversations, conversationSessions, createDatabaseClient, outboxMessages, transcripts, withBusinessTransaction, type Database, type DatabaseTransaction } from "@lobbystack/db";
 
 import { recordCallOutcomeInTransaction } from "./callOutcome";
 import { finalizeConversationSession, loadCallSummaryInput } from "./conversations";
@@ -70,8 +70,24 @@ describe.skipIf(!testUrl)("call summaries against PostgreSQL under worker RLS", 
       const deliveries = await tx.select().from(outboxMessages).where(eq(outboxMessages.dedupeKey, `call:${fixture.callId}:summary-email`));
       expect(deliveries).toHaveLength(1);
       expect(deliveries[0]).toMatchObject({ businessId: fixture.businessId, aggregateId: fixture.callId, topic: "email.send", payload: { to: "contact@trendhubs.io", callSummary: true, variables: { message: expect.stringContaining("Asked about Friday hours.") } } });
+      const email = (deliveries[0]!.payload as { variables: { message: string } }).variables.message;
+      expect(email).toContain("Transcript:");
+      expect(email).toContain("Caller: Hi, this is Marie. Are you open on Friday?");
+      expect(email).toContain("Assistant: Yes, we're open 9 to 5.");
       await tx.execute(sql`set local role lobbystack_worker`);
       expect(await finalizeConversationSession({ db: fixture.db }, { businessId: randomUUID(), callId: fixture.callId, summaryEmailRecipient: "other@example.test" })).toEqual({ finalized: false });
+    });
+  });
+  it("uses the business recipient instead of the legacy fallback without leaking to another business", async () => {
+    await rollbackTest(async tx => {
+      const fixture = await seedCall(tx, { turns: fridayCall });
+      await tx.execute(sql`reset role`);
+      await tx.insert(receptionistProfiles).values({ businessId: fixture.businessId, greeting: "Hello", tone: "warm", summary: "Business", bookingPolicy: "No booking", transferMode: "never", callSummaryEmail: "client@example.test" });
+      await tx.execute(sql`set local role lobbystack_worker`);
+      await finalizeConversationSession({ db: fixture.db }, { ...fixture, summaryEmailRecipient: "contact@trendhubs.io" });
+      await tx.execute(sql`reset role`);
+      const [email] = await tx.select().from(outboxMessages).where(eq(outboxMessages.dedupeKey, `call:${fixture.callId}:summary-email`));
+      expect(email!.payload).toMatchObject({ to: "client@example.test", variables: { message: expect.stringContaining("Caller: Hi, this is Marie.") } });
     });
   });
   it("stores the generated summary and a spoken caller name once", async () => {

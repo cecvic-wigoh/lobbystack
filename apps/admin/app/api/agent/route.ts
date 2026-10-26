@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -17,11 +18,12 @@ const profileFields = [
   "chatInstructions",
   "transferMode",
   "transferNumber",
+  "callSummaryEmail",
 ] as const;
 
 type ProfileField = (typeof profileFields)[number];
 type ProfilePatch = Partial<Record<"greeting" | "tone" | "summary" | "bookingPolicy" | "transferMode", string>> &
-  Partial<Record<"voiceInstructions" | "smsInstructions" | "chatInstructions" | "transferNumber", string | null>> &
+  Partial<Record<"voiceInstructions" | "smsInstructions" | "chatInstructions" | "transferNumber" | "callSummaryEmail", string | null>> &
   { appointmentChangePolicy?: AppointmentChangePolicy; bookingMode?: BookingMode };
 
 function appointmentPolicy(value: unknown): AppointmentChangePolicy | undefined {
@@ -47,7 +49,7 @@ function readProfilePatch(body: Record<string, unknown>): ProfilePatch {
     if (!(field in body)) continue;
     const maxLength = field === "voiceInstructions" || field === "smsInstructions" || field === "chatInstructions" ? 8_000 : 2_000;
     const value = optionalText(body[field], field, maxLength);
-    if (value === null && !["voiceInstructions", "smsInstructions", "chatInstructions", "transferNumber"].includes(field)) {
+    if (value === null && !["voiceInstructions", "smsInstructions", "chatInstructions", "transferNumber", "callSummaryEmail"].includes(field)) {
       throw jsonError(`${field} cannot be empty.`);
     }
     if (value !== undefined) patch[field] = value;
@@ -56,6 +58,7 @@ function readProfilePatch(body: Record<string, unknown>): ProfilePatch {
   if (patch.transferMode !== undefined && !["never", "always", "on_request", "on_urgent", "during_business_hours"].includes(patch.transferMode ?? "")) {
     throw jsonError("transferMode is invalid.");
   }
+  if (patch.callSummaryEmail && !z.email().safeParse(patch.callSummaryEmail).success) throw jsonError("callSummaryEmail is invalid.");
   const policy = appointmentPolicy(body.appointmentChangePolicy);
   const bookingMode = body.bookingMode;
   if (bookingMode !== undefined && bookingMode !== "off" && bookingMode !== "request" && bookingMode !== "instant") throw jsonError("bookingMode is invalid.");
@@ -106,6 +109,7 @@ export async function PATCH(request: Request) {
         ...(patch.voiceInstructions !== undefined ? { voiceInstructions: patch.voiceInstructions } : {}),
         ...(patch.smsInstructions !== undefined ? { smsInstructions: patch.smsInstructions } : {}),
         ...(patch.chatInstructions !== undefined ? { chatInstructions: patch.chatInstructions } : {}),
+        ...(patch.callSummaryEmail !== undefined ? { callSummaryEmail: patch.callSummaryEmail } : {}),
         transferMode: patch.transferMode ?? "on_request",
         ...(patch.transferNumber !== undefined ? { transferNumber: patch.transferNumber } : {}),
         appointmentChangePolicy: patch.appointmentChangePolicy ?? defaultAppointmentChangePolicy,

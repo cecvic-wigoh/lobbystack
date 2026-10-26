@@ -264,10 +264,18 @@
     "transferNumber": {
       "label": "Número de transferencia predeterminado",
       "placeholder": "+1 555-123-4567",
-      "hint": "El número de teléfono que su recepcionista debe usar al pasar una llamada a una persona.",
+      "hint": "Las transferencias a personas requieren Pro o Enterprise en planes alojados. Si nadie acepta, la IA ofrece tomar un mensaje.",
       "errors": {
         "invalid": "Introduzca un número de transferencia completo y válido antes de guardar."
       }
+    },
+    "callSummaryEmail": {
+      "label": "Correo de resúmenes de llamadas",
+      "hint": "Recibe el resumen y la transcripción completa después de cada llamada. Déjalo vacío para usar el destinatario configurado por el operador, si existe.",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Destinatario guardado.",
+      "failed": "No se pudo guardar el destinatario."
     }
   },
   "booking": {

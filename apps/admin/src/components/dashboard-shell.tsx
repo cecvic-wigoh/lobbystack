@@ -57,6 +57,7 @@ type DashboardShellProps = {
   user: {
     email: string;
     name: string;
+    platformAdmin?: boolean;
   };
 };
 
@@ -132,7 +133,7 @@ function BillingBanner() {
 
 function ReplacementSidebar({ user }: Pick<DashboardShellProps, "user">) {
   const pathname = usePathname();
-  const { t } = useTranslation(["nav", "settings", "agent"]);
+  const { t } = useTranslation(["nav", "settings", "agent", "admin"]);
   const general: NavigationItem[] = [
     { label: t("nav:items.home"), href: "/", icon: HomeIcon },
     { label: t("nav:items.calls"), href: "/calls", icon: PhoneAnimatedIcon },
@@ -146,6 +147,7 @@ function ReplacementSidebar({ user }: Pick<DashboardShellProps, "user">) {
     { label: t("agent:sections.rules.title"), href: "/agent/rules", icon: WorkflowIcon },
   ];
   const other: NavigationItem[] = [
+    ...(user.platformAdmin ? [{ label: t("admin:platform.title"), href: "/platform", icon: UsersIcon }] : []),
     { label: t("nav:items.analytics"), href: "/analytics", icon: ChartColumnIncreasingIcon },
     { label: t("settings:sections.integrations"), href: "/integrations", icon: BlocksIcon },
     { label: t("nav:items.settings"), href: "/settings/usage", icon: SettingsIcon },

@@ -264,10 +264,18 @@
     "transferNumber": {
       "label": "Podrazumevani broj za preusmeravanje",
       "placeholder": "+1 555-123-4567",
-      "hint": "Broj telefona na koji recepcioner preusmerava pozivaoca kada treba da razgovara sa osobom.",
+      "hint": "Prenos poziva osobi zahteva Pro ili Enterprise na hostovanim planovima. Ako niko ne prihvati, AI nudi da zabeleži poruku.",
       "errors": {
         "invalid": "Pre čuvanja unesite potpun i ispravan broj za preusmeravanje."
       }
+    },
+    "callSummaryEmail": {
+      "label": "E-adresa za sažetke poziva",
+      "hint": "Primajte sažetak i ceo transkript nakon svakog poziva. Ostavite prazno za primaoca kog je podesio operater, ako postoji.",
+      "save": "Sačuvaj",
+      "saving": "Čuvanje…",
+      "saved": "Primalac je sačuvan.",
+      "failed": "Primalac nije sačuvan."
     }
   },
   "booking": {

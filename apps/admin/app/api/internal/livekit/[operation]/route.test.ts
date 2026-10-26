@@ -5,7 +5,8 @@ vi.mock("@/lib/domain-context", () => ({ createWorkerDomainContext: () => ({ db:
 vi.mock("@/lib/api-helpers", () => ({ asApiResponse: () => new Response(null, { status: 400 }) }));
 vi.mock("@lobbystack/db", () => ({ calls: {}, withBusinessTransaction: async (_db: unknown, _ctx: unknown, fn: (tx: unknown) => unknown) => fn({ select: () => ({ from: () => ({ where: () => ({ limit: mocks.lookup }) }) }) }) }));
 vi.mock("drizzle-orm", () => ({ and: vi.fn(), eq: vi.fn() }));
-vi.mock("@lobbystack/domain", () => ({ getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: mocks.greeting, voiceInstructions: "Helpful", transferPolicy: { mode: "never" } }), listLiveCallHistory: mocks.history, completeCall: mocks.complete, markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
+vi.mock("@lobbystack/domain", () => ({
+  canTransferToHuman: vi.fn(async () => true), getCachedBusinessSnapshot: async () => ({ businessId: "biz", defaultLocale: "en", displayName: "Suncrest", timezone: "America/Regina", greeting: mocks.greeting, voiceInstructions: "Helpful", transferPolicy: { mode: "never" } }), listLiveCallHistory: mocks.history, completeCall: mocks.complete, markLiveCallMediaStarted: vi.fn(), saveLiveCallTurn: vi.fn() }));
 vi.mock("@lobbystack/agent-core", () => ({ createAgentModel: () => ({}), answerGroundedQuestion: mocks.agent }));
 import { POST } from "./route";
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); mocks.greeting = "Hello"; });

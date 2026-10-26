@@ -13,5 +13,33 @@
     "feedbackSending": "Enviando...",
     "feedbackSent": "Comentarios enviados",
     "feedbackFailed": "No se pudieron enviar los comentarios"
+  },
+  "platform": {
+    "title": "Administración de la plataforma",
+    "description": "Crea espacios de clientes y configura sus recepcionistas IA.",
+    "createTitle": "Crear un espacio de cliente",
+    "inviteHint": "El cliente recibe una invitación y utiliza su propio correo y contraseña. No se comparten contraseñas.",
+    "name": "Nombre de la empresa",
+    "email": "Correo del administrador del cliente",
+    "timezone": "Zona horaria",
+    "businessType": "Tipo de empresa",
+    "saving": "Creando…",
+    "create": "Crear e invitar",
+    "created": "Espacio creado e invitación en cola.",
+    "customers": "Espacios de clientes",
+    "search": "Buscar clientes",
+    "loading": "Cargando…",
+    "status": "Estado",
+    "onboarding": "Etapa de configuración",
+    "actions": "Acciones",
+    "open": "Abrir espacio",
+    "empty": "No se encontraron clientes.",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "openHint": "El acceso del administrador queda registrado. Usa la configuración de IA, conocimientos, reglas y Configuración → Equipo para gestionar el cliente.",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "ready": "Listo",
+    "setupNeeded": "Configuración pendiente"
   }
 }

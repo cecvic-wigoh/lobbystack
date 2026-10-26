@@ -37,3 +37,6 @@ export * from "./voice";
 export * from "./usage";
 export * from "./unitEconomics";
 export { recordCallSchedulingProgress } from "./callOutcome";
+
+export * from "./transferAccess";
+export * from "./platform";

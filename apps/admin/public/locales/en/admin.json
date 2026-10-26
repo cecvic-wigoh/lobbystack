@@ -13,5 +13,33 @@
     "feedbackSending": "Sending...",
     "feedbackSent": "Feedback sent",
     "feedbackFailed": "Unable to send feedback"
+  },
+  "platform": {
+    "title": "Platform administration",
+    "description": "Set up customer workspaces and manage their AI receptionists.",
+    "createTitle": "Create a customer workspace",
+    "inviteHint": "The customer receives an invitation and signs in with their own email and password. No password is shared with administrators.",
+    "name": "Business name",
+    "email": "Customer administrator email",
+    "timezone": "Timezone",
+    "businessType": "Business type",
+    "saving": "Creating…",
+    "create": "Create and invite",
+    "created": "Workspace created and invitation queued.",
+    "customers": "Customer workspaces",
+    "search": "Search customers",
+    "loading": "Loading customers…",
+    "status": "Status",
+    "onboarding": "Setup stage",
+    "actions": "Actions",
+    "open": "Open workspace",
+    "empty": "No customers found.",
+    "previous": "Previous",
+    "next": "Next",
+    "openHint": "Opening a workspace records administrator access. Use AI settings, Knowledge, Rules, and Settings → Team to configure the customer and manage users.",
+    "active": "Active",
+    "inactive": "Inactive",
+    "ready": "Ready",
+    "setupNeeded": "Setup needed"
   }
 }

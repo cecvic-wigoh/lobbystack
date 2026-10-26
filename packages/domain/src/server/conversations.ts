@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
-import { businesses, calls, contacts, conversations, conversationSessions, enqueueOutbox, messages, transcripts, widgetVisitors, withBusinessTransaction } from "@lobbystack/db";
+import { receptionistProfiles, businesses, calls, contacts, conversations, conversationSessions, enqueueOutbox, messages, transcripts, widgetVisitors, withBusinessTransaction } from "@lobbystack/db";
 import { getPostHogDistinctIdForBusinessSystem } from "@lobbystack/telemetry";
 
 import { requireBusinessMembership } from "../authz";
@@ -73,7 +73,7 @@ export async function finalizeConversationSession(
   context: DomainContext,
   input: { businessId: string; callId: string; generated?: GeneratedCallSummary | undefined; summaryEmailRecipient?: string },
 ): Promise<{ sessionId?: string; finalized: boolean }> {
-  const recipient = input.summaryEmailRecipient === undefined ? undefined : z.string().email().parse(input.summaryEmailRecipient);
+  const fallbackRecipient = input.summaryEmailRecipient === undefined ? undefined : z.string().email().parse(input.summaryEmailRecipient);
   return await withBusinessTransaction(context.db, { businessId: input.businessId, actorType: "worker" }, async (tx) => {
     const call = (await tx.select({ conversationId: calls.conversationId, contactId: calls.contactId, disposition: calls.disposition, startedAt: calls.startedAt, endedAt: calls.endedAt }).from(calls).where(and(eq(calls.id, input.callId), eq(calls.businessId, input.businessId))).limit(1).for("update"))[0];
     if (!call?.conversationId) return { finalized: false };
@@ -96,6 +96,8 @@ export async function finalizeConversationSession(
     }
     const summaryText = summary.kind === "summary" ? summary.summary : summary.kind === "message_taking" ? summary.summary : undefined;
     await tx.update(conversations).set({ status: "closed", ...(summaryText ? { summary: summaryText } : {}), revision: sql`${conversations.revision} + 1`, updatedAt: new Date() }).where(and(eq(conversations.id, call.conversationId), eq(conversations.businessId, input.businessId)));
+    const [emailProfile] = await tx.select({ email: receptionistProfiles.callSummaryEmail }).from(receptionistProfiles).where(eq(receptionistProfiles.businessId, input.businessId)).limit(1);
+    const recipient = emailProfile?.email ? z.string().email().parse(emailProfile.email) : fallbackRecipient;
     if (recipient) {
       const business = (await tx.select({ name: businesses.name }).from(businesses).where(eq(businesses.id, input.businessId)).limit(1))[0];
       const contact = call.contactId ? (await tx.select({ name: contacts.name, phone: contacts.phone, email: contacts.email }).from(contacts).where(and(eq(contacts.id, call.contactId), eq(contacts.businessId, input.businessId))).limit(1))[0] : undefined;
@@ -107,7 +109,8 @@ export async function finalizeConversationSession(
         ...(contact?.phone && /^\+[1-9]\d{6,14}$/.test(contact.phone) ? [`Phone: ${contact.phone}`] : []),
         ...(contact?.email ? [`Email: ${contact.email}`] : []),
         `Call reference: ${input.callId}`,
-        "The full transcript is available in the platform's Calls dashboard.",
+        "Transcript:",
+        ...(transcript.length ? transcript.map(turn => `${turn.speaker === "caller" ? "Caller" : "Assistant"}: ${turn.text}`) : ["No transcript was captured."]),
       ].join("\n\n");
       // Commit the email with finalization so retries cannot lose or enqueue it twice.
       await enqueueOutbox(tx, { topic: "email.send", businessId: input.businessId, aggregateType: "call", aggregateId: input.callId, dedupeKey: `call:${input.callId}:summary-email`, payload: { template: "operator_alert", to: recipient, subject: `${business?.name ?? "Business"} — call summary`, variables: { message: body }, callSummary: true } });

@@ -13,5 +13,33 @@
     "feedbackSending": "Slanje...",
     "feedbackSent": "Povratne informacije su poslate",
     "feedbackFailed": "Slanje povratnih informacija nije uspelo"
+  },
+  "platform": {
+    "title": "Administracija platforme",
+    "description": "Kreirajte prostore klijenata i podesite njihove AI recepcionere.",
+    "createTitle": "Kreiraj prostor klijenta",
+    "inviteHint": "Klijent dobija pozivnicu i koristi sopstvenu e-adresu i lozinku. Lozinke se ne dele.",
+    "name": "Naziv preduzeća",
+    "email": "E-adresa administratora klijenta",
+    "timezone": "Vremenska zona",
+    "businessType": "Vrsta preduzeća",
+    "saving": "Kreiranje…",
+    "create": "Kreiraj i pozovi",
+    "created": "Prostor je kreiran i pozivnica čeka slanje.",
+    "customers": "Prostori klijenata",
+    "search": "Pretraži klijente",
+    "loading": "Učitavanje…",
+    "status": "Status",
+    "onboarding": "Korak podešavanja",
+    "actions": "Radnje",
+    "open": "Otvori prostor",
+    "empty": "Nema pronađenih klijenata.",
+    "previous": "Prethodno",
+    "next": "Sledeće",
+    "openHint": "Pristup administratora se beleži. Koristite AI podešavanja, znanje, pravila i Podešavanja → Tim za upravljanje klijentom.",
+    "active": "Aktivan",
+    "inactive": "Neaktivan",
+    "ready": "Spremno",
+    "setupNeeded": "Potrebno podešavanje"
   }
 }

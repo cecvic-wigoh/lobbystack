@@ -19,7 +19,7 @@ const patch = (body: unknown) => PATCH(new Request("http://localhost:3000/api/ag
 beforeEach(() => { vi.clearAllMocks(); fixture.denied = false; });
 
 describe("agent settings validation", () => {
-  it.each([{}, [], null, { locale: "xx" }, { greeting: "" }, { transferMode: "invalid" }, { appointmentChangePolicy: {} }])("rejects invalid input %j before writing", async (body) => {
+  it.each([{}, [], null, { locale: "xx" }, { greeting: "" }, { transferMode: "invalid" }, { callSummaryEmail: "not-an-email" }, { appointmentChangePolicy: {} }])("rejects invalid input %j before writing", async (body) => {
     expect((await patch(body)).status).toBe(400);
     expect(fixture.insert).not.toHaveBeenCalled();
     expect(fixture.enqueue).not.toHaveBeenCalled();
@@ -40,4 +40,11 @@ describe("agent settings validation", () => {
     expect(fixture.transaction).toHaveBeenCalledWith({ minimumRole: "business_admin" });
     expect(fixture.insert).not.toHaveBeenCalled();
   });
+});
+
+it("saves a validated business-scoped summary recipient and allows clearing to legacy routing", async () => {
+  expect((await patch({ callSummaryEmail: "client@example.test" })).status).toBe(200);
+  expect(fixture.insert).toHaveBeenCalledWith(expect.objectContaining({ callSummaryEmail: "client@example.test" }));
+  expect((await patch({ callSummaryEmail: null })).status).toBe(200);
+  expect(fixture.insert).toHaveBeenLastCalledWith(expect.objectContaining({ callSummaryEmail: null }));
 });
