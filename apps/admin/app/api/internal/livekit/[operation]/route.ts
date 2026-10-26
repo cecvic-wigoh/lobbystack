@@ -49,7 +49,7 @@ export async function POST(request: Request, route: { params: Promise<{ operatio
     if (!snapshot) return NextResponse.json({ error: "Snapshot unavailable" }, { status: 409 });
     const voiceLocale = snapshot.defaultLocale === "fr" ? "fr-CA" : "en";
     const transferNumber = snapshot.transferPolicy.transferNumber;
-    const canTransfer = await canTransferToHuman(domain, { businessId }) && Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
+    const canTransfer = (operation === "context" || (operation.startsWith("transfer") && operation !== "transfer-cancel")) && await canTransferToHuman(domain, { businessId }) && Boolean(process.env.LIVEKIT_SIP_OUTBOUND_TRUNK_ID && ["on_request", "always"].includes(snapshot.transferPolicy.mode) && transferNumber && /^\+[1-9]\d{7,14}$/.test(transferNumber));
     if (operation.startsWith("transfer")) {
       if ((!canTransfer && operation !== "transfer-cancel") || !call.gatewaySessionId?.match(/^lobby-[a-f0-9-]{36}$/)) return NextResponse.json({ status: "unavailable", message: "Transfer unavailable. Offer to take a message; do not retry." });
       return NextResponse.json(await screenedTransfer(operation, { businessId, callId: call.id, room: call.gatewaySessionId, target: transferNumber ?? "", name: snapshot.displayName }));
