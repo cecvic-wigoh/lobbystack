@@ -41,5 +41,22 @@
     "inactive": "Inactivo",
     "ready": "Listo",
     "setupNeeded": "Configuración pendiente"
+  },
+  "administrators": {
+    "title": "Administradores de la plataforma",
+    "description": "Los administradores pueden gestionar todos los espacios de clientes y otros administradores de la plataforma.",
+    "email": "Correo del administrador",
+    "saving": "Guardando…",
+    "add": "Añadir administrador",
+    "accountHint": "Esta persona debe crear una cuenta y verificar su correo. El acceso se concede inmediatamente.",
+    "saved": "Acceso de administrador actualizado.",
+    "loading": "Cargando…",
+    "actions": "Acciones",
+    "you": "Tú",
+    "remove": "Quitar acceso",
+    "lastAdminHint": "No se puede quitar al último administrador.",
+    "removeTitle": "¿Quitar acceso de administrador?",
+    "removeDescription": "¿Quitar el acceso a toda la plataforma a {{email}}? Se conservarán su cuenta y los accesos existentes a espacios.",
+    "cancel": "Cancelar"
   }
 }

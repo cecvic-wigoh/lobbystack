@@ -41,5 +41,22 @@
     "inactive": "Inactif",
     "ready": "Prêt",
     "setupNeeded": "Configuration requise"
+  },
+  "administrators": {
+    "title": "Administrateurs de la plateforme",
+    "description": "Les administrateurs peuvent gérer tous les espaces clients et les autres administrateurs de la plateforme.",
+    "email": "Courriel de l’administrateur",
+    "saving": "Enregistrement…",
+    "add": "Ajouter un administrateur",
+    "accountHint": "Cette personne doit créer un compte et vérifier son adresse courriel. L’accès est accordé immédiatement.",
+    "saved": "Accès administrateur mis à jour.",
+    "loading": "Chargement…",
+    "actions": "Actions",
+    "you": "Vous",
+    "remove": "Retirer l’accès",
+    "lastAdminHint": "Le dernier administrateur ne peut pas être retiré.",
+    "removeTitle": "Retirer l’accès administrateur?",
+    "removeDescription": "Retirer l’accès à toute la plateforme pour {{email}}? Son compte et ses accès aux espaces existants seront conservés.",
+    "cancel": "Annuler"
   }
 }

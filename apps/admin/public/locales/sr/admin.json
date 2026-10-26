@@ -41,5 +41,22 @@
     "inactive": "Neaktivan",
     "ready": "Spremno",
     "setupNeeded": "Potrebno podešavanje"
+  },
+  "administrators": {
+    "title": "Administratori platforme",
+    "description": "Administratori mogu upravljati svim prostorima klijenata i drugim administratorima platforme.",
+    "email": "E-adresa administratora",
+    "saving": "Čuvanje…",
+    "add": "Dodaj administratora",
+    "accountHint": "Osoba prvo mora da napravi nalog i potvrdi e-adresu. Pristup se odobrava odmah.",
+    "saved": "Pristup administratora je ažuriran.",
+    "loading": "Učitavanje…",
+    "actions": "Radnje",
+    "you": "Vi",
+    "remove": "Ukloni pristup",
+    "lastAdminHint": "Poslednji administrator ne može biti uklonjen.",
+    "removeTitle": "Ukloniti administratorski pristup?",
+    "removeDescription": "Ukloniti pristup celoj platformi za {{email}}? Nalog i postojeća članstva u prostorima ostaju.",
+    "cancel": "Otkaži"
   }
 }

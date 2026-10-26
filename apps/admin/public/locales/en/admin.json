@@ -41,5 +41,22 @@
     "inactive": "Inactive",
     "ready": "Ready",
     "setupNeeded": "Setup needed"
+  },
+  "administrators": {
+    "title": "Platform administrators",
+    "description": "Platform administrators can manage every customer workspace and other platform administrators.",
+    "email": "Administrator email",
+    "saving": "Saving…",
+    "add": "Add administrator",
+    "accountHint": "This person must first create an account and verify their email address. Adding an administrator grants access immediately.",
+    "saved": "Administrator access updated.",
+    "loading": "Loading administrators…",
+    "actions": "Actions",
+    "you": "You",
+    "remove": "Remove access",
+    "lastAdminHint": "The last platform administrator cannot be removed.",
+    "removeTitle": "Remove platform administrator access?",
+    "removeDescription": "Remove platform-wide administrator access for {{email}}? Their account and existing workspace memberships will remain.",
+    "cancel": "Cancel"
   }
 }

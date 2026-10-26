@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { requestJson } from "@/lib/request-json";
+import { PlatformAdministrators } from "./platform-administrators";
 import { PageSurface } from "./page-surface";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -24,6 +25,7 @@ export function PlatformCustomersSurface() {
   return <PageSurface title={t("platform.title")} description={t("platform.description")}>
     <p className="text-muted-foreground">{t("platform.description")}</p>
     {error ? <p role="alert" className="text-destructive">{error.message}</p> : null}
+    <PlatformAdministrators />
     <Card><CardHeader><CardTitle>{t("platform.createTitle")}</CardTitle><CardDescription>{t("platform.inviteHint")}</CardDescription></CardHeader><CardContent>
       <form className="grid gap-4 sm:grid-cols-2" onSubmit={event => { event.preventDefault(); create.mutate(); }}>
         {(["name", "email", "timezone"] as const).map(field => <div key={field} className="space-y-2"><Label htmlFor={`customer-${field}`}>{t(`platform.${field}`)}</Label><Input id={`customer-${field}`} type={field === "email" ? "email" : "text"} required maxLength={field === "email" ? 254 : 160} value={values[field]} onChange={event => setValues({ ...values, [field]: event.target.value })} /></div>)}
