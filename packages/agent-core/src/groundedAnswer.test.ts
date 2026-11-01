@@ -2,11 +2,49 @@ import { beforeEach, expect, it, vi } from "vitest";
 import { generateText } from "ai";
 import { loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
+import * as modelConfig from "./model";
 vi.mock("@lobbystack/domain", async () => ({ searchKnowledgeEvidence: vi.fn(), loadProgramCatalog: vi.fn(async () => []), answerProgramCatalogQuestion: (await import("../../domain/src/programCatalog")).answerProgramCatalogQuestion }));
 vi.mock("ai", async importOriginal => ({ ...await importOriginal<typeof import("ai")>(), generateText: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
 const claim = { text: "Call 306-555-1234 for program applications.", sourceId: "contact", quote: "Call 306-555-1234 for program applications." };
+
+it("uses the opted-in fast draft while retaining the independent verifier and usage attribution", async () => {
+ const fast = { modelId: "fast-draft" };
+ const verifier = { modelId: "normal-verifier" };
+ const rollout = vi.spyOn(modelConfig, "createVoiceKnowledgeDraft").mockReturnValue({ model: fast as never, usageEnvironment: { AI_CHAT_MODEL: "fast-draft" } } as never);
+ try {
+  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+  vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [claim] } } as never)
+   .mockResolvedValueOnce({ output: { supported: true } } as never);
+  const onUsage = vi.fn();
+  const result = await answerGroundedQuestion({ model: verifier as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Business", defaultLocale: "en" }, channel: "web_voice" } as never, question: "Who handles applications?", onUsage });
+  expect(result.outcome).toBe("supported");
+  expect(generateText).toHaveBeenNthCalledWith(1, expect.objectContaining({ model: fast }));
+  expect(generateText).toHaveBeenNthCalledWith(2, expect.objectContaining({ model: verifier }));
+  expect(onUsage.mock.calls[0]![0].model).toBe("fast-draft");
+ } finally { rollout.mockRestore(); }
+});
+
+it.each(["unverified", "unknown", "unavailable"])("falls back to the original model when the fast draft is %s", async failure => {
+ const fast = { modelId: "fast-draft" };
+ const original = { modelId: "original" };
+ const rollout = vi.spyOn(modelConfig, "createVoiceKnowledgeDraft").mockReturnValue({ model: fast as never, usageEnvironment: {} });
+ try {
+  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
+  const supported = { output: { status: "supported", claims: [claim] } };
+  if (failure === "unavailable") vi.mocked(generateText).mockRejectedValueOnce(new Error("draft unavailable"));
+  else if (failure === "unknown") vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "unknown", claims: [] } } as never);
+  else vi.mocked(generateText).mockResolvedValueOnce(supported as never).mockResolvedValueOnce({ output: { supported: false } } as never);
+  vi.mocked(generateText).mockResolvedValueOnce(supported as never).mockResolvedValueOnce({ output: { supported: true } } as never);
+  const result = await answerGroundedQuestion({ model: original as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Business", defaultLocale: "en" }, channel: "web_voice" } as never, question: "Who handles applications?" });
+  expect(result.outcome).toBe("supported");
+  const calls = vi.mocked(generateText).mock.calls;
+  expect(calls[0]![0].model).toBe(fast);
+  expect(calls.at(-2)![0].model).toBe(original);
+  expect(calls.at(-1)![0].model).toBe(original);
+ } finally { rollout.mockRestore(); }
+});
 it("returns verified claims with the actual source URL", () => {
  expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, evidence, "en")).toEqual({ answer: claim.text, sources: [evidence[0]!.sourceUrl], outcome: "supported" });
 });
