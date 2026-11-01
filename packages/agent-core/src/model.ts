@@ -128,22 +128,3 @@ export function createAgentModel(environment: AgentModelEnvironment = process.en
     middleware: defaultSettingsMiddleware({ settings: { temperature: 0.2 } }),
   });
 }
-
-// Roll out faster, non-reasoning knowledge drafts to named workspaces only.
-// The independent verifier continues to use the normal agent model.
-export function createVoiceKnowledgeDraft(businessId: string, environment: AgentModelEnvironment = process.env): { model: LanguageModel; usageEnvironment: AgentModelEnvironment } | undefined {
-  const model = environment.VOICE_KNOWLEDGE_DRAFT_MODEL?.trim();
-  const enabled = environment.VOICE_KNOWLEDGE_DRAFT_BUSINESS_IDS?.split(",").map(id => id.trim()).includes(businessId);
-  const apiKey = environment.AI_CHAT_API_KEY?.trim() || environment.OPENAI_API_KEY?.trim();
-  if (!model || !enabled || !apiKey || !usesOpenAI(environment)) return undefined;
-  return {
-    model: createOpenAI({ apiKey }).responses(model),
-    usageEnvironment: {
-      ...environment,
-      AI_CHAT_MODEL: model,
-      // Configured prices belong to the original model, not this draft model.
-      AI_CHAT_INPUT_COST_PER_MILLION_TOKENS: undefined,
-      AI_CHAT_OUTPUT_COST_PER_MILLION_TOKENS: undefined,
-    },
-  };
-}

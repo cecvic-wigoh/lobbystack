@@ -2,48 +2,37 @@ import { beforeEach, expect, it, vi } from "vitest";
 import { generateText } from "ai";
 import { loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
-import * as modelConfig from "./model";
+import shercomFaq from "./fixtures/shercom-faq.json";
 vi.mock("@lobbystack/domain", async () => ({ searchKnowledgeEvidence: vi.fn(), loadProgramCatalog: vi.fn(async () => []), answerProgramCatalogQuestion: (await import("../../domain/src/programCatalog")).answerProgramCatalogQuestion }));
 vi.mock("ai", async importOriginal => ({ ...await importOriginal<typeof import("ai")>(), generateText: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
 const claim = { text: "Call 306-555-1234 for program applications.", sourceId: "contact", quote: "Call 306-555-1234 for program applications." };
 
-it("uses the opted-in fast draft while retaining the independent verifier and usage attribution", async () => {
- const fast = { modelId: "fast-draft" };
- const verifier = { modelId: "normal-verifier" };
- const rollout = vi.spyOn(modelConfig, "createVoiceKnowledgeDraft").mockReturnValue({ model: fast as never, usageEnvironment: { AI_CHAT_MODEL: "fast-draft" } } as never);
- try {
-  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
-  vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "supported", claims: [claim] } } as never)
-   .mockResolvedValueOnce({ output: { supported: true } } as never);
-  const onUsage = vi.fn();
-  const result = await answerGroundedQuestion({ model: verifier as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Business", defaultLocale: "en" }, channel: "web_voice" } as never, question: "Who handles applications?", onUsage });
-  expect(result.outcome).toBe("supported");
-  expect(generateText).toHaveBeenNthCalledWith(1, expect.objectContaining({ model: fast }));
-  expect(generateText).toHaveBeenNthCalledWith(2, expect.objectContaining({ model: verifier }));
-  expect(onUsage.mock.calls[0]![0].model).toBe("fast-draft");
- } finally { rollout.mockRestore(); }
+it("reads Shercom's configured summary for a simple browser overview without a model or search round trip", async () => {
+ const summary = "Shercom manufactures recycled rubber products and offers rubber paving.";
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en", summary }, channel: "web_voice" } as never, question: "What does Shercom do?" });
+ expect(result.answer).toBe(summary);
+ expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
 });
-
-it.each(["unverified", "unknown", "unavailable"])("falls back to the original model when the fast draft is %s", async failure => {
- const fast = { modelId: "fast-draft" };
- const original = { modelId: "original" };
- const rollout = vi.spyOn(modelConfig, "createVoiceKnowledgeDraft").mockReturnValue({ model: fast as never, usageEnvironment: {} });
- try {
-  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: evidence } as never);
-  const supported = { output: { status: "supported", claims: [claim] } };
-  if (failure === "unavailable") vi.mocked(generateText).mockRejectedValueOnce(new Error("draft unavailable"));
-  else if (failure === "unknown") vi.mocked(generateText).mockResolvedValueOnce({ output: { status: "unknown", claims: [] } } as never);
-  else vi.mocked(generateText).mockResolvedValueOnce(supported as never).mockResolvedValueOnce({ output: { supported: false } } as never);
-  vi.mocked(generateText).mockResolvedValueOnce(supported as never).mockResolvedValueOnce({ output: { supported: true } } as never);
-  const result = await answerGroundedQuestion({ model: original as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Business", defaultLocale: "en" }, channel: "web_voice" } as never, question: "Who handles applications?" });
-  expect(result.outcome).toBe("supported");
-  const calls = vi.mocked(generateText).mock.calls;
-  expect(calls[0]![0].model).toBe(fast);
-  expect(calls.at(-2)![0].model).toBe(original);
-  expect(calls.at(-1)![0].model).toBe(original);
- } finally { rollout.mockRestore(); }
+it("reads current Shercom FAQ evidence from its exact source without generating a paraphrase", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: shercomFaq } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en" }, channel: "web_voice" } as never, question: "Can rubber paving be installed over my existing asphalt driveway?" });
+ expect(result.answer).toContain("proper base preparation");
+ expect(searchKnowledgeEvidence).toHaveBeenCalledTimes(1);
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ businessId: "shercom", sourceUrl: shercomFaq[0]!.sourceUrl }));
+ expect(generateText).not.toHaveBeenCalled();
+});
+it("keeps compound browser questions and text chat on the original grounding path", async () => {
+ const context = { domain: {}, snapshot: { businessId: "shercom", displayName: "Shercom Industries", defaultLocale: "en", summary: "Configured summary" }, channel: "web_voice" };
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [] } as never);
+ vi.mocked(generateText).mockResolvedValue({ output: { status: "unknown", claims: [] } } as never);
+ await answerGroundedQuestion({ model: {} as never, context: context as never, question: "What does Shercom do and what will my driveway cost?" });
+ expect(generateText).toHaveBeenCalled();
+ vi.clearAllMocks();
+ await answerGroundedQuestion({ model: {} as never, context: { ...context, channel: "web_chat" } as never, question: "What does Shercom do?" });
+ expect(generateText).toHaveBeenCalled();
 });
 it("returns verified claims with the actual source URL", () => {
  expect(validateGroundedAnswer({ status: "supported", claims: [claim] }, evidence, "en")).toEqual({ answer: claim.text, sources: [evidence[0]!.sourceUrl], outcome: "supported" });
