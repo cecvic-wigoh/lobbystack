@@ -532,6 +532,16 @@ export const calls = pgTable(
   ],
 );
 
+export const callQualityReviews = pgTable("call_quality_reviews", {
+  callId: uuid("call_id").primaryKey().references(() => calls.id, { onDelete: "cascade" }),
+  businessId: uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" }),
+  status: varchar("status", { length: 32 }).notNull().default("unreviewed"),
+  flags: jsonb("flags").$type<string[]>().notNull().default([]),
+  notes: text("notes").notNull().default(""),
+  reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
+  ...timestamps,
+}, table => [index("call_quality_reviews_business_status_idx").on(table.businessId, table.status)]);
+
 export const inboxItems = pgTable(
   "inbox_items",
   {
@@ -1557,6 +1567,7 @@ export const allTenantTables = [
   conversationSessions,
   messages,
   calls,
+  callQualityReviews,
   transcripts,
   appointments,
   appointmentChangeVerifications,
@@ -1622,6 +1633,7 @@ export const schema = {
   conversationSessions,
   messages,
   calls,
+  callQualityReviews,
   transcripts,
   appointments,
   appointmentChangeVerifications,

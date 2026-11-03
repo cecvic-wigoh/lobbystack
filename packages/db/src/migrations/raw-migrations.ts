@@ -77,6 +77,7 @@ export const SCHEMA_MIGRATIONS = [
   "0069_mcp_oauth.sql",
   "0070_product_events_compact.sql",
   "0071_call_summary_email.sql",
+  "0072_call_quality_reviews.sql",
 ] as const;
 
 const CONCURRENT_INDEX_DIRECTIVE = /^-- lobbystack:concurrent-index ([a-z][a-z0-9_]*)$/m;
