@@ -1,9 +1,10 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { generateText } from "ai";
-import { loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
+import { loadCourseCatalogue, loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import { answerGroundedQuestion, validateGroundedAnswer } from "./groundedAnswer";
 import shercomFaq from "./fixtures/shercom-faq.json";
-vi.mock("@lobbystack/domain", async () => ({ searchKnowledgeEvidence: vi.fn(), loadProgramCatalog: vi.fn(async () => []), answerProgramCatalogQuestion: (await import("../../domain/src/programCatalog")).answerProgramCatalogQuestion }));
+import type { CatalogueEntry } from "../../domain/src/courseCatalogue";
+vi.mock("@lobbystack/domain", async () => ({ searchKnowledgeEvidence: vi.fn(), loadProgramCatalog: vi.fn(async () => []), loadCourseCatalogue: vi.fn(async () => []), ...(await import("../../domain/src/courseCatalogue")), answerProgramCatalogQuestion: (await import("../../domain/src/programCatalog")).answerProgramCatalogQuestion }));
 vi.mock("ai", async importOriginal => ({ ...await importOriginal<typeof import("ai")>(), generateText: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
 const evidence = [{ chunkId: "contact", sourceUrl: "https://college.test/contact", content: "Admissions: admissions@college.test. Call 306-555-1234 for program applications." }];
@@ -389,7 +390,7 @@ it.each([
 ])("answers general admissions contacts from their published section: %s", async question => {
  vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [admissionsSection] } as never);
  const result = await answerGroundedQuestion({ model: {} as never, context, question });
- expect(result).toMatchObject({ outcome: "supported", answer: "For general admissions and applications inquiries, email admissions@college.test.", sources: [admissionsSection.sourceUrl] });
+ expect(result).toMatchObject({ outcome: "supported", answer: /email/.test(question) ? "For general admissions and applications inquiries, email admissions@college.test." : "For general admissions and applications inquiries, call 866 638 8618 or email admissions@college.test.", sources: [admissionsSection.sourceUrl] });
  expect(generateText).not.toHaveBeenCalled();
 });
 it.each([
@@ -458,4 +459,62 @@ it("keeps this-program follow-ups on the newest named program through repeated q
   expect(result.answer).not.toMatch(/Practical Nursing|Melfort|16,000/);
   history.push({ role: "assistant", content: result.answer });
  }
+});
+
+
+it("reads course prerequisites after retrieving the detail chunk beyond the overview", async () => {
+ const overview = { chunkId: "overview", title: "NFPA 1140 - Wildland Firefighter Level I", sourceUrl: "https://college.test/product?catalog=NFPA1140-1", content: "# NFPA 1140 - Wildland Firefighter Level I\nWildland fire protection overview." };
+ const requirements = { ...overview, chunkId: "requirements", content: "Prerequisites must be emailed to seri@college.test after purchasing this course.\n\n- Current member of good standing in a Saskatchewan fire department or other eligible emergency service.\n- ICS 100\n\nTextbooks" };
+ vi.mocked(searchKnowledgeEvidence).mockImplementation(async (_domain, input) => ({ matches: input.sourceUrl === overview.sourceUrl ? [requirements] : [overview] }) as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What are the prerequisites for NFPA 1140 Wildland Firefighter Level I?" });
+ expect(result.outcome).toBe("supported");
+ expect(result.answer).toContain("ICS 100");
+ expect(result.answer).toContain("other eligible emergency service");
+ expect(generateText).not.toHaveBeenCalled();
+});
+
+it("consistently declines to guarantee a caller's admission without treating it as unrelated", async () => {
+ const result=await answerGroundedQuestion({model:{} as never,context,question:"Can you guarantee that I will be admitted to nursing?"});
+ expect(result).toMatchObject({outcome:"unknown",sources:[]});
+ expect(result.answer).toContain("can't guarantee an admission decision");
+ expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
+});
+
+it("reads Crawl4AI plain contact labels without a model, catalog or embedding search", async () => {
+ vi.mocked(searchKnowledgeEvidence).mockResolvedValue({ matches: [{ ...admissionsSection, content: "For General \nInquiries\ninfo@college.test\nFor Admissions &\nApplications Inquiries\n[866 638 8618](tel:866-638-8618)\nadmissions@college.test\n## Campuses\n306-555-9999\ncampus@college.test" }] } as never);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "Who should I contact about admission to College?" });
+ expect(result.answer).toBe("For general admissions and applications inquiries, call 866 638 8618 or email admissions@college.test.");
+ expect(searchKnowledgeEvidence).toHaveBeenCalledTimes(1);
+ expect(searchKnowledgeEvidence).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ sourcePath: "/contact-us", keywordOnly: true }));
+ expect(loadProgramCatalog).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
+});
+
+const discoveryEntries: CatalogueEntry[] = Array.from({ length: 12 }, (_, i) => ({ title: `Business Course ${i + 1}`, url: `https://college.test/courses/business-${i}`, kind: "course", categories: ["Business"] }));
+it.each([
+ { channel: "web_voice", displayName: "Suncrest College", question: "Okay, what other interesting courses are there that I can study at Suncrest?" },
+ { channel: "web_voice", displayName: "Suncrest College", question: "Can you tell me the list of courses that Suncrest offers?" },
+ { channel: "web_chat", displayName: "Suncrest College", question: "Can you tell me the list of courses that Suncrest offers?" },
+ { channel: "web_chat", displayName: "CertNova", question: "What courses do you offer?" },
+])("uses the shared source-backed catalogue in $channel for $displayName: $question", async ({ channel, displayName, question }) => {
+ vi.mocked(loadCourseCatalogue).mockResolvedValueOnce(discoveryEntries);
+ const result = await answerGroundedQuestion({ model: {} as never, context: { domain: {}, snapshot: { businessId: "discovery-tenant", displayName, defaultLocale: "en" }, channel } as never, question });
+ expect(result).toMatchObject({ outcome: "supported", answer: expect.stringContaining("Published catalogue") });
+ expect(result.answer).toContain(channel === "web_voice" ? "entries 1 to 5" : "entries 1 to 8");
+ expect(result.sources.every(url => discoveryEntries.some(e => e.url === url))).toBe(true);
+ expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
+ expect(generateText).not.toHaveBeenCalled();
+ expect(loadCourseCatalogue).toHaveBeenCalledWith(expect.anything(), { businessId: "discovery-tenant" });
+});
+
+it("keeps an ordinal requirements follow-up on the exact listed programme when titles overlap", async () => {
+ const certificate = { title: "Business Certificate", url: "https://college.test/programs/business-certificate", area: "Business", requirements: "Admission Requirements\nGrade 12\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement follows Saskatchewan Polytechnic language requirements.", intakes: [{ campus: "Yorkton", term: "Fall 2027" }] };
+ const diploma = { ...certificate, title: "Business Diploma", url: "https://college.test/programs/business-diploma", requirements: certificate.requirements.replace("Grade 12", "Grade 11") };
+ vi.mocked(loadCourseCatalogue).mockResolvedValueOnce([certificate, diploma].map(p => ({ title: p.title, url: p.url, kind: "program", categories: ["Business"] })));
+ vi.mocked(loadProgramCatalog).mockResolvedValueOnce([certificate,diploma]);
+ const result = await answerGroundedQuestion({ model: {} as never, context, question: "What are the requirements for the first one?", history: [{ role: "assistant", content: "Published programs — Business. Showing entries 1 to 2 of 2.\n- Business Certificate\n- Business Diploma\n\nCatalogue listings do not confirm open enrolment." }] });
+ expect(result).toMatchObject({ outcome: "supported", sources: [certificate.url] });
+ expect(result.answer).toContain("Grade 12");expect(result.answer).not.toContain("Grade 11");
+ expect(generateText).not.toHaveBeenCalled();expect(searchKnowledgeEvidence).not.toHaveBeenCalled();
 });

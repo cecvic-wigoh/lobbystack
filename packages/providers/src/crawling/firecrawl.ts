@@ -5,6 +5,7 @@ export type CrawlPage = { url: string; title?: string; markdown?: string; rawBas
 type CrawlResponse = { success?: boolean; id?: string; status?: string; next?: string | null; links?: string[]; data?: Array<{ metadata?: { sourceURL?: string; title?: string; statusCode?: number }; markdown?: string; rawBase64?: string }> };
 
 export class FirecrawlProvider {
+  readonly name = "firecrawl";
   constructor(private readonly config: { apiKey: string; baseUrl?: string; pollIntervalMs?: number; timeoutMs?: number; maxPages?: number; excludePaths?: string[]; savedCrawlId?: string; savedBatchIds?: string[]; savedCrawlUrl?: string; pauseNewCrawls?: boolean }) {}
 
   async crawl(input: { url: string; limit?: number }): Promise<CrawlPage[]> {

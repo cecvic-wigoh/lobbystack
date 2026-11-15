@@ -1,0 +1,26 @@
+{
+  "finalizedAt": "2026-11-08T10:09:43.484Z",
+  "jobUpdated": true,
+  "sourceCoverage": {
+    "verifiedAt": "2026-11-08T10:09:15.258Z",
+    "originalSources": 1809,
+    "originalActive": 1729,
+    "matchedFreshContent": 1683,
+    "quarantined": 46,
+    "inactivePreserved": 80,
+    "mismatches": []
+  },
+  "otherBusinesses": [
+    {
+      "business_id": "5cfd193e-c4c3-4903-9174-e1af90586e60",
+      "documents": 190,
+      "active_indexed": 190
+    },
+    {
+      "business_id": "dc28b440-52c9-4ec5-aa89-cd8fca22433a",
+      "documents": 79,
+      "active_indexed": 55
+    }
+  ],
+  "phoneNumbers": []
+}

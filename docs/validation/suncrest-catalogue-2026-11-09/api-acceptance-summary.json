@@ -1,0 +1,81 @@
+{
+  "passed": 15,
+  "total": 15,
+  "cases": [
+    {
+      "question": "Okay, what other interesting courses are there that I can study at Suncrest?",
+      "outcome": "supported",
+      "ms": 274
+    },
+    {
+      "question": "Can you tell me the list of courses that Suncrest offers?",
+      "outcome": "supported",
+      "ms": 282
+    },
+    {
+      "question": "What categories do you have?",
+      "outcome": "supported",
+      "ms": 282
+    },
+    {
+      "question": "Health",
+      "outcome": "supported",
+      "ms": 271
+    },
+    {
+      "question": "Show more",
+      "outcome": "supported",
+      "ms": 282
+    },
+    {
+      "question": "Only individual courses",
+      "outcome": "supported",
+      "ms": 270
+    },
+    {
+      "question": "Show more",
+      "outcome": "supported",
+      "ms": 256
+    },
+    {
+      "question": "Only programs",
+      "outcome": "supported",
+      "ms": 264
+    },
+    {
+      "question": "Business programs, please.",
+      "outcome": "supported",
+      "ms": 257
+    },
+    {
+      "question": "What are the requirements for the first one?",
+      "outcome": "supported",
+      "ms": 361
+    },
+    {
+      "question": "Can you tell me the list of courses that Suncrest offers?",
+      "outcome": "supported",
+      "ms": 288
+    },
+    {
+      "question": "What rubber parking curbs does Shercom Industries sell?",
+      "outcome": "out_of_scope",
+      "ms": 3961
+    },
+    {
+      "question": "What categories of courses does Suncrest offer? Business courses.",
+      "outcome": "supported",
+      "ms": 283
+    },
+    {
+      "question": "What categories of courses does Suncrest offer? Business courses. Show more.",
+      "outcome": "supported",
+      "ms": 285
+    },
+    {
+      "question": "Okay, what other interesting courses are there that I can study at Suncrest?",
+      "outcome": "supported",
+      "ms": 270
+    }
+  ]
+}

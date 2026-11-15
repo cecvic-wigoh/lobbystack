@@ -1,0 +1,13 @@
+{
+  "requestCount": 24,
+  "http200Count": 24,
+  "medianMs": 2004.0,
+  "p95Ms": 9933,
+  "maxMs": 17088,
+  "voiceCallCount": 2,
+  "notes": [
+    "API supported is not an accuracy pass.",
+    "Audio input was synthetic; calls used the deployed browser voice path.",
+    "Telephone/PSTN and human microphone tests were not performed."
+  ]
+}

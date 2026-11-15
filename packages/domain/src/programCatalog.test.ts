@@ -238,6 +238,43 @@ describe("parseProgramPage", () => {
     expect(ccaMelfort.requirements).toBe("Admission and / or Program Practicum Requirements\nGrade 12 or equivalent");
   });
 
+  it.each(["## Career Options", "### 1 Intake Option Available", "#### Courses"])("keeps admissions subsections but stops before %s", (nextHeading) => {
+    const entry = parseProgramPage({
+      url: "https://college.test/programs/electrical-applied-certificate",
+      title: "Electrican Applied Certificate",
+      text: `# Electrican Applied Certificate
+
+## Admission Requirements
+
+### **First Qualified/First Admitted**
+
+Qualified applicants are offered admission in the order they qualify.
+
+### Alternative Admission
+
+Applicants may qualify through an alternative admission assessment.
+
+Grade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)
+
+English Language Requirement (Saskatchewan Polytechnic)
+
+The English language requirement follows Saskatchewan Polytechnic language requirements.
+
+${nextHeading}
+
+Unrelated program details.`,
+    });
+    expect(entry.requirements).toContain("Qualified applicants are offered admission");
+    expect(entry.requirements).toContain("alternative admission assessment");
+    expect(entry.requirements).toContain("Grade 11");
+    expect(entry.requirements).toContain("Modified and General Math credits will not be accepted");
+    expect(entry.requirements).toContain("Saskatchewan Polytechnic language requirements");
+    expect(entry.requirements).not.toContain("Unrelated program details");
+    expect(entry.requirements).not.toContain(nextHeading);
+    const result = answerProgramCatalogQuestion([entry], { question: "What are the admission requirements for the Electrician Applied Certificate?", now });
+    expect(result).toMatchObject({ kind: "answer", answer: expect.stringContaining("Grade 11") });
+  });
+
   it("parses the date forms published on program pages", () => {
     expect(parsePublishedDate("February 28, 2028")?.toISOString()).toBe("2028-02-28T00:00:00.000Z");
     expect(parsePublishedDate("Mar 10, 2027")?.toISOString()).toBe("2027-03-10T00:00:00.000Z");
@@ -431,4 +468,22 @@ it("retains later numbered admission requirements in long program sections", () 
  const entry = parseProgramPage({ title: "Long admissions", url: "https://college.test/programs/long-admissions", text: `# Long admissions\n## Admission Requirements\n1. Academic prerequisites.\n${"Published prerequisite explanation. ".repeat(100)}\n5. Standard First Aid with CPR Level C and AED.\n6. Applicant Declaration.\n7. Readiness Video.\n## Courses\nUnrelated course details.` });
  expect(entry.requirements).toContain("7. Readiness Video.");
  expect(entry.requirements).not.toContain("Unrelated course details");
+});
+
+it("preserves complete academic choices and current campus fees from Crawl4AI Markdown", async () => {
+ const fixture = (await import("./fixtures/crawl4ai-programs.json")).default;
+ const catalog = fixture.pages.map(parseProgramPage);
+ for (const [question, includes] of [
+  ["What are the admission requirements for the Electrician Applied Certificate?", ["Grade 11", "Foundations of Math 20", "Pre-Calculus 20", "Workplace and Apprenticeship Math 20", "Modified and General Math", "Saskatchewan Polytechnic"]],
+  ["Could you repeat the entry requirements for the Electrician Applied Certificate?", ["Grade 11", "Modified and General Math"]],
+  ["What are the entry requirements for Practical Nursing in Yorkton?", ["overall score of 65%", "Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30", "document deadline"]],
+  ["What are the admission requirements for Medical Laboratory Assistant?", ["minimum grade of 70% in each", "Foundations of Math 20 or Foundations of Math 30 or Pre-Calculus 30", "25 words per minute", "90% accuracy", "Registration Services"]],
+  ["What are the tuition and fees for Practical Nursing in Melfort?", ["$16,500.00", "$700.00", "$252.00", "last year's program", "confirm the current amount"]],
+ ] as const) {
+  const result = answerProgramCatalogQuestion(catalog, { question, now });
+  expect(result?.kind, question).toBe("answer");
+  if (result?.kind !== "answer") throw new Error(question);
+  for (const value of includes) expect(result.answer, question).toContain(value);
+  if (/Melfort/.test(question)) expect(result.answer).not.toMatch(/15,000|16,000|Yorkton/);
+ }
 });

@@ -1,0 +1,20 @@
+{
+  "calls": 3,
+  "completionRecordsVerified": 3,
+  "independentAudioTranscriptionsVerified": 3,
+  "checks": [
+    "AI disclosure on all three calls",
+    "Electrician complete requirements twice",
+    "Nursing complete academic options and deadline condition",
+    "16500 tuition and 700/252 fees with approximation warning",
+    "NFPA eligibility, ICS100, registration conditions and enrollment caveat",
+    "MedLab complete options and keyboarding conditions",
+    "Interrupted fee readout followed by correct MedLab start date"
+  ],
+  "limitations": [
+    "PSTN and real staff transfer not tested",
+    "Model still produces some lookup preambles",
+    "Stored interrupted text is not proof of everything heard",
+    "Harness repeat-wait marker was too strict for a valid paraphrased header; actual audio was checked independently"
+  ]
+}

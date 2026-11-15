@@ -10,7 +10,9 @@ async function extractPdfText(body: Uint8Array): Promise<string> {
   const parser = new PDFParse({ data: body });
   try {
     const result = await parser.getText();
-    if (result.text.trim()) return result.text;
+    // pdf-parse emits page counters even when the document has no text layer.
+    const readable = result.text.replace(/^\s*--\s*\d+\s+of\s+\d+\s*--\s*$/gm, "").trim();
+    if (readable) return result.text;
     if (result.total > maxOcrPdfPages) {
       throw new Error(`Scanned PDF OCR is limited to ${maxOcrPdfPages} pages.`);
     }

@@ -52,7 +52,7 @@ export type WorkerDependencies = {
   twilioAlerts?: Pick<TwilioProvider, "sendSms"> & { from: string };
   polar?: { recordUsage(input: { eventName: string; externalCustomerId: string; quantity: number; timestamp: string; idempotencyKey: string; businessId: string; usageKind: string }): Promise<void>; createCheckout?(input: { productId: string; customerEmail: string; externalCustomerId: string; successUrl: string; returnUrl: string; idempotencyKey?: string }): Promise<{ checkoutUrl: string; checkoutId: string }> };
   embeddings?: { fingerprint?: string; embed(values: string[], onUsage?: (usage: DurableAiUsage) => Promise<void> | void): Promise<number[][]> };
-  crawler?: { crawl(input: { url: string; limit?: number }): Promise<Array<{ url: string; title?: string; markdown?: string; rawBase64?: string }>> };
+  crawler?: { name?: string; crawl(input: { url: string; limit?: number }): Promise<Array<{ url: string; title?: string; markdown?: string; rawBase64?: string }>> };
   calendar?: CalendarOperations;
   productAnalytics?: { capture(events: Array<{ event: string; distinctId: string; properties: Record<string, unknown>; timestamp: string }>): Promise<void> };
   realtime?: Redis;
@@ -279,7 +279,7 @@ async function dispatchJob(job: JobEnvelope, dependencies: WorkerDependencies, e
             const current = (await tx.select({ revision: knowledgeDocuments.revision, status: knowledgeDocuments.status }).from(knowledgeDocuments).where(and(eq(knowledgeDocuments.id, importGuard.documentId), eq(knowledgeDocuments.businessId, businessIdOrThrow(job)))).limit(1).for("update"))[0];
             if (!current || current.revision !== importGuard.revision || current.status !== "processing") return false;
           }
-          const changed = await tx.update(websiteIngestionJobs).set({ status, importedCount, indexedCount, updatedAt: new Date() }).where(and(eq(websiteIngestionJobs.id, websiteIngestionJobId), eq(websiteIngestionJobs.businessId, businessIdOrThrow(job)), ne(websiteIngestionJobs.status, "cancelled"), ne(websiteIngestionJobs.status, "completed"))).returning({ id: websiteIngestionJobs.id });
+          const changed = await tx.update(websiteIngestionJobs).set({ status, provider: dependencies.crawler?.name ?? "firecrawl", importedCount, indexedCount, updatedAt: new Date() }).where(and(eq(websiteIngestionJobs.id, websiteIngestionJobId), eq(websiteIngestionJobs.businessId, businessIdOrThrow(job)), ne(websiteIngestionJobs.status, "cancelled"), ne(websiteIngestionJobs.status, "completed"))).returning({ id: websiteIngestionJobs.id });
           return changed.length > 0;
         });
       };

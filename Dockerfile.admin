@@ -36,7 +36,7 @@ ARG S3_FORCE_PATH_STYLE
 RUN pnpm --filter @lobbystack/embed build && node scripts/copy-widget-embed.mjs
 ARG POSTHOG_SOURCEMAP_API_KEY
 ARG POSTHOG_PROJECT_ID=266281
-RUN pnpm --filter @lobbystack/admin... build
+RUN pnpm --reporter=append-only --filter @lobbystack/admin... build > /tmp/admin-build.log 2>&1 || (cat /tmp/admin-build.log && exit 1)
 RUN mkdir -p /prod && cp -R /app/apps/admin/.next/static /prod/admin-static && \
     find /prod/admin-static -type f -name '*.map' -delete
 RUN swc_helpers_path="$(find /app/node_modules/.pnpm -type d -path '*/node_modules/@swc/helpers' -print -quit)" && \

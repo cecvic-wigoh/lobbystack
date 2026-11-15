@@ -24,6 +24,7 @@ export * from "./phoneVerification";
 export * from "./phoneNumbers";
 export * from "./privacy";
 export * from "./programCatalog";
+export * from "./courseCatalogue";
 export * from "./publicApi";
 export * from "./oauth";
 export * from "./receptionistActions";

@@ -1,0 +1,13 @@
+{
+  "passed": 24,
+  "total": 24,
+  "outcomes": {
+    "supported": 18,
+    "unknown": 4,
+    "out_of_scope": 2
+  },
+  "medianMs": 321.0,
+  "p95Ms": 5343,
+  "maxMs": 6405,
+  "scope": "Deployed internal LiveKit answer endpoint; separate audio verification required"
+}

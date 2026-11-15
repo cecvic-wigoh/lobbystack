@@ -1,5 +1,8 @@
 import {
   bookForCaller,
+  answerCourseCatalogue,
+  isCatalogueDiscoveryQuestion,
+  loadCourseCatalogue,
   cancelForCaller,
   checkOpening,
   countKnowledgeTokens,
@@ -93,6 +96,7 @@ const phone = z.string().describe("Phone number in E.164 format, for example +14
 export function createReceptionistTools(context: AgentToolContext): ToolSet {
   const { domain, snapshot } = context;
   const businessId = snapshot.businessId;
+  const catalogueHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
   const timezone = snapshot.timezone;
   const bookingMode = context.intakeOnly ? "off" : normalizeBookingMode(snapshot.bookingMode);
   const channel = context.channel;
@@ -131,12 +135,26 @@ export function createReceptionistTools(context: AgentToolContext): ToolSet {
     }),
 
     searchKnowledge: tool({
-      description: "Look up any business-specific fact not in your instructions: prices, policies, parking, payment methods, what to bring, and so on. Never guess. Make the query self-contained.",
+      description: "Look up any business-specific fact not in your instructions: prices, policies, parking, payment methods, what to bring, and so on. Never guess. Make the query self-contained. For catalogue browsing, pass the caller's exact words so category and 'more' follow-ups retain their place. When a verified catalogue answer is returned, preserve its listed names, continuation and enrolment caveat.",
       inputSchema: z.object({ query: z.string() }),
       execute: async ({ query }) => {
         const fallback = snapshotKnowledgeMatches(snapshot, query);
+        let catalogueSourceUrl: string | undefined;
         try {
-          const evidence = await searchKnowledgeEvidence(domain, { businessId, query, limit: 6, ...(context.callId ? { callId: context.callId } : {}) });
+          if (isCatalogueDiscoveryQuestion(query, catalogueHistory)) {
+            const entries = await loadCourseCatalogue(domain, { businessId });
+            const catalogue = answerCourseCatalogue(entries, { question: query, history: catalogueHistory, businessName: snapshot.displayName, locale: snapshot.defaultLocale === "fr" ? "fr" : "en", limit: context.channel === "web_chat" ? 8 : 5 });
+            if (catalogue?.kind === "question") { query = catalogue.question; catalogueSourceUrl = catalogue.sourceUrl; }
+            if (catalogue?.kind === "answer") {
+              catalogueHistory.push({ role: "user", content: query }, { role: "assistant", content: catalogue.answer });
+              if (catalogueHistory.length > 16) catalogueHistory.splice(0, catalogueHistory.length - 16);
+              return { outcome: "found", answer: catalogue.answer, matches: catalogue.sources.flatMap(url => {
+                const entry = entries.find(e => e.url === url);
+                return entry ? [{ title: entry.title, text: `${entry.title}${entry.code ? ` (${entry.code})` : ""}. Published categories: ${entry.categories.join(", ")}. Catalogue presence does not confirm open enrolment.`, sourceUrl: url, sourceId: `catalogue:${url}` }] : [];
+              }) };
+            }
+          }
+          const evidence = await searchKnowledgeEvidence(domain, { businessId, query, limit: 6, ...(catalogueSourceUrl ? { sourceUrl: catalogueSourceUrl } : {}), ...(context.callId ? { callId: context.callId } : {}) });
           // Evidence first. Snippets only fill the slots and tokens it leaves.
           const matches = withSnippetsInBudget(evidence.matches.map((match) => ({ title: match.title, text: match.content, sourceUrl: match.sourceUrl, sourceId: match.chunkId })), fallback);
           return { outcome: matches.length ? "found" : evidence.outcome, matches };

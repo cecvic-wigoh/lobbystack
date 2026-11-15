@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "Suncrest College | Meet your AI receptionist", URL: "https://admin-production-ad1d.up.railway.app/en/demo/suncrest".
+There has been no change in the accessibility tree.
+The focused UI element is 30 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm

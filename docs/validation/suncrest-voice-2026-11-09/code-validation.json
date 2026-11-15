@@ -1,0 +1,16 @@
+{
+  "voiceTests": 118,
+  "voiceTestFiles": 13,
+  "agentCoreTests": 271,
+  "agentCoreTestFiles": 16,
+  "voiceTypecheck": "passed",
+  "voiceDiffCheck": "passed",
+  "backendDiffCheck": "passed",
+  "runtimeVersion": "DzcUbCTmdvFX",
+  "sdk": "@livekit/agents@1.9.3",
+  "sourceCheckouts": [
+    "/Users/cec-mac/kai-projs/ai-receptionist",
+    "/Users/cec-mac/kai-projs/suncrest-lobbystack"
+  ],
+  "sourceState": "Existing branches and working trees retained; no new commit"
+}

@@ -140,3 +140,13 @@ describe("knowledge chunk boundaries", () => {
     expect(() => chunkText("hello", { maxCharacters: 0 })).toThrow();
   });
 });
+
+it("does not call embeddings for an explicitly lexical current-source section", async () => {
+ const embed = vi.fn(async () => { throw new Error("Embedding must not run"); });
+ const result = await searchKnowledgeEvidence(context(embed), { businessId: "tenant-a", query: "admissions", sourcePath: "/contact-us", keywordOnly: true });
+ expect(embed).not.toHaveBeenCalled();
+ expect(result.mode).toBe("keyword");
+ expect(result.failure).toBeUndefined();
+ expect(result.matches.length).toBeGreaterThan(0);
+ expect(statements.some(value => value.includes("<=>"))).toBe(false);
+});

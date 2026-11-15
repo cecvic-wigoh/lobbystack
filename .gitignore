@@ -34,3 +34,6 @@ security_best_practices_report.md
 mintlify/.atlas-analysis.json
 
 apps/web/vite.tailscale.config.ts
+
+# Downloaded OCR language caches; fetched by Tesseract at runtime
+/*.traineddata

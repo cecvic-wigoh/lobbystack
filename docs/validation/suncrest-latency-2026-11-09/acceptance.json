@@ -1,0 +1,61 @@
+{
+  "voiceVersion": "gcWEGTtmsk6m",
+  "adminDeployment": "6becc7bc-a8fa-42ea-9f5a-4a9fa6e5907d",
+  "automatedTests": {
+    "voice": 126,
+    "agentCore": 276,
+    "catalogAndSearch": 60,
+    "total": 462
+  },
+  "deployedApiCases": 24,
+  "finalWebRTCCalls": 4,
+  "mainFactualAnswerRangeMs": [
+    2299,
+    3390
+  ],
+  "mainMedianBeforeMs": 7959,
+  "mainMedianAfterMs": 2660,
+  "mainMedianReductionPercent": 66.6,
+  "slowestAdditionalFactualCaseMs": 5773,
+  "phoneNumberExpected": "8666388618",
+  "phoneNumberVerifiedByTwoIndependentTranscriptions": true,
+  "checks": {
+    "noLookupPreambles": true,
+    "fullRequirementsOptionsPreserved": true,
+    "feeAmountsAndCaveatPreserved": true,
+    "nfpaPrerequisitesAndClosedEnrollmentPreserved": true,
+    "interruptedFeeTranscriptDoesNotClaimCompleteAmounts": true,
+    "nextQuestionAfterBargeInAnswered": true,
+    "hangupHeardPrefixPersisted": true,
+    "goodbyePreserved": true,
+    "orderedFinalTranscripts": true,
+    "completedInternalQaBillingExcluded": true
+  },
+  "calls": [
+    {
+      "scenario": "voice-main",
+      "id": "0a601aba-0fbc-47bf-a0d1-a7a39b125462"
+    },
+    {
+      "scenario": "voice-facts",
+      "id": "82203473-27da-4c29-b196-4500074d18cd"
+    },
+    {
+      "scenario": "voice-interruption",
+      "id": "06e6f012-3bfc-46de-9eef-e1fa7275479d"
+    },
+    {
+      "scenario": "voice-hangup",
+      "id": "76d3e7f4-6671-42b7-b52e-42881a6f762f"
+    }
+  ],
+  "limits": [
+    "Small-sample voice latency observations, not an SLA",
+    "NFPA remains 5.773 seconds; untested queries and load may differ",
+    "Interrupted numeric phonemes remain uncertain; no complete amount persisted",
+    "No configured Suncrest phone line, so no PSTN or staff-transfer certification",
+    "Other tenants covered by shared code and regression tests, not new live calls"
+  ],
+  "temporaryDatabaseAccessRemoved": true,
+  "postTestDeploymentHealthVerified": true
+}

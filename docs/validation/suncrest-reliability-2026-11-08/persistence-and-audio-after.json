@@ -1,0 +1,287 @@
+[
+  {
+    "name": "voice-after",
+    "calls": [
+      {
+        "id": "78b0e5e4-bef9-45d3-893c-7e532453f0ac",
+        "status": "completed",
+        "started_at": "2026-11-08 09:58:34.12+00",
+        "media_started_at": "2026-11-08 09:58:35.092+00",
+        "ended_at": "2026-11-08 10:02:34.728+00",
+        "provider_duration_seconds": 240,
+        "disposition": null
+      }
+    ],
+    "turns": [
+      {
+        "sequence": 1,
+        "speaker": "assistant",
+        "text": "Thanks for calling Suncrest College. I\u2019m the AI receptionist.",
+        "final": true
+      },
+      {
+        "sequence": 2,
+        "speaker": "caller",
+        "text": "Who should I contact about admission to Suncrest College?",
+        "final": true
+      },
+      {
+        "sequence": 3,
+        "speaker": "assistant",
+        "text": "For admissions and applications inquiries, contact Suncrest College at 866 638 8618 or admissions@suncrestcollege.ca.",
+        "final": true
+      },
+      {
+        "sequence": 4,
+        "speaker": "caller",
+        "text": "What are the admission requirements for the Electrician Applied Certificate?",
+        "final": true
+      },
+      {
+        "sequence": 5,
+        "speaker": "assistant",
+        "text": "Alright, let me check the specific admission requirements for that certificate program.",
+        "final": true
+      },
+      {
+        "sequence": 6,
+        "speaker": "assistant",
+        "text": "Electrical Applied Certificate \u2014 published academic and English-language requirements:\nGrade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+        "final": true
+      },
+      {
+        "sequence": 7,
+        "speaker": "caller",
+        "text": "Could you repeat the entry requirements for the Electrician Applied certificate?",
+        "final": true
+      },
+      {
+        "sequence": 8,
+        "speaker": "assistant",
+        "text": "Let me pull those entry details together again for you.",
+        "final": true
+      },
+      {
+        "sequence": 9,
+        "speaker": "assistant",
+        "text": "The published academic requirement is Grade 11 with 20-level Math, including one of Foundations of Math 20, Pre-Calculus 20, or Workplace and Apprenticeship Math 20; Modified and General Math credits are not accepted. The English-language requirement follows Saskatchewan Polytechnic language requirements.",
+        "final": true
+      },
+      {
+        "sequence": 10,
+        "speaker": "caller",
+        "text": "What are the admission requirements for practical nursing in Yorkton?",
+        "final": true
+      },
+      {
+        "sequence": 11,
+        "speaker": "assistant",
+        "text": "Let me check the official entry requirements for that specific location.",
+        "final": true
+      },
+      {
+        "sequence": 12,
+        "speaker": "assistant",
+        "text": "Practical Nursing \u2014 published academic and English-language requirements:\n- Grade 12 with a minimum overall score of 65% in the following four subjects:\n - 30-level English Language Arts\n - Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*\n - one of Biology 30, Chemistry 30 or Physics 30\n - one of Social Studies 30, History 30 or Native Studies 30\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\n - English Language requirement must be provided on or before the document deadline\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "final": true
+      },
+      {
+        "sequence": 13,
+        "speaker": "caller",
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "final": true
+      },
+      {
+        "sequence": 14,
+        "speaker": "assistant",
+        "text": "Goodbye, and thank you for calling. If you need anything else, just reach out again.",
+        "final": true
+      }
+    ],
+    "independentAudioTranscript": "Thanks for calling Suncrest College. I'm the AI receptionist. For admissions and applications inquiries, contact Suncrest College at 866-638-8618 or admissions@suncrestcollege.ca. All right, let me check the specific admission requirements for that certificate program. Electrical Applied Certificate, published academic and English language requirements. Grade 11 with one of the following math courses, Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20. Modified and general math credits will not be accepted. English language requirement, Saskatchewan Polytechnic. The English language requirement for this program follows Saskatchewan Polytechnic language requirements. Let me pull those entry details together again for you. The published academic requirement is grade 11 with 20-level math, including one of Foundations of Math 20, Pre-Calculus 20, or Workplace and Apprenticeship Math 20. Modified and general math credits are not accepted. The English language requirement follows Saskatchewan Polytechnic language requirements. Let me check the official entry requirements for that specific location. Practical Nursing, published academic and English language requirements. Grade 12 with a minimum overall score of 65% in the following four subjects, 30-level English language arts, Foundations of Math 30 or Pre-Calculus 30, or Workplace and Apprenticeship Math 30. One of Biology 30, Chemistry 30, or Physics 30. One of Social Studies 30, History 30, or Native Studies 30. English language proficiency, the English language requirement for this program follows Saskatchewan Polytechnic language requirements. English language requirement must be provided on or before the document deadline. The page also lists additional requirements upon acceptance. Please review the program page for those conditions. Goodbye and thank you for calling. If you need anything else, just reach out again."
+  },
+  {
+    "name": "voice-facts-after",
+    "calls": [
+      {
+        "id": "402ee66d-e125-40e1-bf18-899bc738b5a8",
+        "status": "completed",
+        "started_at": "2026-11-08 10:02:29.040155+00",
+        "media_started_at": "2026-11-08 10:02:31.16+00",
+        "ended_at": "2026-11-08 10:05:51.912+00",
+        "provider_duration_seconds": 201,
+        "disposition": null
+      }
+    ],
+    "turns": [
+      {
+        "sequence": 1,
+        "speaker": "assistant",
+        "text": "Thanks for calling Suncrest College. I\u2019m the AI receptionist.",
+        "final": true
+      },
+      {
+        "sequence": 2,
+        "speaker": "caller",
+        "text": "What are the tuition and fees for practical nursing in Melfort?",
+        "final": true
+      },
+      {
+        "sequence": 3,
+        "speaker": "assistant",
+        "text": "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,500.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
+        "final": true
+      },
+      {
+        "sequence": 4,
+        "speaker": "caller",
+        "text": "What are the prerequisites for NFPA 1140, Wildland Firefighter, Level I?",
+        "final": true
+      },
+      {
+        "sequence": 5,
+        "speaker": "assistant",
+        "text": "Let me check the official course details for that NFPA 1140 question.",
+        "final": true
+      },
+      {
+        "sequence": 6,
+        "speaker": "assistant",
+        "text": "NFPA 1140 - Wildland Firefighter Level I \u2014 published prerequisites:\nPrerequisites must be emailed to seri@suncrestcollege.ca after purchasing this course. Once approved, you will be officially registered and granted access to the online portion of the course when registration closes and the minimum class size is met.\n * Current member of good standing in a Saskatchewan fire department or other eligible emergency service.\n * ICS 100\nThe page says this course is not open for enrollment.",
+        "final": true
+      },
+      {
+        "sequence": 7,
+        "speaker": "caller",
+        "text": "What are the admission requirements for Medical Laboratory Assistant?",
+        "final": true
+      },
+      {
+        "sequence": 8,
+        "speaker": "assistant",
+        "text": "I\u2019ll pull up the verified admission details and read them as they\u2019re published.",
+        "final": true
+      },
+      {
+        "sequence": 9,
+        "speaker": "assistant",
+        "text": "Medical Laboratory Assistant \u2014 published academic and English-language requirements:\n- Grade 12 with a minimum grade of 70% in each of:\n - 30-level English Language Arts\n - Foundations of Math 20 or Foundations of Math 30 or Pre-Calculus 30*\n - Health Science 20 or Biology 30*\n - Physical Science 20 or Chemistry 30*\n*Previous Saskatchewan biology, chemistry, and mathematics requirements also accepted:\n - Biology 20\n - Chemistry 20\n - Math 20 or any 30-level math\n - 25 words per minute keyboarding speed with 90% accuracy (5-minute testing report to be submitted with transcripts);\n - Testing is available through Saskatchewan Polytechnic Testing Services. A completed Keyboarding Test Results Form must be submitted to Registration Services.\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "final": true
+      },
+      {
+        "sequence": 10,
+        "speaker": "caller",
+        "text": "OK.",
+        "final": true
+      },
+      {
+        "sequence": 11,
+        "speaker": "caller",
+        "text": "That's everything. Thank you.",
+        "final": true
+      },
+      {
+        "sequence": 12,
+        "speaker": "caller",
+        "text": "Goodbye.",
+        "final": true
+      },
+      {
+        "sequence": 13,
+        "speaker": "assistant",
+        "text": "Goodbye, and thanks for calling. If you need help later, you can reach out again.",
+        "final": true
+      }
+    ],
+    "independentAudioTranscript": "Thanks for calling Suncrest College. I'm the AI receptionist. Practical Nursing, Melfort, Winter 2027 Fee Table. Tuition total $16,500. Fees per year $700. Health and dental fee per year $252. The fee table notes, tuition, books and supplies, health and dental amounts are approximate, based on last year's program, and may change at any time. Please confirm the current amount with the college. Let me check the official course details for that NFPA 1140 question. NFPA 1140, Wildland Firefighter Level 1, published prerequisites. Prerequisites must be emailed to Seari at suncrestcollege.ca after purchasing this course. Once approved, you will be officially registered and granted access to the online portion of the course when registration closes and the minimum class size is met. Current member of good standing in a Saskatchewan fire department or other eligible emergency service. ICS 100. The page says this course is not open for enrollment. I'll pull up the verified admission details and read them as they're published. Medical Laboratory Assistant, published academic and English language requirements. Grade 12 with a minimum grade of 70% in each of 30-level English Language Arts, Foundations of Math 20, or Foundations of Math 30, or Pre-Calculus 30, Health Science 20, or Biology 30, Physical Science 20, or Chemistry 30. Previous Saskatchewan biology, chemistry, and mathematics requirements also accepted. Biology 20, Chemistry 20, Math 20, or any 30-level math. 25 words per minute keyboarding speed with 90% accuracy. Five-minute testing report to be submitted with transcripts. Testing is available through Saskatchewan Polytechnic Testing Services. A completed keyboarding test results form must be submitted to registration services. English language proficiency. The English language requirement for this program follows Saskatchewan Polytechnic language requirements. The page also lists additional requirements upon acceptance. Please review the program page for those conditions. Goodbye, and thanks for calling. If you need help later, you can reach out again."
+  },
+  {
+    "name": "voice-interruption-after",
+    "calls": [
+      {
+        "id": "271ce07e-3be5-45cf-97f0-39e719c28ecd",
+        "status": "completed",
+        "started_at": "2026-11-08 10:04:26.253799+00",
+        "media_started_at": "2026-11-08 10:04:28.4+00",
+        "ended_at": "2026-11-08 10:06:23.335+00",
+        "provider_duration_seconds": 115,
+        "disposition": null
+      }
+    ],
+    "turns": [
+      {
+        "sequence": 1,
+        "speaker": "assistant",
+        "text": "Thanks for calling Suncrest College. I\u2019m the AI receptionist.",
+        "final": true
+      },
+      {
+        "sequence": 2,
+        "speaker": "caller",
+        "text": "Hi, which campuses offer the Practical Nursing program?",
+        "final": true
+      },
+      {
+        "sequence": 3,
+        "speaker": "assistant",
+        "text": "Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028; ends February 15, 2030; application deadline April 30, 2027); Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).",
+        "final": true
+      },
+      {
+        "sequence": 4,
+        "speaker": "caller",
+        "text": "What about the fees at the Melfort campus?",
+        "final": true
+      },
+      {
+        "sequence": 5,
+        "speaker": "assistant",
+        "text": "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,500.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
+        "final": true
+      },
+      {
+        "sequence": 6,
+        "speaker": "caller",
+        "text": "Sorry, different question: When does the Medical Laboratory Assistant program start?",
+        "final": true
+      },
+      {
+        "sequence": 7,
+        "speaker": "assistant",
+        "text": "Sure, let me check the start information for that program.",
+        "final": true
+      },
+      {
+        "sequence": 8,
+        "speaker": "assistant",
+        "text": "Medical Laboratory Assistant: Yorkton, Fall 2027 (full-time; starts August 26, 2027; ends April 23, 2028).",
+        "final": true
+      },
+      {
+        "sequence": 9,
+        "speaker": "caller",
+        "text": "Am I talking to a real person?",
+        "final": true
+      },
+      {
+        "sequence": 10,
+        "speaker": "assistant",
+        "text": "You\u2019re speaking with an AI receptionist for Suncrest College. If you need a person, I can share a published contact option.",
+        "final": true
+      },
+      {
+        "sequence": 11,
+        "speaker": "caller",
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "final": true
+      },
+      {
+        "sequence": 12,
+        "speaker": "assistant",
+        "text": "Goodbye. Thanks for calling, and have a great day.",
+        "final": true
+      }
+    ],
+    "independentAudioTranscript": "Thanks for calling Suncrest College. I'm the AI receptionist. Practical nursing, Yorkton, winter 2028, full-time, starts February 28, 2028, ends February 15, 2030. Application deadline, April 30, 2027. Melfort, winter 2027, full-time, starts February 2027, ends February 16, 2029. The published application deadline, April 30, 2026, has passed. Practical nursing, Melfort, winter 2027 fee table. Tuition total... Sure, let me check the start information for that program. Medical laboratory assistant, Yorkton, fall 2027, full-time, starts August 26, 2027, ends April 23, 2028. You're speaking with an AI receptionist for Suncrest College. If you need a person, I can share a published contact option. Goodbye. Thanks for calling, and have a great day."
+  }
+]

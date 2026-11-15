@@ -1,0 +1,86 @@
+{
+  "mainCall": [
+    {
+      "question": "q0-admissions",
+      "beforeMs": 9449,
+      "afterMs": 2422,
+      "reductionPercent": 74.4
+    },
+    {
+      "question": "qa-electrician",
+      "beforeMs": 6909,
+      "afterMs": 3390,
+      "reductionPercent": 50.9
+    },
+    {
+      "question": "qa-electrician-repeat",
+      "beforeMs": 5640,
+      "afterMs": 2299,
+      "reductionPercent": 59.2
+    },
+    {
+      "question": "q8-requirements",
+      "beforeMs": 9009,
+      "afterMs": 2898,
+      "reductionPercent": 67.8
+    },
+    {
+      "question": "q5-goodbye",
+      "beforeMs": 3175,
+      "afterMs": 2800,
+      "reductionPercent": 11.8
+    }
+  ],
+  "mainFactualMedianBeforeMs": 7959.0,
+  "mainFactualMedianAfterMs": 2660.0,
+  "medianReductionPercent": 66.6,
+  "additionalFinalScenarios": {
+    "voice-facts": [
+      {
+        "question": "q-fees",
+        "ms": 3294
+      },
+      {
+        "question": "q-nfpa",
+        "ms": 5773
+      },
+      {
+        "question": "q-medlab",
+        "ms": 2916
+      },
+      {
+        "question": "q5-goodbye",
+        "ms": 2685
+      }
+    ],
+    "voice-interruption": [
+      {
+        "question": "q1-campuses",
+        "ms": 3172
+      },
+      {
+        "question": "q2-followup-fees",
+        "ms": 2966
+      },
+      {
+        "question": "q3b-interrupt",
+        "ms": 549
+      },
+      {
+        "question": "q4-person",
+        "ms": 2897
+      },
+      {
+        "question": "q5-goodbye",
+        "ms": 3487
+      }
+    ],
+    "voice-hangup": [
+      {
+        "question": "q-fees",
+        "ms": 2689
+      }
+    ]
+  },
+  "scope": "Caller audio end to first received agent audio; excludes scripted inter-question pauses. Baseline and final main call use identical caller clips."
+}

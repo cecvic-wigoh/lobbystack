@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "automatedTests": {
+    "domainCatalogueProgramSearch": 86,
+    "agentCore": 288,
+    "workerCalls": 9,
+    "total": 383
+  },
+  "apiCases": 15,
+  "voiceCalls": [
+    {
+      "id": "08d92ff0-33d2-4584-97d3-85d3d2ba96fa",
+      "status": "completed",
+      "purpose": "internal_qa",
+      "billingExcluded": true,
+      "savedTurns": 7,
+      "independentRecordingChecked": true
+    },
+    {
+      "id": "a75471b3-2f09-49ba-8ab4-b5ad9df8db6a",
+      "status": "completed",
+      "purpose": "internal_qa",
+      "billingExcluded": true,
+      "savedTurns": 11,
+      "independentRecordingChecked": true
+    }
+  ],
+  "browser": "Both exact questions, categories/paging/filtering and ordinal requirements verified; broad reset repeated on final release.",
+  "deployments": {
+    "admin": "999121a9-0f25-4993-a985-7aa42efa8736",
+    "worker": "bc779691-60f4-416e-9a16-e586c9a5b174"
+  },
+  "liveTenantScope": "Suncrest; other tenants covered by shared regression tests",
+  "pstnTested": false,
+  "committed": false
+}

@@ -1,0 +1,5 @@
+{
+  "temporaryDatabaseProxy": "deleted",
+  "finalReadiness": "HTTP 200; database and storage ok",
+  "diffCheck": "passed"
+}

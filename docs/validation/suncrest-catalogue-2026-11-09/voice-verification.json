@@ -1,0 +1,148 @@
+[
+  {
+    "name": "voice-release-exact",
+    "calls": [
+      {
+        "id": "08d92ff0-33d2-4584-97d3-85d3d2ba96fa",
+        "status": "completed",
+        "started_at": "2026-11-10 01:51:06.27212+00",
+        "media_started_at": "2026-11-10 01:51:08.848+00",
+        "ended_at": "2026-11-10 01:53:10.669+00",
+        "provider_duration_seconds": 122,
+        "disposition": null,
+        "session_purpose": "internal_qa",
+        "billing_excluded": true
+      }
+    ],
+    "turns": [
+      {
+        "sequence": 1,
+        "speaker": "assistant",
+        "text": "Thanks for calling Suncrest College. I’m the AI receptionist.",
+        "final": true
+      },
+      {
+        "sequence": 2,
+        "speaker": "caller",
+        "text": "Okay, what other interesting courses are there that I can study at Sumcrest?",
+        "final": true
+      },
+      {
+        "sequence": 3,
+        "speaker": "assistant",
+        "text": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+        "final": true
+      },
+      {
+        "sequence": 4,
+        "speaker": "caller",
+        "text": "Can you tell me the list of courses that Suncrest offers?",
+        "final": true
+      },
+      {
+        "sequence": 5,
+        "speaker": "assistant",
+        "text": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+        "final": true
+      },
+      {
+        "sequence": 6,
+        "speaker": "caller",
+        "text": "Okay, that's everything. Thank you. Goodbye.",
+        "final": true
+      },
+      {
+        "sequence": 7,
+        "speaker": "assistant",
+        "text": "Goodbye. Thanks for calling Suncrest College.",
+        "final": true
+      }
+    ],
+    "independentAudioTranscript": "Thanks for calling Suncrest College. I'm the AI receptionist. Published catalog, all areas. Showing entries 1 to 5 of 1,311. Adult 10 Business Certificate, Yorkton and Tisdale, Firefighting Courses, Part-Time, Addictions, Community and Mental Health Professional, formerly Mental Health and Wellness, Fort Quappel, Agricultural Equipment Technician. Catalog listings do not confirm open enrollment. Say more for the next entries, or choose an area. Areas: Adult Education, Agriculture, Business, Emergency Services, Health and Human Services, and more. Published catalog, all areas. Showing entries 1 to 5 of 1,311. Adult 10 Business Certificate, Yorkton and Tisdale, Firefighting Courses, Part-Time, Addictions, Community and Mental Health Professional, formerly Mental Health and Wellness, Fort Quappel, Agricultural Equipment Technician. Catalog listings do not confirm open enrollment. Say more for the next entries, or choose an area. Areas: Adult Education, Agriculture, Business, Emergency Services, Health and Human Services, and more. Goodbye. Thanks for calling Suncrest College."
+  },
+  {
+    "name": "voice-release-categories",
+    "calls": [
+      {
+        "id": "a75471b3-2f09-49ba-8ab4-b5ad9df8db6a",
+        "status": "completed",
+        "started_at": "2026-11-10 01:51:07.557749+00",
+        "media_started_at": "2026-11-10 01:51:09.853+00",
+        "ended_at": "2026-11-10 01:54:11.352+00",
+        "provider_duration_seconds": 182,
+        "disposition": null,
+        "session_purpose": "internal_qa",
+        "billing_excluded": true
+      }
+    ],
+    "turns": [
+      {
+        "sequence": 1,
+        "speaker": "assistant",
+        "text": "Thanks for calling Suncrest College. I’m the AI receptionist.",
+        "final": true
+      },
+      {
+        "sequence": 2,
+        "speaker": "caller",
+        "text": "What categories of courses does Suncrest offer?",
+        "final": true
+      },
+      {
+        "sequence": 3,
+        "speaker": "assistant",
+        "text": "Published catalogue — All areas. Published areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; Industrial & Agriculture; Language Training; Professional Development; Safety; Saskatchewan Emergency Response Institute; Skills for Success; Technology; Trades & Apprenticeship; University. Which area would you like to explore?",
+        "final": true
+      },
+      {
+        "sequence": 4,
+        "speaker": "caller",
+        "text": "Business courses, please.",
+        "final": true
+      },
+      {
+        "sequence": 5,
+        "speaker": "assistant",
+        "text": "Published catalogue — Business. Showing entries 1 to 5 of 14.\n- Business Certificate - Yorkton & Tisdale\n- Office Administration - Face to Face\n- Office Administration - Virtual\n- Accounting (ACCT 105)\n- Accounting for Managers (ACCT 130)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+        "final": true
+      },
+      {
+        "sequence": 6,
+        "speaker": "caller",
+        "text": "Show more",
+        "final": true
+      },
+      {
+        "sequence": 7,
+        "speaker": "assistant",
+        "text": "Published catalogue — Business. Showing entries 6 to 10 of 14.\n- Business Communications 1 (BCOM 100)\n- COAP 173 (COAP 173)\n- Introduction to Microeconomics (RT 191)\n- Introduction to Organizational Office Technologies (COMP 115)\n- Introductory Financial Accounting 1 (ACCT 122)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+        "final": true
+      },
+      {
+        "sequence": 8,
+        "speaker": "caller",
+        "text": "Okay, what other interesting courses are there that I can study at Suncrest?",
+        "final": true
+      },
+      {
+        "sequence": 9,
+        "speaker": "assistant",
+        "text": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+        "final": true
+      },
+      {
+        "sequence": 10,
+        "speaker": "caller",
+        "text": "Okay, that's everything. Thank you, goodbye.",
+        "final": true
+      },
+      {
+        "sequence": 11,
+        "speaker": "assistant",
+        "text": "Goodbye, and thank you for calling Suncrest College. Have a great day.",
+        "final": true
+      }
+    ],
+    "independentAudioTranscript": "Thanks for calling Suncrest College. I'm the AI receptionist. Published Catalog, All Areas, Published Areas, Adult Education, Agriculture, Business, Emergency Services, Health and Human Services, Industrial and Agriculture, Language Training, Professional Development, Safety, Saskatchewan Emergency Response Institute, Skills for Success, Technology, Trades and Apprenticeship, University. Which area would you like to explore? Published Catalog, Business, Showing entries 1 to 5 of 14. Business Certificate, Yorkton and Tisdale Office Administration, Face-to-Face Office Administration, Virtual Accounting, ACCT 105, Accounting for Managers, ACCT 130. Catalog listings do not confirm open enrollment. Say more for the next entries, or choose an area. Published Catalog, Business, Showing entries 6 to 10 of 14. Business Communications 1, BCOM 100, Co-op 173, Co-op 173, Introduction to Microeconomics, RT 191, Introduction to Organizational Office Technologies, COMP 115, Introductory Financial Accounting 1, ACCT 122. Catalog listings do not confirm open enrollment. Say more for the next entries, or choose an area. Published Catalog, All Areas, Showing entries 1 to 5 of 1,311. Adult 10 Business Certificate, Yorkton and Tisdale Firefighting Courses, Part-time, Addictions, Community and Mental Health Professional, formerly Mental Health and Wellness, Fort Capell, Agricultural Equipment Technician. Catalog listings do not confirm open enrollment. Say more for the next entries, or choose an area. Areas, Adult Education, Agriculture, Business, Emergency Services, Health and Human Services, and more. Goodbye, and thank you for calling Suncrest College. Have a great day."
+  }
+]

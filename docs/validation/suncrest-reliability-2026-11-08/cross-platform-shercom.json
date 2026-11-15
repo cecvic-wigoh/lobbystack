@@ -1,0 +1,101 @@
+{
+  "testedAt": "2026-11-08T09:47:24.855Z",
+  "mode": "deployed internal LiveKit answer endpoint; no audio",
+  "results": [
+    {
+      "id": "shercom-overview",
+      "repeat": 1,
+      "question": "What does Shercom do?",
+      "httpStatus": 200,
+      "ms": 526,
+      "response": {
+        "answer": "Shercom Industries is a Saskatchewan company that manufactures recycled rubber products and offers rubber paving for residential and commercial applications. Its published product range includes landscaping products, mats, parking and traffic products, and playground surfacing.",
+        "sources": [],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-products",
+      "repeat": 1,
+      "question": "What rubber products do you offer?",
+      "httpStatus": 200,
+      "ms": 3263,
+      "response": {
+        "answer": "Shercom manufactures molded rubber products for residential and commercial applications, including landscape products, traffic and parking solutions, and commercial building supplies.",
+        "sources": [
+          "https://www.shercomindustries.com/"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-mulch",
+      "repeat": 1,
+      "question": "What bag sizes and coverage are available for Chip Mulch?",
+      "httpStatus": 200,
+      "ms": 3035,
+      "response": {
+        "answer": "Chip Mulch is available in two bag sizes: a 2 yd³ bulk tote, covering approximately 650 ft², and a 37L bag, covering approximately 10 ft².",
+        "sources": [
+          "https://www.shercomindustries.com/products/residential/chip-mulch"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-warranty",
+      "repeat": 1,
+      "question": "What is the rubber paving warranty?",
+      "httpStatus": 200,
+      "ms": 444,
+      "response": {
+        "answer": "Any accidental rips, tears, damage, or stubborn and unsightly stains can be repaired by cutting out the damaged area and reapplying new rubber. We can also provide a maintenance coating that helps re-bond the whole surface. We offer a 5-year warranty against cracking and a 1 year warranty on labour and materials. Warranty is void if damage is determined to be due to misuse, abuse, or vandalism.",
+        "sources": [
+          "https://www.shercomindustries.com/rubber-paving/residential/faq"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-curbs",
+      "repeat": 1,
+      "question": "What are the dimensions and weight of your parking curbs?",
+      "httpStatus": 200,
+      "ms": 2502,
+      "response": {
+        "answer": "The parking curb measures 72 × 6 × 4 inches and weighs 30 pounds.",
+        "sources": [
+          "https://www.shercomindustries.com/products/commercial/parking-curbs"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-price",
+      "repeat": 1,
+      "question": "How much will my driveway cost?",
+      "httpStatus": 200,
+      "ms": 430,
+      "response": {
+        "answer": "Each job is different and depends on the cost on the quantity of material required, selection of colors, required designs, and some other factors. Regardless, you can consider rubber paving to rank second in cost after asphalt, and to be less expensive than both concrete and interlocks. You may also want to factor the savings on surface preparation into your equations, as you do not need to remove your old surfaces prior to rubber paving.",
+        "sources": [
+          "https://www.shercomindustries.com/rubber-paving/residential/faq"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "shercom-isolation",
+      "repeat": 1,
+      "question": "Who should I contact about admission to Suncrest College?",
+      "httpStatus": 200,
+      "ms": 1809,
+      "response": {
+        "answer": "I can help with the business's information and services only.",
+        "sources": [],
+        "outcome": "out_of_scope",
+        "evidenceCount": 6
+      }
+    }
+  ]
+}

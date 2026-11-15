@@ -1,0 +1,39 @@
+{
+  "voice": {
+    "agents": [
+      {
+        "agentId": "CA_QYUz6BvyPBiS",
+        "agentName": "ai-receptionist-voice",
+        "version": "gcWEGTtmsk6m",
+        "agentDeployments": [
+          {
+            "region": "us-east",
+            "status": "Running",
+            "replicas": 1,
+            "minReplicas": 1,
+            "maxReplicas": 8,
+            "cpuReq": "2000m",
+            "curCpu": "372792035n",
+            "curMem": "1623908353",
+            "memReq": "4294967296",
+            "memLimit": "8589934592",
+            "cpuLimit": "4000m",
+            "serverRegion": "osbxash1b",
+            "version": "gcWEGTtmsk6m",
+            "agentName": "ai-receptionist-voice",
+            "deploymentEnabled": true,
+            "lastScrapedAt": "2026-11-09T02:15:03.819091Z"
+          }
+        ],
+        "deployedAt": "2026-11-09T02:18:39.917723Z"
+      }
+    ]
+  },
+  "admin": {
+    "id": "6becc7bc-a8fa-42ea-9f5a-4a9fa6e5907d",
+    "status": "SUCCESS",
+    "createdAt": "2026-11-09T02:17:23.506Z",
+    "url": null
+  },
+  "adminReadiness": "HTTP 200 at /api/health/ready before final calls"
+}

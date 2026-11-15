@@ -3,7 +3,7 @@ import type { DomainContext } from "./context";
 
 const mocks = vi.hoisted(() => ({ transaction: vi.fn() }));
 vi.mock("@lobbystack/db", async original => ({ ...(await original<typeof import("@lobbystack/db")>()), withBusinessTransaction: mocks.transaction }));
-import { reindexStoredKnowledgeDocument } from "./knowledge";
+import { indexDocumentText, reindexStoredKnowledgeDocument } from "./knowledge";
 
 describe("stored knowledge reindex guards", () => {
   it.each(["revision", "inactive", "deleted"])("refuses a source changed during embedding: %s", async change => {
@@ -27,4 +27,16 @@ describe("stored knowledge reindex guards", () => {
     expect(embed).toHaveBeenCalledOnce();
     expect(write).not.toHaveBeenCalled();
   });
+});
+
+it.each(["revision", "inactive", "processing"])("preserves existing chunks when a refreshed source changes before promotion: %s", async change => {
+ const write = vi.fn();
+ const row = { active: change !== "inactive", status: change === "processing" ? "processing" : "indexed", revision: change === "revision" ? 4 : 3 };
+ const builder = { from: () => builder, where: () => builder, limit: () => ({ for: async () => [row] }) };
+ mocks.transaction.mockImplementation(async (_db, actor, callback) => {
+  expect(actor.businessId).toBe("tenant");
+  return callback({ select: () => builder, delete: write, insert: write, update: write });
+ });
+ await expect(indexDocumentText({ db: {} as never }, { businessId: "tenant", documentId: "document", expectedRevision: 3, text: "Updated published information", embeddings: [[0.1, 0.2]] })).rejects.toThrow("existing content was preserved");
+ expect(write).not.toHaveBeenCalled();
 });

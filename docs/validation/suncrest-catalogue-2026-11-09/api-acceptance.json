@@ -1,0 +1,240 @@
+[
+  {
+    "question": "Okay, what other interesting courses are there that I can study at Suncrest?",
+    "httpStatus": 200,
+    "ms": 274,
+    "response": {
+      "answer": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/adult-10",
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/professional-firefighter-qualifications-nfpa1001-pt",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/ag-equipment-tech"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Can you tell me the list of courses that Suncrest offers?",
+    "httpStatus": 200,
+    "ms": 282,
+    "response": {
+      "answer": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/adult-10",
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/professional-firefighter-qualifications-nfpa1001-pt",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/ag-equipment-tech"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "What categories do you have?",
+    "httpStatus": 200,
+    "ms": 282,
+    "response": {
+      "answer": "Published catalogue — All areas. Published areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; Industrial & Agriculture; Language Training; Professional Development; Safety; Saskatchewan Emergency Response Institute; Skills for Success; Technology; Trades & Apprenticeship; University. Which area would you like to explore?",
+      "sources": [
+        "https://suncrestcollege.ca/programs/adult-10",
+        "https://courses.suncrestcollege.ca/product?catalog=CCA100",
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/nfpa1081-industrial-firefighter-training",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft",
+        "https://suncrestcollege.ca/programs/ag-equipment-tech",
+        "https://suncrestcollege.ca/programs/english-language-training",
+        "https://courses.suncrestcollege.ca/product?catalog=1ATDTMELT",
+        "https://courses.suncrestcollege.ca/product?catalog=BFACPR",
+        "https://courses.suncrestcollege.ca/product?catalog=NFPA1001-1",
+        "https://suncrestcollege.ca/programs/pathways-to-human-services-2-2-2-3",
+        "https://suncrestcollege.ca/programs/computer-networking-technician-certificate",
+        "https://suncrestcollege.ca/programs/industrial-mechanics-atc",
+        "https://suncrestcollege.ca/programs/arts-science-first-year-3"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Health",
+    "httpStatus": 200,
+    "ms": 271,
+    "response": {
+      "answer": "Published catalogue — Health & Human Services. Showing entries 1 to 5 of 90.\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Nipawin\n- Continuing Care Assistant - Fall 2027 Tisdale (Full-Time)\n- Continuing Care Assistant (Full-Time) Fall 2027 Yorkton\n- Continuing Care Assistant (Full-Time) Winter 2027 Yorkton\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-ni",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft-2-2",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft-3",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Show more",
+    "httpStatus": 200,
+    "ms": 282,
+    "response": {
+      "answer": "Published catalogue — Health & Human Services. Showing entries 6 to 10 of 90.\n- Continuing Care Assistant (Part-Time) - Canora\n- Continuing Care Assistant (Part-Time) - Esterhazy\n- Continuing Care Assistant (Part-Time) - Fort Qu'Appelle\n- Continuing Care Assistant (Part-Time) - Melfort\n- Continuing Care Assistant (Part-Time) - Nipawin\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-pt-5",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2-2-2",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-pt-4",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-pt-3",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2-2"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Only individual courses",
+    "httpStatus": 200,
+    "ms": 270,
+    "response": {
+      "answer": "Published courses — Health & Human Services. Showing entries 1 to 5 of 72.\n- Addictions (NURS-177)\n- Anatomy and Physiology (APHY 189)\n- Anatomy and Physiology 1 (BIOL 102)\n- Anatomy and Physiology 2 (BIOL 103)\n- Anti-Bias Education in Early Childhood (ECE 220)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/courses/addictions",
+        "https://suncrestcollege.ca/courses/anatomy-and-physiology",
+        "https://suncrestcollege.ca/courses/anatomy-and-physiology-1",
+        "https://suncrestcollege.ca/courses/anatomy-and-physiology-2",
+        "https://suncrestcollege.ca/courses/anti-bias-education-in-early-childhood"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Show more",
+    "httpStatus": 200,
+    "ms": 256,
+    "response": {
+      "answer": "Published courses — Health & Human Services. Showing entries 6 to 10 of 72.\n- Body Systems (ANAT 100)\n- Child Guidance 1 (HUMD183)\n- Child Guidance 2 (HUMD 200)\n- Clinical 1 - Special Care (CLIN 100)\n- Clinical Specimen Procurement and Management (CLIN 113)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/courses/body-systems",
+        "https://suncrestcollege.ca/courses/child-guidance-1-2",
+        "https://suncrestcollege.ca/courses/child-guidance-2",
+        "https://suncrestcollege.ca/courses/clinical-1-special-care",
+        "https://suncrestcollege.ca/courses/clinical-specimen-procurement-and-management"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Only programs",
+    "httpStatus": 200,
+    "ms": 264,
+    "response": {
+      "answer": "Published programs — Health & Human Services. Showing entries 1 to 5 of 18.\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Nipawin\n- Continuing Care Assistant - Fall 2027 Tisdale (Full-Time)\n- Continuing Care Assistant (Full-Time) Fall 2027 Yorkton\n- Continuing Care Assistant (Full-Time) Winter 2027 Yorkton\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-ni",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft-2-2",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft-3",
+        "https://suncrestcollege.ca/programs/continuing-care-assistant-ft"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Business programs, please.",
+    "httpStatus": 200,
+    "ms": 257,
+    "response": {
+      "answer": "Published programs — Business. Showing entries 1 to 3 of 3.\n- Business Certificate - Yorkton & Tisdale\n- Office Administration - Face to Face\n- Office Administration - Virtual\n\nCatalogue listings do not confirm open enrolment.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/office-administration-2",
+        "https://suncrestcollege.ca/programs/office-administration"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "What are the requirements for the first one?",
+    "httpStatus": 200,
+    "ms": 361,
+    "response": {
+      "answer": "Business Certificate - Yorkton & Tisdale — published academic and English-language requirements:\nGrade 12, or successful completion of at least 15 credit units, from this Business certificate program or the Business diploma (year 1) program.\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements. \nComputer experience\nComputer experience with proficiency in word processing, spreadsheet, and internet browser software in a Windows environment is recommended.\nComputer and Internet Access\nStudents will require access to a computer equipped with internet access including word processing, spreadsheet, and internet browser software.\nNon-Refundable Application Fee\nA non-refundable application fee of $60.00 is required for application processing.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/business"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Can you tell me the list of courses that Suncrest offers?",
+    "httpStatus": 200,
+    "ms": 288,
+    "response": {
+      "answer": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/adult-10",
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/professional-firefighter-qualifications-nfpa1001-pt",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/ag-equipment-tech"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "What rubber parking curbs does Shercom Industries sell?",
+    "httpStatus": 200,
+    "ms": 3961,
+    "response": {
+      "answer": "I can help with the business's information and services only.",
+      "sources": [],
+      "outcome": "out_of_scope",
+      "evidenceCount": 6
+    }
+  },
+  {
+    "question": "What categories of courses does Suncrest offer? Business courses.",
+    "httpStatus": 200,
+    "ms": 283,
+    "response": {
+      "answer": "Published catalogue — Business. Showing entries 1 to 5 of 14.\n- Business Certificate - Yorkton & Tisdale\n- Office Administration - Face to Face\n- Office Administration - Virtual\n- Accounting (ACCT 105)\n- Accounting for Managers (ACCT 130)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/office-administration-2",
+        "https://suncrestcollege.ca/programs/office-administration",
+        "https://suncrestcollege.ca/courses/accounting",
+        "https://suncrestcollege.ca/courses/accounting-for-managers"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "What categories of courses does Suncrest offer? Business courses. Show more.",
+    "httpStatus": 200,
+    "ms": 285,
+    "response": {
+      "answer": "Published catalogue — Business. Showing entries 6 to 10 of 14.\n- Business Communications 1 (BCOM 100)\n- COAP 173 (COAP 173)\n- Introduction to Microeconomics (RT 191)\n- Introduction to Organizational Office Technologies (COMP 115)\n- Introductory Financial Accounting 1 (ACCT 122)\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.",
+      "sources": [
+        "https://suncrestcollege.ca/courses/business-communications-1",
+        "https://suncrestcollege.ca/courses/coap-173",
+        "https://suncrestcollege.ca/courses/introduction-to-microeconomics",
+        "https://suncrestcollege.ca/courses/introduction-to-organizational-office-technologies",
+        "https://suncrestcollege.ca/courses/introductory-financial-accounting-1"
+      ],
+      "outcome": "supported"
+    }
+  },
+  {
+    "question": "Okay, what other interesting courses are there that I can study at Suncrest?",
+    "httpStatus": 200,
+    "ms": 270,
+    "response": {
+      "answer": "Published catalogue — All areas. Showing entries 1 to 5 of 1311.\n- Adult 10\n- Business Certificate - Yorkton & Tisdale\n- Firefighting Courses (Part-Time)\n- Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle\n- Agricultural Equipment Technician\n\nCatalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.",
+      "sources": [
+        "https://suncrestcollege.ca/programs/adult-10",
+        "https://suncrestcollege.ca/programs/business",
+        "https://suncrestcollege.ca/programs/professional-firefighter-qualifications-nfpa1001-pt",
+        "https://suncrestcollege.ca/programs/mental-health-wellness-fq",
+        "https://suncrestcollege.ca/programs/ag-equipment-tech"
+      ],
+      "outcome": "supported"
+    }
+  }
+]

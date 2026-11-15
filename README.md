@@ -1,3 +1,5 @@
+> **Maintainer handoff for this fork:** [Developer handoff](docs/DEVELOPER-HANDOFF.md) explains the active Suncrest LiveKit integration, both repositories, setup, knowledge/retrieval, deployment and known gaps. The saved application checkpoint is on `codex/suncrest-v2`; upstream runtime/hosting documentation can describe a different environment.
+
 <p align="center">
   <img src=".github/readme/lobbystack-hero.png" width="100%" alt="LobbyStack dashboard hero image">
 </p>

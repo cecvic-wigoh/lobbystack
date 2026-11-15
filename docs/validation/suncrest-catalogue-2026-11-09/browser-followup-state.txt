@@ -1,0 +1,184 @@
+Browser tab: 3, Title: "Suncrest College | Meet your AI receptionist", URL: "https://admin-production-ad1d.up.railway.app/en/demo/suncrest".
+1 AXWebArea Suncrest College | Meet your AI receptionist, URL: admin-production-ad1d.up.railway.app/en/demo/suncrest
+	2 container Notifications alt+T
+	3 container
+		4 image Suncrest College
+		5 text AI RECEPTIONIST PREVIEW A WELCOMING FIRST CONVERSATION
+		6 heading Your next chapter. Let’s talk about it., Value: 1
+			7 text Your next chapter.
+			8 text Let’s talk about it.
+		9 text Meet Suncrest’s AI receptionist. Ask about programs, admissions, and student life—in your own words.
+		10 text Answers grounded in the college’s published information. When a detail can’t be confirmed, we’ll say so.
+		11 container
+			12 container Choose how to talk
+				13 checkbox Talk naturally, Value: 0
+				14 checkbox Type a question, Value: 1
+			18 container Chat with Suncrest College
+				19 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm
+					20 container Notifications alt+T
+					21 container
+						22 text Suncrest College
+						23 text Your AI receptionist
+						24 button Talk to us live
+						28 text Okay, what other interesting courses are there that I can study at Suncrest? Published catalogue — All areas. Showing entries 1 to 8 of 1311.
+						29 text - Adult 10
+						30 text - Business Certificate - Yorkton & Tisdale
+						31 text - Firefighting Courses (Part-Time)
+						32 text - Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle
+						33 text - Agricultural Equipment Technician
+						34 text - English Language Classes
+						35 text - Skills for Success for Newcomers
+						36 text - Computer Networking Technician Certificate
+						37 text Catalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area. Areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; and more.
+						38 text Sources:
+						39 link Description: 1, Value: suncrestcollege.ca/programs/adult-10
+						40 text  ·
+						41 link Description: 2, Value: suncrestcollege.ca/programs/business
+						42 text  ·
+						43 link Description: 3, Value: suncrestcollege.ca/programs/professional-firefighter-qualifications-nfpa1001-pt
+						44 text  ·
+						45 link Description: 4, Value: suncrestcollege.ca/programs/mental-health-wellness-fq
+						46 text  ·
+						47 link Description: 5, Value: suncrestcollege.ca/programs/ag-equipment-tech
+						48 text  ·
+						49 link Description: 6, Value: suncrestcollege.ca/programs/english-language-training
+						50 text  ·
+						51 link Description: 7, Value: suncrestcollege.ca/programs/pathways-to-human-services-2-2-2-3
+						52 text  ·
+						53 link Description: 8, Value: suncrestcollege.ca/programs/computer-networking-technician-certificate
+						54 text What categories do you have? Published catalogue — All areas. Published areas: Adult Education; Agriculture; Business; Emergency Services; Health & Human Services; Industrial & Agriculture; Language Training; Professional Development; Safety; Saskatchewan Emergency Response Institute; Skills for Success; Technology; Trades & Apprenticeship; University. Which area would you like to explore?
+						55 text Sources:
+						56 link Description: 1, Value: suncrestcollege.ca/programs/adult-10
+						57 text  ·
+						58 link Description: 2, Value: courses.suncrestcollege.ca/product?catalog=CCA100
+						59 text  ·
+						60 link Description: 3, Value: suncrestcollege.ca/programs/business
+						61 text  ·
+						62 link Description: 4, Value: suncrestcollege.ca/programs/nfpa1081-industrial-firefighter-training
+						63 text  ·
+						64 link Description: 5, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft
+						65 text  ·
+						66 link Description: 6, Value: suncrestcollege.ca/programs/ag-equipment-tech
+						67 text  ·
+						68 link Description: 7, Value: suncrestcollege.ca/programs/english-language-training
+						69 text  ·
+						70 link Description: 8, Value: courses.suncrestcollege.ca/product?catalog=1ATDTMELT
+						71 text  ·
+						72 link Description: 9, Value: courses.suncrestcollege.ca/product?catalog=BFACPR
+						73 text  ·
+						74 link Description: 10, Value: courses.suncrestcollege.ca/product?catalog=NFPA1001-1
+						75 text  ·
+						76 link Description: 11, Value: suncrestcollege.ca/programs/pathways-to-human-services-2-2-2-3
+						77 text  ·
+						78 link Description: 12, Value: suncrestcollege.ca/programs/computer-networking-technician-certificate
+						79 text  ·
+						80 link Description: 13, Value: suncrestcollege.ca/programs/industrial-mechanics-atc
+						81 text  ·
+						82 link Description: 14, Value: suncrestcollege.ca/programs/arts-science-first-year-3
+						83 text Health Published catalogue — Health & Human Services. Showing entries 1 to 8 of 90.
+						84 text - Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle
+						85 text - Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Nipawin
+						86 text - Continuing Care Assistant - Fall 2027 Tisdale (Full-Time)
+						87 text - Continuing Care Assistant (Full-Time) Fall 2027 Yorkton
+						88 text - Continuing Care Assistant (Full-Time) Winter 2027 Yorkton
+						89 text - Continuing Care Assistant (Part-Time) - Canora
+						90 text - Continuing Care Assistant (Part-Time) - Esterhazy
+						91 text - Continuing Care Assistant (Part-Time) - Fort Qu'Appelle
+						92 text Catalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.
+						93 text Sources:
+						94 link Description: 1, Value: suncrestcollege.ca/programs/mental-health-wellness-fq
+						95 text  ·
+						96 link Description: 2, Value: suncrestcollege.ca/programs/mental-health-wellness-ni
+						97 text  ·
+						98 link Description: 3, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft-2-2
+						99 text  ·
+						100 link Description: 4, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft-3
+						101 text  ·
+						102 link Description: 5, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft
+						103 text  ·
+						104 link Description: 6, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-5
+						105 text  ·
+						106 link Description: 7, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2-2-2
+						107 text  ·
+						108 link Description: 8, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-4
+						109 text Show more Published catalogue — Health & Human Services. Showing entries 9 to 16 of 90.
+						110 text - Continuing Care Assistant (Part-Time) - Melfort
+						111 text - Continuing Care Assistant (Part-Time) - Nipawin
+						112 text - Continuing Care Assistant (Part-Time) - Virtual
+						113 text - Diagnostic Medical Sonography - Ultrasound
+						114 text - Early Childhood Education - Certificate of Achievement (Part-Time)
+						115 text - Early Childhood Education Diploma (Full-Time)
+						116 text - Early Childhood Education Diploma (Part-time)
+						117 text - Medical Laboratory Assistant
+						118 text Catalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.
+						119 text Sources:
+						120 link Description: 1, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-3
+						121 text  ·
+						122 link Description: 2, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2-2
+						123 text  ·
+						124 link Description: 3, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2
+						125 text  ·
+						126 link Description: 4, Value: suncrestcollege.ca/programs/diagnostic-medical-sonography-ultrasound
+						127 text  ·
+						128 link Description: 5, Value: suncrestcollege.ca/programs/early-childhood-education-coa
+						129 text  ·
+						130 link Description: 6, Value: suncrestcollege.ca/programs/early-childhood-education-coa-2
+						131 text  ·
+						132 link Description: 7, Value: suncrestcollege.ca/programs/early-childhood-education-diploma-part-time
+						133 text  ·
+						134 link Description: 8, Value: suncrestcollege.ca/programs/medical-laboratory-assistant
+						135 text Only programs Published programs — Health & Human Services. Showing entries 1 to 8 of 18.
+						136 text - Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Fort Qu'Appelle
+						137 text - Addictions, Community, and Mental Health Professional (formerly Mental Health and Wellness) - Nipawin
+						138 text - Continuing Care Assistant - Fall 2027 Tisdale (Full-Time)
+						139 text - Continuing Care Assistant (Full-Time) Fall 2027 Yorkton
+						140 text - Continuing Care Assistant (Full-Time) Winter 2027 Yorkton
+						141 text - Continuing Care Assistant (Part-Time) - Canora
+						142 text - Continuing Care Assistant (Part-Time) - Esterhazy
+						143 text - Continuing Care Assistant (Part-Time) - Fort Qu'Appelle
+						144 text Catalogue listings do not confirm open enrolment. Say “more” for the next entries, or choose an area.
+						145 text Sources:
+						146 link Description: 1, Value: suncrestcollege.ca/programs/mental-health-wellness-fq
+						147 text  ·
+						148 link Description: 2, Value: suncrestcollege.ca/programs/mental-health-wellness-ni
+						149 text  ·
+						150 link Description: 3, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft-2-2
+						151 text  ·
+						152 link Description: 4, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft-3
+						153 text  ·
+						154 link Description: 5, Value: suncrestcollege.ca/programs/continuing-care-assistant-ft
+						155 text  ·
+						156 link Description: 6, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-5
+						157 text  ·
+						158 link Description: 7, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-3-2-2-2
+						159 text  ·
+						160 link Description: 8, Value: suncrestcollege.ca/programs/continuing-care-assistant-pt-4
+						161 text Business programs, please. Published programs — Business. Showing entries 1 to 3 of 3.
+						162 text - Business Certificate - Yorkton & Tisdale
+						163 text - Office Administration - Face to Face
+						164 text - Office Administration - Virtual
+						165 text Catalogue listings do not confirm open enrolment.
+						166 text Sources:
+						167 link Description: 1, Value: suncrestcollege.ca/programs/business
+						168 text  ·
+						169 link Description: 2, Value: suncrestcollege.ca/programs/office-administration-2
+						170 text  ·
+						171 link Description: 3, Value: suncrestcollege.ca/programs/office-administration
+						172 text What are the requirements for the first one? Business Certificate - Yorkton & Tisdale — published academic and English-language requirements:
+						173 text Grade 12, or successful completion of at least 15 credit units, from this Business certificate program or the Business diploma (year 1) program.
+						174 text English Language Requirement (Saskatchewan Polytechnic)
+						175 text The English language requirement for this program follows Saskatchewan Polytechnic language requirements.
+						176 text Computer experience
+						177 text Computer experience with proficiency in word processing, spreadsheet, and internet browser software in a Windows environment is recommended.
+						178 text Computer and Internet Access
+						179 text Students will require access to a computer equipped with internet access including word processing, spreadsheet, and internet browser software.
+						180 text Non-Refundable Application Fee
+						181 text A non-refundable application fee of $60.00 is required for application processing.
+						182 text Sources:
+						183 link Description: 1, Value: suncrestcollege.ca/programs/business
+						26 text field (settable) Description: Type your message..., ID: base-ui-_R_lav5ubsivb_
+						27 button (disabled) Send
+			16 text AI receptionist · Voice and chat
+		17 text Built for Suncrest College Demonstration · October 2026
+
+The focused UI element is 19 AXWebArea Trendhubs, URL: admin-production-ad1d.up.railway.app/embed/wk_live_k8LF5H0ayPrGJSXYJawUaX0QL2pFAKhm

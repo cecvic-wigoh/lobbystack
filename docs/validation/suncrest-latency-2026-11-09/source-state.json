@@ -1,0 +1,9 @@
+{
+  "voiceCheckout": "/Users/cec-mac/kai-projs/ai-receptionist",
+  "voiceBranch": "codex/suncrest-v2",
+  "voiceBase": "5374bbf",
+  "backendCheckout": "/Users/cec-mac/kai-projs/suncrest-lobbystack",
+  "backendBranch": "codex/suncrest-v2",
+  "backendBase": "fe1c095",
+  "state": "Working-tree changes deployed directly; no new commit; existing work preserved"
+}

@@ -9,9 +9,11 @@ vi.mock("@lobbystack/domain", async () => ({
   KNOWLEDGE_SEARCH_TOKEN_BUDGET: 3000,
   knowledgeQueryTerms: (await import("../../domain/src/knowledgeRanking")).knowledgeQueryTerms,
   searchKnowledgeEvidence: vi.fn(),
+  loadCourseCatalogue: vi.fn(async () => []),
+  ...(await import("../../domain/src/courseCatalogue")),
 }));
 
-import { searchKnowledgeEvidence } from "@lobbystack/domain";
+import { loadCourseCatalogue, searchKnowledgeEvidence } from "@lobbystack/domain";
 import { createReceptionistTools, type AgentToolContext } from "./tools";
 
 function toolNames(overrides: Partial<AgentToolContext> & { bookingMode?: BookingMode; snapshot?: Partial<BusinessContextSnapshot> } = {}): string[] {
@@ -155,4 +157,15 @@ describe("searchKnowledge", () => {
     await expect(search("Où est le stationnement ?", snippets, evidence([]))).resolves.toEqual({ outcome: "found", titles: ["Stationnement"] });
     await expect(search("¿Cuál es el precio de la limpieza dental?", snippets, evidence([]))).resolves.toEqual({ outcome: "found", titles: ["Limpieza dental"] });
   });
+});
+
+it("retains catalogue category and next-page state in the shared live-call tool", async () => {
+ vi.mocked(loadCourseCatalogue).mockResolvedValue(Array.from({ length: 12 }, (_, i) => ({ title: `Business Course ${i + 1}`, url: `https://college.test/courses/business-${i}`, kind: "course", categories: ["Business"] })));
+ const tools = createReceptionistTools({ domain: { db: {} as never }, channel: "voice", snapshot: { ...demoSnapshot, displayName: "Training Academy" } });
+ const execute = tools.searchKnowledge!.execute! as (input: { query: string }, options: object) => Promise<{ answer: string; matches: Array<{ sourceUrl: string }> }>;
+ const first = await execute({ query: "What Business courses do you offer?" }, { toolCallId: "catalogue1", messages: [] });
+ expect(first.answer).toContain("Showing entries 1 to 5 of 12");
+ const next = await execute({ query: "More" }, { toolCallId: "catalogue2", messages: [] });
+ expect(next.answer).toContain("Showing entries 6 to 10 of 12");
+ expect(next.matches.every(m => !first.matches.some(old => old.sourceUrl === m.sourceUrl))).toBe(true);
 });

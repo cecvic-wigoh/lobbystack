@@ -14,6 +14,7 @@ export default defineConfig({
       "@lobbystack/domain": `${root}/packages/domain/src/index.ts`,
       "@lobbystack/jobs": `${root}/packages/jobs/src/index.ts`,
       "@lobbystack/providers/ai/embeddingProvider": `${root}/packages/providers/src/ai/embeddingProvider.ts`,
+      "@lobbystack/providers/crawling/crawl4ai": `${root}/packages/providers/src/crawling/crawl4ai.ts`,
       "@lobbystack/providers/crawling/firecrawl": `${root}/packages/providers/src/crawling/firecrawl.ts`,
       "@lobbystack/providers/crypto/secretBox": `${root}/packages/providers/src/crypto/secretBox.ts`,
       "@lobbystack/providers/email/smtp": `${root}/packages/providers/src/email/smtp.ts`,

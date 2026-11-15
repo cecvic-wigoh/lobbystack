@@ -1,0 +1,336 @@
+{
+  "testedAt": "2026-11-08T10:11:24.675Z",
+  "mode": "deployed internal LiveKit answer endpoint; no audio",
+  "results": [
+    {
+      "id": "electrician",
+      "repeat": 1,
+      "question": "What are the admission requirements for the Electrician Applied Certificate?",
+      "httpStatus": 200,
+      "ms": 488,
+      "response": {
+        "answer": "Electrical Applied Certificate — published academic and English-language requirements:\nGrade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/electrical-applied-certificate"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-campuses",
+      "repeat": 1,
+      "question": "Which campuses offer Practical Nursing?",
+      "httpStatus": 200,
+      "ms": 234,
+      "response": {
+        "answer": "Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028; ends February 15, 2030; application deadline April 30, 2027); Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "electrician",
+      "repeat": 2,
+      "question": "What are the admission requirements for the Electrician Applied Certificate?",
+      "httpStatus": 200,
+      "ms": 253,
+      "response": {
+        "answer": "Electrical Applied Certificate — published academic and English-language requirements:\nGrade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/electrical-applied-certificate"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-campuses",
+      "repeat": 2,
+      "question": "Which campuses offer Practical Nursing?",
+      "httpStatus": 200,
+      "ms": 251,
+      "response": {
+        "answer": "Practical Nursing: Yorkton, Winter 2028 (full-time; starts February 28, 2028; ends February 15, 2030; application deadline April 30, 2027); Melfort, Winter 2027 (full-time; starts February 2027; ends February 16, 2029; the published application deadline, April 30, 2026, has passed).",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-yorkton",
+      "repeat": 1,
+      "question": "What are the entry requirements for Practical Nursing in Yorkton?",
+      "httpStatus": 200,
+      "ms": 240,
+      "response": {
+        "answer": "Practical Nursing — published academic and English-language requirements:\n- Grade 12 with a minimum overall score of 65% in the following four subjects:\n - 30-level English Language Arts\n - Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*\n - one of Biology 30, Chemistry 30 or Physics 30\n - one of Social Studies 30, History 30 or Native Studies 30\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\n - English Language requirement must be provided on or before the document deadline\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-melfort-fees",
+      "repeat": 1,
+      "question": "What are the tuition and fees for Practical Nursing in Melfort?",
+      "httpStatus": 200,
+      "ms": 252,
+      "response": {
+        "answer": "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,500.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-yorkton",
+      "repeat": 2,
+      "question": "What are the entry requirements for Practical Nursing in Yorkton?",
+      "httpStatus": 200,
+      "ms": 250,
+      "response": {
+        "answer": "Practical Nursing — published academic and English-language requirements:\n- Grade 12 with a minimum overall score of 65% in the following four subjects:\n - 30-level English Language Arts\n - Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*\n - one of Biology 30, Chemistry 30 or Physics 30\n - one of Social Studies 30, History 30 or Native Studies 30\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\n - English Language requirement must be provided on or before the document deadline\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "nursing-melfort-fees",
+      "repeat": 2,
+      "question": "What are the tuition and fees for Practical Nursing in Melfort?",
+      "httpStatus": 200,
+      "ms": 250,
+      "response": {
+        "answer": "Practical Nursing, Melfort, Winter 2027 fee table: Tuition (total): $16,500.00; Fees (per year): $700.00; Health & Dental Fee (per year): $252.00. The fee table notes: \"Tuition, Books and Supplies, Health and Dental amounts are approximate, based on last year's program and may change at anytime.\" Please confirm the current amount with the college.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/practical-nursing-diploma"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "medlab",
+      "repeat": 1,
+      "question": "What are the admission requirements for Medical Laboratory Assistant?",
+      "httpStatus": 200,
+      "ms": 240,
+      "response": {
+        "answer": "Medical Laboratory Assistant — published academic and English-language requirements:\n- Grade 12 with a minimum grade of 70% in each of:\n - 30-level English Language Arts\n - Foundations of Math 20 or Foundations of Math 30 or Pre-Calculus 30*\n - Health Science 20 or Biology 30*\n - Physical Science 20 or Chemistry 30*\n*Previous Saskatchewan biology, chemistry, and mathematics requirements also accepted:\n - Biology 20\n - Chemistry 20\n - Math 20 or any 30-level math\n - 25 words per minute keyboarding speed with 90% accuracy (5-minute testing report to be submitted with transcripts);\n - Testing is available through Saskatchewan Polytechnic Testing Services. A completed Keyboarding Test Results Form must be submitted to Registration Services.\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/medical-laboratory-assistant"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "networking",
+      "repeat": 1,
+      "question": "What are the admission requirements for Computer Networking Technician?",
+      "httpStatus": 200,
+      "ms": 237,
+      "response": {
+        "answer": "Computer Networking Technician Certificate — published academic and English-language requirements:\nGrade 12 with with Workplace and Apprenticeship Math 30 or Foundations of Math 20 or Pre-Calculus 20\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements. \nNon-Refundable Application Fee\nA non-refundable application fee of $60.00 is required for application processing.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/computer-networking-technician-certificate"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "medlab",
+      "repeat": 2,
+      "question": "What are the admission requirements for Medical Laboratory Assistant?",
+      "httpStatus": 200,
+      "ms": 257,
+      "response": {
+        "answer": "Medical Laboratory Assistant — published academic and English-language requirements:\n- Grade 12 with a minimum grade of 70% in each of:\n - 30-level English Language Arts\n - Foundations of Math 20 or Foundations of Math 30 or Pre-Calculus 30*\n - Health Science 20 or Biology 30*\n - Physical Science 20 or Chemistry 30*\n*Previous Saskatchewan biology, chemistry, and mathematics requirements also accepted:\n - Biology 20\n - Chemistry 20\n - Math 20 or any 30-level math\n - 25 words per minute keyboarding speed with 90% accuracy (5-minute testing report to be submitted with transcripts);\n - Testing is available through Saskatchewan Polytechnic Testing Services. A completed Keyboarding Test Results Form must be submitted to Registration Services.\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/medical-laboratory-assistant"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "networking",
+      "repeat": 2,
+      "question": "What are the admission requirements for Computer Networking Technician?",
+      "httpStatus": 200,
+      "ms": 241,
+      "response": {
+        "answer": "Computer Networking Technician Certificate — published academic and English-language requirements:\nGrade 12 with with Workplace and Apprenticeship Math 30 or Foundations of Math 20 or Pre-Calculus 20\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements. \nNon-Refundable Application Fee\nA non-refundable application fee of $60.00 is required for application processing.",
+        "sources": [
+          "https://suncrestcollege.ca/programs/computer-networking-technician-certificate"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "admissions-contact",
+      "repeat": 1,
+      "question": "Who should I contact about admission to Suncrest College?",
+      "httpStatus": 200,
+      "ms": 5509,
+      "response": {
+        "answer": "For admissions and applications inquiries, contact Suncrest College at 866 638 8618 or admissions@suncrestcollege.ca.",
+        "sources": [
+          "https://suncrestcollege.ca/contact-us"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "campuses",
+      "repeat": 1,
+      "question": "Where are your campuses?",
+      "httpStatus": 200,
+      "ms": 5013,
+      "response": {
+        "answer": "Suncrest College lists campuses in Canora, Esterhazy, Fort Qu'Appelle, Kamsack, Melfort, Melville, Nipawin, Tisdale, and Yorkton.",
+        "sources": [
+          "https://suncrestcollege.ca/contact-us"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "admissions-contact",
+      "repeat": 2,
+      "question": "Who should I contact about admission to Suncrest College?",
+      "httpStatus": 200,
+      "ms": 4694,
+      "response": {
+        "answer": "For admissions and applications inquiries, contact Suncrest College at 866 638 8618 or admissions@suncrestcollege.ca.",
+        "sources": [
+          "https://suncrestcollege.ca/contact-us"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "campuses",
+      "repeat": 2,
+      "question": "Where are your campuses?",
+      "httpStatus": 200,
+      "ms": 5811,
+      "response": {
+        "answer": "Suncrest College lists campuses in Canora, Esterhazy, Fort Qu’Appelle, Kamsack, Melfort, Melville, Melville (Saskatchewan Emergency Response Institute), Nipawin, Tisdale, Tisdale (LeStrat Building), Yorkton, and Yorkton (TTC).",
+        "sources": [
+          "https://suncrestcollege.ca/contact-us"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "course-code",
+      "repeat": 1,
+      "question": "What are the prerequisites for NFPA 1140 Wildland Firefighter Level I?",
+      "httpStatus": 200,
+      "ms": 1986,
+      "response": {
+        "answer": "NFPA 1140 - Wildland Firefighter Level I — published prerequisites:\nPrerequisites must be emailed to seri@suncrestcollege.ca after purchasing this course. Once approved, you will be officially registered and granted access to the online portion of the course when registration closes and the minimum class size is met.\n * Current member of good standing in a Saskatchewan fire department or other eligible emergency service.\n * ICS 100\nThe page says this course is not open for enrollment.",
+        "sources": [
+          "https://courses.suncrestcollege.ca/product?catalog=NFPA1140-1"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "unpublished-program",
+      "repeat": 1,
+      "question": "Do you offer an architecture program?",
+      "httpStatus": 200,
+      "ms": 2984,
+      "response": {
+        "answer": "I can't confirm that from the business's published information. Please contact the business to confirm.",
+        "sources": [],
+        "outcome": "unknown",
+        "reason": "missing_evidence",
+        "evidenceCount": 6
+      }
+    },
+    {
+      "id": "course-code",
+      "repeat": 2,
+      "question": "What are the prerequisites for NFPA 1140 Wildland Firefighter Level I?",
+      "httpStatus": 200,
+      "ms": 2098,
+      "response": {
+        "answer": "NFPA 1140 - Wildland Firefighter Level I — published prerequisites:\nPrerequisites must be emailed to seri@suncrestcollege.ca after purchasing this course. Once approved, you will be officially registered and granted access to the online portion of the course when registration closes and the minimum class size is met.\n * Current member of good standing in a Saskatchewan fire department or other eligible emergency service.\n * ICS 100\nThe page says this course is not open for enrollment.",
+        "sources": [
+          "https://courses.suncrestcollege.ca/product?catalog=NFPA1140-1"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "guarantee",
+      "repeat": 1,
+      "question": "Can you guarantee that I will be admitted to nursing?",
+      "httpStatus": 200,
+      "ms": 218,
+      "response": {
+        "answer": "I can't guarantee an admission decision. I can explain the published entry requirements; please confirm your eligibility with the college's admissions team.",
+        "sources": [],
+        "outcome": "unknown"
+      }
+    },
+    {
+      "id": "unpublished-program",
+      "repeat": 2,
+      "question": "Do you offer an architecture program?",
+      "httpStatus": 200,
+      "ms": 2932,
+      "response": {
+        "answer": "I can't confirm that from the business's published information. Please contact the business to confirm.",
+        "sources": [],
+        "outcome": "unknown",
+        "reason": "missing_evidence",
+        "evidenceCount": 6
+      }
+    },
+    {
+      "id": "guarantee",
+      "repeat": 2,
+      "question": "Can you guarantee that I will be admitted to nursing?",
+      "httpStatus": 200,
+      "ms": 229,
+      "response": {
+        "answer": "I can't guarantee an admission decision. I can explain the published entry requirements; please confirm your eligibility with the college's admissions team.",
+        "sources": [],
+        "outcome": "unknown"
+      }
+    },
+    {
+      "id": "out-of-scope",
+      "repeat": 1,
+      "question": "What rubber parking curbs does Shercom Industries sell?",
+      "httpStatus": 200,
+      "ms": 2704,
+      "response": {
+        "answer": "I can help with the business's information and services only.",
+        "sources": [],
+        "outcome": "out_of_scope",
+        "evidenceCount": 6
+      }
+    },
+    {
+      "id": "out-of-scope",
+      "repeat": 2,
+      "question": "What rubber parking curbs does Shercom Industries sell?",
+      "httpStatus": 200,
+      "ms": 2511,
+      "response": {
+        "answer": "I can help with the business's information and services only.",
+        "sources": [],
+        "outcome": "out_of_scope",
+        "evidenceCount": 6
+      }
+    }
+  ]
+}

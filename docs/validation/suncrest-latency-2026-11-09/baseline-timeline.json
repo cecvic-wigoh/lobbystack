@@ -1,0 +1,1207 @@
+{
+ "room": "lobby-38e2960e-9e4c-4816-b87e-8d71272b4acf",
+ "script": [
+  {
+   "id": "q0-admissions",
+   "text": "Who should I contact about admission to Suncrest College?"
+  },
+  {
+   "id": "qa-electrician",
+   "text": "What are the admission requirements for the Electrician Applied Certificate?"
+  },
+  {
+   "id": "qa-electrician-repeat",
+   "text": "Could you repeat the entry requirements for the Electrician Applied Certificate?"
+  },
+  {
+   "id": "q8-requirements",
+   "text": "What are the admission requirements for Practical Nursing in Yorkton?"
+  },
+  {
+   "id": "q5-goodbye",
+   "text": "Okay, that's everything. Thank you, goodbye."
+  }
+ ],
+ "events": [
+  {
+   "ms": 7692,
+   "event": "session_started",
+   "detail": {
+    "room": "lobby-38e2960e-9e4c-4816-b87e-8d71272b4acf"
+   }
+  },
+  {
+   "ms": 8277,
+   "event": "caller_joined"
+  },
+  {
+   "ms": 8671,
+   "event": "agent_audio_subscribed",
+   "detail": {
+    "participant": "agent-AJ_RWyGT9CAfk6A"
+   }
+  },
+  {
+   "ms": 10399,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 14177,
+   "event": "transcript",
+   "detail": {
+    "text": "Thanks for calling Suncrest College. I’m the AI receptionist.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.segment_id": "SG_4b2cd7d5-02f",
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 15520,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 16351,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "greeting"
+   }
+  },
+  {
+   "ms": 16351,
+   "event": "caller_speech_start",
+   "detail": {
+    "id": "q0-admissions"
+   }
+  },
+  {
+   "ms": 20100,
+   "event": "caller_speech_end",
+   "detail": {
+    "id": "q0-admissions"
+   }
+  },
+  {
+   "ms": 21341,
+   "event": "transcript",
+   "detail": {
+    "text": "Who",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 21343,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 21343,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 21348,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 21379,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 21381,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_8373c440-d63"
+    }
+   }
+  },
+  {
+   "ms": 21382,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 21383,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Sun",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63"
+    }
+   }
+  },
+  {
+   "ms": 21413,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Suncrest",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_8373c440-d63"
+    }
+   }
+  },
+  {
+   "ms": 21419,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Suncrest College",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 21419,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Suncrest College?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63"
+    }
+   }
+  },
+  {
+   "ms": 21633,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Suncrest College?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 21633,
+   "event": "transcript",
+   "detail": {
+    "text": "Who should I contact about admission to Suncrest College?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_8373c440-d63",
+     "lk.transcription_final": "true"
+    }
+   }
+  },
+  {
+   "ms": 29549,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 37945,
+   "event": "transcript",
+   "detail": {
+    "text": "For general admissions and applications inquiries, contact Suncrest College at 866 638 8618 or admissions@suncrestcollege.ca.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.segment_id": "SG_aadfc923-793",
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 41020,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 42824,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "q0-admissions"
+   }
+  },
+  {
+   "ms": 42825,
+   "event": "caller_speech_start",
+   "detail": {
+    "id": "qa-electrician"
+   }
+  },
+  {
+   "ms": 47021,
+   "event": "caller_speech_end",
+   "detail": {
+    "id": "qa-electrician"
+   }
+  },
+  {
+   "ms": 48430,
+   "event": "transcript",
+   "detail": {
+    "text": "What",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 48431,
+   "event": "transcript",
+   "detail": {
+    "text": "What are",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56"
+    }
+   }
+  },
+  {
+   "ms": 48432,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 48460,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 48461,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56"
+    }
+   }
+  },
+  {
+   "ms": 48465,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 48466,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56"
+    }
+   }
+  },
+  {
+   "ms": 48466,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electric",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56"
+    }
+   }
+  },
+  {
+   "ms": 48467,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 48467,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician Applied",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 48517,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician Applied Certificate",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 48518,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician Applied Certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 48735,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician Applied Certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_5575c17a-f56",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 48735,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for the Electrician Applied Certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "true",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_5575c17a-f56"
+    }
+   }
+  },
+  {
+   "ms": 53930,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 79886,
+   "event": "transcript",
+   "detail": {
+    "text": "Electrical Applied Certificate — published academic and English-language requirements:\nGrade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L",
+     "lk.segment_id": "SG_1262cb3d-c27"
+    }
+   }
+  },
+  {
+   "ms": 80390,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 82195,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "qa-electrician"
+   }
+  },
+  {
+   "ms": 82197,
+   "event": "caller_speech_start",
+   "detail": {
+    "id": "qa-electrician-repeat"
+   }
+  },
+  {
+   "ms": 86740,
+   "event": "caller_speech_end",
+   "detail": {
+    "id": "qa-electrician-repeat"
+   }
+  },
+  {
+   "ms": 88130,
+   "event": "transcript",
+   "detail": {
+    "text": "Could",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 88131,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 88135,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_daa94f7c-597"
+    }
+   }
+  },
+  {
+   "ms": 88136,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 88137,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88137,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597"
+    }
+   }
+  },
+  {
+   "ms": 88144,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597"
+    }
+   }
+  },
+  {
+   "ms": 88148,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88149,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electric",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88149,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 88149,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician Applied",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88150,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician Applied certificate",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88153,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician Applied certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597"
+    }
+   }
+  },
+  {
+   "ms": 88357,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician Applied certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 88359,
+   "event": "transcript",
+   "detail": {
+    "text": "Could you repeat the entry requirements for the Electrician Applied certificate?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_daa94f7c-597",
+     "lk.transcription_final": "true"
+    }
+   }
+  },
+  {
+   "ms": 92380,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 113060,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 113290,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 118462,
+   "event": "transcript",
+   "detail": {
+    "text": "Electrical Applied Certificate — published academic and English-language requirements:\nGrade 11 with one of the following math courses: Foundations of Math 20, Pre-Calculus 20, Workplace and Apprenticeship Math 20 (Modified and General Math credits will not be accepted)\nEnglish Language Requirement (Saskatchewan Polytechnic)\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.segment_id": "SG_34ab56ec-a48",
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 118971,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 120804,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "qa-electrician-repeat"
+   }
+  },
+  {
+   "ms": 120805,
+   "event": "caller_speech_start",
+   "detail": {
+    "id": "q8-requirements"
+   }
+  },
+  {
+   "ms": 125250,
+   "event": "caller_speech_end",
+   "detail": {
+    "id": "q8-requirements"
+   }
+  },
+  {
+   "ms": 126388,
+   "event": "transcript",
+   "detail": {
+    "text": "What",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 126389,
+   "event": "transcript",
+   "detail": {
+    "text": "What are",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 126393,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 126405,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 126408,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 126412,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 126444,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 126445,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 126446,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 126447,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in York",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 126647,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in Yorkton",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 126648,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in Yorkton?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_2911920a-e3c",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 126736,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in Yorkton?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 126737,
+   "event": "transcript",
+   "detail": {
+    "text": "What are the admission requirements for practical nursing in Yorkton?",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "true",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_2911920a-e3c"
+    }
+   }
+  },
+  {
+   "ms": 134259,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 162341,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 162359,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 170640,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 171050,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 180097,
+   "event": "transcript",
+   "detail": {
+    "text": "Practical Nursing — published academic and English-language requirements:\n- Grade 12 with a minimum overall score of 65% in the following four subjects:\n - 30-level English Language Arts\n - Foundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30*\n - one of Biology 30, Chemistry 30 or Physics 30\n - one of Social Studies 30, History 30 or Native Studies 30\n - English Language Proficiency\n - The English language requirement for this program follows Saskatchewan Polytechnic language requirements.\n - English Language requirement must be provided on or before the document deadline\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L",
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_91897593-669"
+    }
+   }
+  },
+  {
+   "ms": 182750,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 184552,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "q8-requirements"
+   }
+  },
+  {
+   "ms": 184553,
+   "event": "caller_speech_start",
+   "detail": {
+    "id": "q5-goodbye"
+   }
+  },
+  {
+   "ms": 188106,
+   "event": "caller_speech_end",
+   "detail": {
+    "id": "q5-goodbye"
+   }
+  },
+  {
+   "ms": 190352,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_70d0b8a6-ded"
+    }
+   }
+  },
+  {
+   "ms": 190356,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay,",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 190362,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 190363,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_70d0b8a6-ded"
+    }
+   }
+  },
+  {
+   "ms": 190374,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything.",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR"
+    }
+   }
+  },
+  {
+   "ms": 190375,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_70d0b8a6-ded"
+    }
+   }
+  },
+  {
+   "ms": 190375,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 190385,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you.",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_70d0b8a6-ded"
+    }
+   }
+  },
+  {
+   "ms": 190389,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you. Goodbye",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 190392,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you. Goodbye.",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 190571,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you. Goodbye.",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.segment_id": "SG_70d0b8a6-ded",
+     "lk.transcription_final": "false"
+    }
+   }
+  },
+  {
+   "ms": 190572,
+   "event": "transcript",
+   "detail": {
+    "text": "Okay, that's everything. Thank you. Goodbye.",
+    "participant": "caller-a38dcbee-ecd1-400d-9dbb-040e5e3e4ca8",
+    "attributes": {
+     "lk.transcribed_track_id": "TR_AMwH9jNZv2MRYR",
+     "lk.transcription_final": "true",
+     "lk.segment_id": "SG_70d0b8a6-ded"
+    }
+   }
+  },
+  {
+   "ms": 191281,
+   "event": "agent_speech_start"
+  },
+  {
+   "ms": 193718,
+   "event": "transcript",
+   "detail": {
+    "text": "You’re welcome. Goodbye, and have a good day.",
+    "participant": "agent-AJ_RWyGT9CAfk6A",
+    "attributes": {
+     "lk.segment_id": "SG_fad10608-1c5",
+     "lk.transcription_final": "false",
+     "lk.transcribed_track_id": "TR_AMuNczKgY7663L"
+    }
+   }
+  },
+  {
+   "ms": 194861,
+   "event": "agent_speech_end"
+  },
+  {
+   "ms": 198178,
+   "event": "agent_reply_done",
+   "detail": {
+    "label": "q5-goodbye"
+   }
+  },
+  {
+   "ms": 204178,
+   "event": "caller_leaving"
+  },
+  {
+   "ms": 204217,
+   "event": "room_disconnected"
+  },
+  {
+   "ms": 205533,
+   "event": "end_session",
+   "detail": {
+    "status": 204
+   }
+  }
+ ],
+ "durationMs": 205574
+}

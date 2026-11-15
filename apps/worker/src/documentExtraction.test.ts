@@ -74,8 +74,8 @@ describe("knowledge document extraction", () => {
     expect(mocks.loads.mammoth).toBe(1);
   });
 
-  it("OCRs every page of a textless PDF with one bilingual worker", async () => {
-    mocks.getText.mockResolvedValue({ text: "  ", total: 2 });
+  it.each(["  ", "\n\n-- 1 of 2 --\n\n-- 2 of 2 --\n"])("OCRs every page of a textless PDF with one bilingual worker (text=%j)", async text => {
+    mocks.getText.mockResolvedValue({ text, total: 2 });
     mocks.getScreenshot.mockResolvedValue({
       pages: [{ data: new Uint8Array([1]) }, { data: new Uint8Array([2]) }],
       total: 2,

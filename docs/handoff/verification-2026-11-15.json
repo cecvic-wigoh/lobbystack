@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-15",
+  "localNode": "26.9.0",
+  "backendTests": {
+    "passed": 2514,
+    "skipped": 102
+  },
+  "voiceTests": {
+    "passed": 126
+  },
+  "webTests": {
+    "passed": 84
+  },
+  "backendTypecheck": "passed",
+  "backendBuild": "passed",
+  "voiceFrozenInstall": "passed",
+  "voiceTypecheck": "passed",
+  "webTypecheck": "passed",
+  "webBuild": "passed",
+  "freshLiveCalls": false,
+  "productionMigration": false,
+  "marketingAndLegacyBuild": "not repeated; unchanged"
+}

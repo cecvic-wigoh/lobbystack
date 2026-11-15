@@ -1,0 +1,59 @@
+{
+  "testedAt": "2026-11-08T09:47:42.003Z",
+  "mode": "deployed internal LiveKit answer endpoint; no audio",
+  "results": [
+    {
+      "id": "certnova-pricing",
+      "repeat": 1,
+      "question": "How much does your CBA report service cost?",
+      "httpStatus": 200,
+      "ms": 2306,
+      "response": {
+        "answer": "Which program are you interested in?",
+        "sources": [],
+        "outcome": "clarification",
+        "evidenceCount": 12
+      }
+    },
+    {
+      "id": "certnova-overview",
+      "repeat": 1,
+      "question": "What does CertNova do?",
+      "httpStatus": 200,
+      "ms": 4152,
+      "response": {
+        "answer": "CertNova offers tools and expert support for Canadian engineers working toward P.Eng. licensing, including CBA writing support and NPPE preparation. Its services also include career support for engineering professionals in Canada.",
+        "sources": [
+          "https://competencybasedassessment.ca/services",
+          "https://competencybasedassessment.ca/get-to-know-us"
+        ],
+        "outcome": "supported"
+      }
+    },
+    {
+      "id": "certnova-isolation",
+      "repeat": 1,
+      "question": "What are the entry requirements for Practical Nursing at Suncrest College?",
+      "httpStatus": 200,
+      "ms": 3567,
+      "response": {
+        "answer": "I can help with the business's information and services only.",
+        "sources": [],
+        "outcome": "out_of_scope",
+        "evidenceCount": 7
+      }
+    },
+    {
+      "id": "certnova-contact",
+      "repeat": 1,
+      "question": "How can I contact CertNova?",
+      "httpStatus": 200,
+      "ms": 4175,
+      "response": {
+        "answer": "You can call CertNova at +1 (306) 539-1637 or visit https://competencybasedassessment.ca/.",
+        "sources": [],
+        "outcome": "supported"
+      }
+    }
+  ]
+}

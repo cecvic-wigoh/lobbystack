@@ -42,6 +42,23 @@ const plain = (value: string) => value
   .replace(/[ \t]+/g, " ")
   .trim();
 
+/** Crawlers wrap table cells and use different valid Markdown list/emphasis styles. */
+function normalizeProgramMarkdown(value: string): string {
+  const lines = value.replace(/\r\n?/g, "\n").split("\n");
+  const result: string[] = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    let line = lines[index]!;
+    if (line.trimStart().startsWith("|")) {
+      while ((line.match(/\|/g)?.length ?? 0) < 3 && index + 1 < lines.length
+        && lines[index + 1]!.trim() && !/^#{1,6} /.test(lines[index + 1]!)) {
+        line += " " + lines[++index]!.trim();
+      }
+    }
+    result.push(line);
+  }
+  return result.join("\n").replace(/^([ \t]*)\* (?=\S)(?!\* \*)/gm, "$1- ");
+}
+
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 const TERM_START_MONTH: Record<string, number> = { winter: 0, spring: 3, summer: 6, fall: 8 };
 
@@ -62,11 +79,15 @@ export function parsePublishedDate(value: string | undefined, endOfPeriod = fals
 }
 
 function requirementsSection(text: string): string | undefined {
-  const heading = /^#{1,6} [^\n]*(?:Admission|Requirements)[^\n]*$/m.exec(text);
+  const heading = /^(#{1,6}) [^\n]*(?:Admission|Requirements)[^\n]*$/m.exec(text);
   if (!heading) return undefined;
   const rest = text.slice(heading.index + heading[0].length);
-  const end = /^#{1,3} (?![^\n]*(?:Admission|Requirement))[^\n]*$/m.exec(rest);
-  const body = plain(rest.slice(0, end ? end.index : undefined)).replace(/\n{2,}/g, "\n").replace(/^\* \* \*$/gm, "").replace(/\n{2,}/g, "\n").trim();
+  // Preserve nested admissions headings, but stop at the site's intake/course tabs.
+  const end = [...rest.matchAll(/^(#{1,6}) ([^\n]+)$/gm)].find(next =>
+    (next[1]!.length <= heading[1]!.length && !/Admission|Requirement/i.test(next[2]!))
+    || /^(?:\d+ Intake Options? Available|(?:Applying for )?Courses|Additional Fees|Tuition and Fees|Career Options)\b/i.test(next[2]!),
+  );
+  const body = plain(rest.slice(0, end ? end.index : undefined)).replace(/(^|[\s(])_([^_\n]+)_/g, "$1$2").replace(/\n{2,}/g, "\n").replace(/^\* \* \*$/gm, "").replace(/\n{2,}/g, "\n").trim();
   return body ? `${plain(heading[0].replace(/^#+\s*/, ""))}\n${body}`.slice(0, 12000) : undefined;
 }
 
@@ -101,7 +122,7 @@ function priceCaveat(text: string | undefined): string | undefined {
 
 /** Parse one program page (Markdown as imported) into its published intakes and requirements. */
 export function parseProgramPage(input: { url: string; title: string; text: string }): ProgramEntry {
-  const text = input.text.replace(/\r\n?/g, "\n");
+  const text = normalizeProgramMarkdown(input.text);
   const title = plain(/^# (.+)$/m.exec(text)?.[1] ?? input.title.replace(/^[\s\S]*?\s-\s/, ""));
   const area = /\[([^\]]+)\]\(https?:\/\/[^)]*\/interest\/department-[^)]*\)/.exec(text)?.[1];
   const intakes: ProgramIntake[] = [];
@@ -302,13 +323,27 @@ export function answerProgramCatalogQuestion(catalog: ProgramEntry[], input: { q
     // Copy only a complete academic/language list, bounded by the page's explicit
     // acceptance-requirements notice. Historical application prose stays outside it.
     const entry = chosen.length === 1 ? chosen[0] : undefined;
-    const academic = entry?.requirements?.match(/(?:^|\n)(- Grade \d+[^\n]*\n[\s\S]*?)(?=\n_?Click on the tab below,[^\n]*additional requirements upon acceptance)/i)?.[1]?.trim();
-    if (locale === "en" && /^what (?:are|is) (?:the )?(?:(?:admission|entry|academic) )?(?:requirements?|prerequisites?) for .+[?.!]*$/i.test(question.trim())
-      && !/\b(?:fees?|tuition|cost|start|deadlines?|duration|international|domestic|mature|transfer|my)\b/i.test(question)
-      && entry && academic && /English Language Proficiency/i.test(academic) && /document deadline/i.test(academic)
-      && academic.split(/\s+/).length <= 160
+    const requirements = entry?.requirements?.replace(/^#{1,6} /gm, "");
+    // Read the full published academic block, including every subject option and
+    // language condition. Admissions policy and post-acceptance tabs stay separate.
+    const start = requirements ? /^ *(?:- )?Grade \d+[^\n]*/m.exec(requirements) : null;
+    let academic = start && requirements ? requirements.slice(start.index) : undefined;
+    if (academic) {
+      const end = /^(?:#{1,6} )?(?:Alternative admission|_?Click on the tab below[^\n]*additional requirements upon acceptance)/im.exec(academic);
+      academic = academic.slice(0, end?.index).trim();
+      const lines = academic.split("\n");
+      if (/^Grade \d+/.test(lines[0] ?? "") && /^Grade \d+/.test(lines[1] ?? "")) academic = lines.slice(1).join("\n");
+    }
+    const requirementsQuestion = question.trim().replace(/^(?:could|can) you (?:please )?repeat (?:the )?/i, "What are the ");
+    if (locale === "en" && /^what (?:are|is) (?:the )?(?:(?:admission|entry|academic) )?(?:requirements?|prerequisites?) for .+[?.!]*$/i.test(requirementsQuestion)
+      && !/\b(?:fees?|tuition|cost|start|deadlines?|duration|international|domestic|mature|transfer|my|guarantee)\b/i.test(question)
+      && entry && academic && /^ *(?:- )?English Language (?:Proficiency|Requirement)(?: \([^\n]*\))?\s*$/m.test(academic)
+      && (!/requirement must be provided/i.test(academic) || /document deadline/i.test(academic))
+      && !/^.*Program Requirements\s*$/im.test(academic)
+      && /language requirements|language proficiency|English language requirement/i.test(academic)
+      && academic.split(/\s+/).length <= 350
       && (!campus || entry.intakes.some(atCampus)) && (!term || currentIntakes(entry, now).some(intake => atCampus(intake) && inTerm(intake)))) {
-      return { kind: "answer", answer: `${entry.title} — published academic and English-language requirements:\n${academic}\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions.`, sources: [entry.url] };
+      return { kind: "answer", answer: `${entry.title} — published academic and English-language requirements:\n${academic}${/additional requirements upon acceptance/i.test(requirements ?? "") ? "\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions." : ""}`, sources: [entry.url] };
     }
     return {
       kind: "evidence",

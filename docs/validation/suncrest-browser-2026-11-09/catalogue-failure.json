@@ -1,0 +1,60 @@
+{
+  "callId": "d243b116-9fa3-4ce7-81bf-43bc93d8d8b0",
+  "browserVoiceStatus": "completed",
+  "failedTurns": [
+    {
+      "sequence": 6,
+      "speaker": "caller",
+      "text": "Okay, what are the interesting courses are there that I can study at Suncrest?"
+    },
+    {
+      "sequence": 7,
+      "speaker": "assistant",
+      "text": "I can't confirm that from the business's published information. Please contact the business to confirm."
+    },
+    {
+      "sequence": 8,
+      "speaker": "caller",
+      "text": "Okay, can you tell me the list of courses that Suncrest offers?"
+    },
+    {
+      "sequence": 9,
+      "speaker": "assistant",
+      "text": "I can't confirm that from the business's published information. Please contact the business to confirm."
+    }
+  ],
+  "programPagesIndexed": "99",
+  "coursePagesIndexed": "1163",
+  "productPagesIndexed": "49",
+  "structuredCatalogEntries": 99,
+  "catalogRoutingChecks": [
+    {
+      "question": "What electrician courses do you have available?",
+      "result": {
+        "kind": "answer",
+        "answer": "Electrical Applied Certificate: Nipawin, February 2028 (full-time; starts February 22, 2028; ends June 2, 2028; application deadline January 15, 2028).",
+        "sources": [
+          "https://suncrestcollege.ca/programs/electrical-applied-certificate"
+        ]
+      }
+    },
+    {
+      "question": "Okay, what other interesting courses are there that I can study at Suncrest?",
+      "result": null
+    },
+    {
+      "question": "Can you tell me the list of courses that Suncrest offers?",
+      "result": null
+    },
+    {
+      "question": "What courses do you offer?",
+      "result": null
+    }
+  ],
+  "deployedGroundingWarnings": [
+    "missing_evidence; evidenceCount 0",
+    "missing_evidence; evidenceCount 0"
+  ],
+  "diagnosis": "Broad catalogue requests miss the structured catalog path and its narrow fallback intent matcher. General retrieval produced zero evidence for both observed questions. Indexed pages exist; catalogue discovery and enumeration are not covered by the named-program path.",
+  "changes": "Diagnosis only; no product changes or deployment in this browser test."
+}

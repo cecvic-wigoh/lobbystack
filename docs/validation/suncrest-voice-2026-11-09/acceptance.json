@@ -1,0 +1,117 @@
+{
+  "runtimeVersion": "DzcUbCTmdvFX",
+  "deployedStatus": "Running",
+  "voiceTests": 118,
+  "backendAgentTests": 271,
+  "backendAcceptance": "24/24",
+  "finalRealWebRTCCalls": 4,
+  "checks": {
+    "lookupPreamblesAbsent": true,
+    "fullFeeAmountsAndWarningAudible": true,
+    "nfpaPrerequisitesAndClosedEnrollmentAudible": true,
+    "medicalLabAcademicAndTypingRequirementsAudible": true,
+    "bargeInDoesNotPersistUnplayedAmounts": true,
+    "bargeInNextQuestionAnswered": true,
+    "hangupPersistsHeardFragment": true,
+    "completedCalls": true,
+    "transcriptSequenceConsecutive": true,
+    "allCallsBillingExcludedInternalQa": true
+  },
+  "residualGaps": [
+    "Substantive answer start can take 6-14 seconds; no latency SLA established",
+    "Admission contact number has a repeated-digit ambiguity in independent audio recognition; not certified",
+    "No configured Suncrest PSTN line; telephone route and staff transfer not tested",
+    "Live audio scope Suncrest only; shared platform behavior covered by regression tests"
+  ],
+  "calls": [
+    {
+      "scenario": "voice-main",
+      "callId": "38f2dbbd-e97b-499d-af74-c3cc58455d13",
+      "room": "lobby-65037ab0-d410-4d0a-aa7d-93da0f2825b6",
+      "latencies": [
+        {
+          "question": "q0-admissions",
+          "callerEndToAgentAudioMs": 9482
+        },
+        {
+          "question": "qa-electrician",
+          "callerEndToAgentAudioMs": 6211
+        },
+        {
+          "question": "qa-electrician-repeat",
+          "callerEndToAgentAudioMs": 14282
+        },
+        {
+          "question": "q8-requirements",
+          "callerEndToAgentAudioMs": 7495
+        },
+        {
+          "question": "q5-goodbye",
+          "callerEndToAgentAudioMs": 3298
+        }
+      ]
+    },
+    {
+      "scenario": "voice-facts",
+      "callId": "ca65ccb0-7032-42e7-8d3e-2c6e3cac1cc2",
+      "room": "lobby-dea059fa-6869-4829-9071-3f626b0c9421",
+      "latencies": [
+        {
+          "question": "q-fees",
+          "callerEndToAgentAudioMs": 5438
+        },
+        {
+          "question": "q-nfpa",
+          "callerEndToAgentAudioMs": 6701
+        },
+        {
+          "question": "q-medlab",
+          "callerEndToAgentAudioMs": 9319
+        },
+        {
+          "question": "q5-goodbye",
+          "callerEndToAgentAudioMs": 4335
+        }
+      ]
+    },
+    {
+      "scenario": "voice-interruption",
+      "callId": "e9563ca5-40e1-463f-942e-a1b8c51051b8",
+      "room": "lobby-56a6e144-5eec-4454-a9ae-32eb0f249e5e",
+      "latencies": [
+        {
+          "question": "q1-campuses",
+          "callerEndToAgentAudioMs": 6644
+        },
+        {
+          "question": "q2-followup-fees",
+          "callerEndToAgentAudioMs": 4527
+        },
+        {
+          "question": "q3b-interrupt",
+          "callerEndToAgentAudioMs": 3551
+        },
+        {
+          "question": "q4-person",
+          "callerEndToAgentAudioMs": 3438
+        },
+        {
+          "question": "q5-goodbye",
+          "callerEndToAgentAudioMs": 2963
+        }
+      ]
+    },
+    {
+      "scenario": "voice-hangup",
+      "callId": "3263748b-9d57-462d-9cbd-22a7bcea483e",
+      "room": "lobby-bff99ae0-be05-4231-bd99-876364e793bb",
+      "latencies": [
+        {
+          "question": "q-fees",
+          "callerEndToAgentAudioMs": 4510
+        }
+      ]
+    }
+  ],
+  "configuredSuncrestPhoneRecords": 0
+}

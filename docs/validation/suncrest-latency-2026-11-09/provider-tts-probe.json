@@ -1,0 +1,22 @@
+[
+  {
+    "name": "full",
+    "firstAudioMs": 1084,
+    "totalMs": 5401
+  },
+  {
+    "name": "heading",
+    "firstAudioMs": 819,
+    "totalMs": 1762
+  },
+  {
+    "name": "short",
+    "firstAudioMs": 987,
+    "totalMs": 1976
+  },
+  {
+    "name": "phone",
+    "firstAudioMs": 1367,
+    "totalMs": 2778
+  }
+]

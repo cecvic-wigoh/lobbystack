@@ -1,0 +1,30 @@
+{
+  "agents": [
+    {
+      "agentId": "CA_QYUz6BvyPBiS",
+      "agentName": "ai-receptionist-voice",
+      "version": "DzcUbCTmdvFX",
+      "agentDeployments": [
+        {
+          "region": "us-east",
+          "status": "Running",
+          "replicas": 1,
+          "minReplicas": 1,
+          "maxReplicas": 8,
+          "cpuReq": "2000m",
+          "curCpu": "647933407n",
+          "curMem": "2291036161",
+          "memReq": "4294967296",
+          "memLimit": "8589934592",
+          "cpuLimit": "4000m",
+          "serverRegion": "osbxash1b",
+          "version": "DzcUbCTmdvFX",
+          "agentName": "ai-receptionist-voice",
+          "deploymentEnabled": true,
+          "lastScrapedAt": "2026-11-08T23:50:06.078843Z"
+        }
+      ],
+      "deployedAt": "2026-11-08T23:42:28.835396Z"
+    }
+  ]
+}

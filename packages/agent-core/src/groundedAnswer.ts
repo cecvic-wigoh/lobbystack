@@ -1,9 +1,10 @@
 import { generateText, Output, type LanguageModel } from "ai";
 import { z } from "zod";
-import { answerProgramCatalogQuestion, loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
+import { answerCourseCatalogue, isCatalogueDiscoveryQuestion, loadCourseCatalogue, answerProgramCatalogQuestion, loadProgramCatalog, searchKnowledgeEvidence } from "@lobbystack/domain";
 import type { AgentToolContext } from "./tools";
 import { describeAgentUsage, type AgentUsage } from "./model";
 import { answerShercomFaq, shercomFaqQuestion, SHERCOM_FAQ_URL } from "./shercomFaq";
+import { answerCourseRequirements, courseRequirementsSource } from "./courseRequirements";
 
 export const groundedAnswerSchema = z.object({
   status: z.enum(["supported", "partial", "clarify_campus", "clarify_program", "unknown", "out_of_scope"]),
@@ -51,8 +52,22 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
   const locale = snapshot.defaultLocale === "fr" ? "fr" : "en";
   if (/^(?:hi|hello|hey|good morning|good afternoon|good evening|thanks|thank you)[!.\s]*$/i.test(input.question.trim())) return { answer: locale === "fr" ? "Bonjour ! Comment puis-je vous aider avec nos services ou informations publiées ?" : "Hello! How can I help with our services or published information?", sources: [], outcome: "greeting" };
   if (isCollege && /^(?:where (?:is|are) (?:the )?(?:suncrest(?: college)?|college)|where (?:is|are) (?:the )?(?:college )?campus(?:es)?|what is (?:the )?(?:college['’]s )?(?:address|location))(?: located)?\??$/i.test(input.question.trim())) return validateGroundedAnswer({ status: "clarify_campus", claims: [] }, [], locale);
+  if (isCollege && /^(?:can|could|will|would) you (?:please )?guarantee (?:that )?i (?:will |would |can |could )?(?:be )?(?:admitted|accepted)\b/i.test(input.question.trim())) return {
+    answer: locale === "fr" ? "Je ne peux pas garantir une décision d’admission. Je peux expliquer les conditions d’admission publiées ; veuillez confirmer votre admissibilité auprès du service des admissions du collège." : "I can't guarantee an admission decision. I can explain the published entry requirements; please confirm your eligibility with the college's admissions team.",
+    sources: [], outcome: "unknown",
+  };
+  let resolvedCatalogueSource: string | undefined;
+  if (isCatalogueDiscoveryQuestion(input.question, input.history)) {
+    const entries = await loadCourseCatalogue(domain, { businessId: snapshot.businessId }).catch(() => []);
+    const discovery = answerCourseCatalogue(entries, { question: input.question, history: input.history ?? [], businessName: snapshot.displayName, locale, limit: input.context.channel === "web_voice" ? 5 : 8 });
+    if (discovery?.kind === "question") { input = { ...input, question: discovery.question }; resolvedCatalogueSource = discovery.sourceUrl; }
+    if (discovery?.kind === "answer") return { answer: discovery.answer, sources: discovery.sources, outcome: "supported" };
+  }
   const businessName = new RegExp(snapshot.displayName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
-  const search = (query: string, sourcePath?: string, sourceUrl?: string) => searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query: query.replace(businessName, " ").replace(/([A-Za-z])([A-Z][a-z])/g, "$1 $2"), limit: 6, ...(sourcePath ? { sourcePath } : {}), ...(sourceUrl ? { sourceUrl } : {}), ...(callId ? { callId } : {}) });
+  const search = (query: string, sourcePath?: string, sourceUrl?: string) => {
+    const pinnedSource = sourceUrl ?? (sourcePath ? undefined : resolvedCatalogueSource);
+    return searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query: query.replace(businessName, " ").replace(/([A-Za-z])([A-Z][a-z])/g, "$1 $2"), limit: 6, ...(sourcePath ? { sourcePath } : {}), ...(pinnedSource ? { sourceUrl: pinnedSource } : {}), ...(callId ? { callId } : {}) });
+  };
   // Keep conversation context for references and short clarification replies only.
   // A new, self-contained question must not inherit another topic's retrieval.
   const needsContext = /\b(?:it|its|they|their|them|this|that|those|these|there|same)\b|\bthe (?:course|program|campus|policy|contact)\b|^(?:and|also|what about|how about)\b/i.test(input.question)
@@ -79,25 +94,37 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
     if (answer) return answer;
   }
 
-  // Campus, term and requirement questions are answered from every program page
-  // at once; a handful of retrieved passages cannot list them completely.
-  const catalog = isCollege ? answerProgramCatalogQuestion(await loadProgramCatalog(domain, { businessId: snapshot.businessId }).catch(() => []), { question: input.question, ...(previousQuestion ? { previousQuestion, previousQuestions } : {}), locale }) : null;
-  if (catalog?.kind === "answer") return { answer: catalog.answer, sources: catalog.sources, outcome: "supported" };
-  const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
   // Structured contact sections need no generative paraphrase or invented citation.
   // Only handle a complete general-contact request; specific groups/programs still use grounding.
   const contactQuestion = input.question.replace(businessName, "").trim();
-  if (isCollege && /^(?:who (?:should|can|do) i (?:contact|call|email|speak to|talk to) (?:about|for|regarding) (?:general )?admissions?(?: (?:to|at|for))?|what (?:is|are) (?:the )?(?:general )?admissions? (?:contact(?: information| details)?|email(?: address)?))\s*[?.!]*$/i.test(contactQuestion)) {
-    const contacts = (admissionContact?.matches ?? []).flatMap(source => {
-      if (!source.sourceUrl || new URL(source.sourceUrl).pathname !== "/contact-us") return [];
-      const section = source.content.match(/(?:^|\n)#{1,6}[ \t]+For Admissions\s*(?:&|and)\s*Applications Inquiries[ \t]*\n([\s\S]*?)(?=\n#{1,6}\s|$)/i)?.[1];
+  if (isCollege && /^(?:who (?:should|can|do) i (?:contact|call|email|speak to|talk to) (?:about|for|regarding) (?:general )?admissions?(?: (?:to|at|for))?|what (?:is|are) (?:the )?(?:general )?admissions? (?:contact(?: information| details)?|email(?: address)?|phone(?: number)?))\s*[?.!]*$/i.test(contactQuestion)) {
+    const contactEvidence = await searchKnowledgeEvidence(domain, { businessId: snapshot.businessId, query: "admissions applications inquiries contact", sourcePath: "/contact-us", keywordOnly: true, limit: 6, ...(callId ? { callId } : {}) }).catch(() => null);
+    const contacts = (contactEvidence?.matches ?? []).flatMap(source => {
+      if (!source.sourceUrl || new URL(source.sourceUrl).pathname.replace(/\/$/, "") !== "/contact-us") return [];
+      const section = source.content.match(/(?:^|\n)(?:#{1,6}[ \t]+)?For Admissions\s*(?:&|and)\s*Applications Inquiries[ \t]*\n([\s\S]*?)(?=\n(?:#{1,6}\s|For [A-Z])|$)/i)?.[1];
       const emails = [...new Set(section?.match(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/gi) ?? [])];
-      return emails.length === 1 ? [{ email: emails[0]!, url: source.sourceUrl }] : [];
+      const phones = [...new Set([...section?.matchAll(/(?:tel:)?(?<![\d])(?:\+?1[ -]?)?\d{3}[ -]\d{3}[ -]\d{4}(?!\d)/g) ?? []].map(match => match[0].replace(/\D/g, "")))];
+      return emails.length === 1 && phones.length <= 1 ? [{ email: emails[0]!, phone: /\bemail\b/i.test(contactQuestion) ? undefined : phones[0]?.replace(/(\d{3})(\d{3})(\d{4})$/, "$1 $2 $3"), url: source.sourceUrl }] : [];
     });
-    if (contacts.length && new Set(contacts.map(contact => contact.email.toLowerCase())).size === 1) return {
-      answer: locale === "fr" ? `Pour les demandes générales concernant les admissions et les candidatures, écrivez à ${contacts[0]!.email}.` : `For general admissions and applications inquiries, email ${contacts[0]!.email}.`,
+    if (contacts.length && new Set(contacts.map(contact => `${contact.email.toLowerCase()}:${contact.phone ?? ""}`)).size === 1) return {
+      answer: locale === "fr" ? `Pour les demandes générales concernant les admissions et les candidatures, ${contacts[0]!.phone ? `appelez le ${contacts[0]!.phone} ou ` : ""}écrivez à ${contacts[0]!.email}.` : `For general admissions and applications inquiries, ${contacts[0]!.phone ? `call ${contacts[0]!.phone} or ` : ""}email ${contacts[0]!.email}.`,
       sources: [...new Set(contacts.map(contact => contact.url))], outcome: "supported",
     };
+  }
+
+  // Campus, term and requirement questions are answered from every program page
+  // at once; a handful of retrieved passages cannot list them completely.
+  const programs = isCollege ? await loadProgramCatalog(domain, { businessId: snapshot.businessId }).catch(() => []) : [];
+  const catalog = isCollege ? answerProgramCatalogQuestion(resolvedCatalogueSource ? programs.filter(program => program.url === resolvedCatalogueSource) : programs, { question: input.question, ...(previousQuestion ? { previousQuestion, previousQuestions } : {}), locale }) : null;
+  if (catalog?.kind === "answer") return { answer: catalog.answer, sources: catalog.sources, outcome: "supported" };
+  const [evidence, admissionContact, programCatalog, campusDirectory] = await Promise.all([search(query), isCollege && /admiss|appl|register|enrol/i.test(query) ? search(/international/i.test(query) ? "international applications admissions email contact" : "admissions applications inquiries contact email phone", /international/i.test(query) ? "/international-application-process" : "/contact-us") : Promise.resolve(null), isCollege && !/\b(?:in|for)\s+\w/i.test(query) && /(?:(?:what|which)\s+(?:are\s+)?(?:the\s+)?|(?:about|list)\s+(?:some\s+(?:of\s+the\s+)?)?)(?:programs|courses)\b/i.test(query) ? search("Area of Interest program course types", "/programs") : Promise.resolve(null), isCollege && /\bcampus(?:es)?\b/i.test(query) ? search("campus locations", "/contact-us") : Promise.resolve(null)]);
+  // Exact course identity can rank above the prerequisite chunk. Retrieve its
+  // details even when a broader program catalogue also matched the question.
+  const courseSource = courseRequirementsSource(input.question, evidence.matches);
+  if (courseSource) {
+    const details = await search("admission requirements prerequisites English language", undefined, courseSource);
+    const readout = answerCourseRequirements(input.question, details.matches);
+    if (readout) return readout;
   }
   if (asksOverview) {
     const about = await Promise.all(["/about", "/about-us"].map(path => search("company overview who we are history", path)));
@@ -139,6 +166,8 @@ export async function answerGroundedQuestion(input: { model: LanguageModel; cont
       evidence.matches.unshift(...sections.flatMap(section => section.matches.filter(item => !item.chunkId.startsWith("outline:") && !seen.has(item.chunkId)).slice(0, 2)));
     }
   }
+  const courseRequirements = answerCourseRequirements(input.question, evidence.matches);
+  if (courseRequirements) return courseRequirements;
   if (admissionContact) {
     const seen = new Set(evidence.matches.map(item => item.chunkId));
     evidence.matches.unshift(...admissionContact.matches.filter(item => /\/(?:contact-us|international-application-process)(?:[/?#]|$)/.test(item.sourceUrl ?? "") && !seen.has(item.chunkId)).slice(0, 3));

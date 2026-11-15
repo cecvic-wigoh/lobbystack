@@ -249,7 +249,7 @@ export async function deleteKnowledgeSnippet(context: DomainContext, input: { us
   });
 }
 
-type IndexDocumentInput = { businessId: string; documentId: string; text: string; embeddings: number[][]; embeddingFingerprint?: string };
+type IndexDocumentInput = { businessId: string; documentId: string; text: string; embeddings: number[][]; embeddingFingerprint?: string; expectedRevision?: number };
 
 type IndexDocumentResult = { chunkCount: number; indexed: boolean; documentId: string };
 
@@ -304,6 +304,7 @@ async function indexDocumentTextInTransaction(tx: DatabaseTransaction, input: In
       throw new Error("Knowledge document not found.");
     }
     if (document.status === "cancelled") return { chunkCount: 0, indexed: false, documentId: input.documentId };
+    if (input.expectedRevision !== undefined && (document.revision !== input.expectedRevision || !document.active || document.status !== "indexed")) throw new Error("Knowledge source changed during refresh; existing content was preserved.");
     const chunks = chunkText(input.text);
     if (chunks.length === 0) {
       await markKnowledgeDocumentFailedInTransaction(tx, input, document.revision, "No readable text was extracted from the document.");
@@ -415,7 +416,7 @@ export async function searchKnowledge(
 
 export async function searchKnowledgeEvidence(
   context: DomainContext,
-  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string; sourcePath?: string; sourceUrl?: string },
+  input: { userId?: string; businessId: string; query: string; limit?: number; callId?: string; turnId?: string; sourcePath?: string; sourceUrl?: string; keywordOnly?: boolean },
 ): Promise<{ matches: KnowledgePassage[]; mode: "hybrid" | "keyword"; outcome: "found" | "empty" | "unavailable"; failure?: "embedding_unavailable" | "search_unavailable"; durationMs: number }> {
   const startedAt = performance.now();
   const actor = { userId: input.userId, businessId: input.businessId, actorType: input.userId ? "operator" as const : "worker" as const };
@@ -444,6 +445,8 @@ export async function searchKnowledgeEvidence(
       ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${allTermsQuery})) DESC,
       ts_rank_cd(to_tsvector('simple', d.title || ' ' || c.content), to_tsquery('simple', ${lexicalQuery})) DESC, c.id LIMIT 12`) : Promise.resolve([]);
   const semantic = (async () => {
+    // Exact source sections can be read without waiting for an embedding provider.
+    if (input.keywordOnly) return [];
     if (!query || !context.embeddings) throw new Error("embedding_unavailable");
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
@@ -460,7 +463,7 @@ export async function searchKnowledgeEvidence(
     } finally { if (timer) clearTimeout(timer); }
   })();
   const [lexicalResult, semanticResult] = await Promise.allSettled([lexical, semantic]);
-  const mode = semanticResult.status === "fulfilled" ? "hybrid" as const : "keyword" as const;
+  const mode = !input.keywordOnly && semanticResult.status === "fulfilled" ? "hybrid" as const : "keyword" as const;
   const candidates = fuseKnowledgeRanks([
     lexicalResult.status === "fulfilled" ? lexicalResult.value : [],
     semanticResult.status === "fulfilled" ? semanticResult.value : [],
@@ -504,7 +507,7 @@ export async function searchKnowledgeEvidence(
     }).catch(() => []);
     matches = withinKnowledgeBudget([...notes, ...matches], KNOWLEDGE_SEARCH_TOKEN_BUDGET, p => JSON.stringify(p));
   }
-  const failed = validationFailed || (lexicalResult.status === "rejected" && semanticResult.status === "rejected");
+  const failed = validationFailed || (lexicalResult.status === "rejected" && (input.keywordOnly || semanticResult.status === "rejected"));
   const outcome = matches.length ? "found" as const : failed ? "unavailable" as const : "empty" as const;
   const durationMs = performance.now() - startedAt;
   searchDuration.record(durationMs, { operation: "knowledge.search", mode, outcome });

@@ -4,7 +4,7 @@ import { assertProductionSecrets } from "@lobbystack/config";
 import type { OnboardingFollowupSender } from "@lobbystack/domain";
 import { createQueue, createRedisConnection, createWorkerOptions, enqueueJob, isKnownJobType, jobQueues, type JobEnvelope, type JobQueue } from "@lobbystack/jobs";
 import { createEmbeddingProvider } from "@lobbystack/providers/ai/embeddingProvider";
-import { FirecrawlProvider } from "@lobbystack/providers/crawling/firecrawl";
+import { createCrawlerProvider } from "./crawler";
 import { SmtpEmailProvider } from "@lobbystack/providers/email/smtp";
 import { GoogleCalendarProvider } from "@lobbystack/providers/google/calendar";
 import { PolarBillingProvider } from "@lobbystack/providers/polar/polarBilling";
@@ -71,11 +71,6 @@ function createAlertSmsProvider(): WorkerDependencies["twilioAlerts"] {
     if (input.from !== from) throw new Error("Restricted alert provider cannot use another sender.");
     return provider.sendSms(input);
   } };
-}
-
-function createCrawlerProvider(): FirecrawlProvider | undefined {
-  const apiKey = process.env.FIRECRAWL_API_KEY;
-  return apiKey ? new FirecrawlProvider({ apiKey, pauseNewCrawls: process.env.FIRECRAWL_PAUSE_NEW_CRAWLS === "true", ...(process.env.FIRECRAWL_SAVED_BATCH_ID ? { savedBatchIds: process.env.FIRECRAWL_SAVED_BATCH_ID.split(",").filter(Boolean) } : {}), ...(process.env.FIRECRAWL_SAVED_CRAWL_URL ? { savedCrawlUrl: process.env.FIRECRAWL_SAVED_CRAWL_URL, ...(process.env.FIRECRAWL_SAVED_CRAWL_ID ? { savedCrawlId: process.env.FIRECRAWL_SAVED_CRAWL_ID } : {}) } : {}), ...(process.env.FIRECRAWL_MAX_PAGES && Number.isFinite(Number(process.env.FIRECRAWL_MAX_PAGES)) ? { maxPages: Number(process.env.FIRECRAWL_MAX_PAGES) } : {}), ...(process.env.FIRECRAWL_EXCLUDE_PATHS ? { excludePaths: process.env.FIRECRAWL_EXCLUDE_PATHS.split(",").filter(Boolean) } : {}), ...(process.env.FIRECRAWL_BASE_URL ? { baseUrl: process.env.FIRECRAWL_BASE_URL } : {}) }) : undefined;
 }
 
 function createCalendarProvider(): GoogleCalendarProvider | undefined {

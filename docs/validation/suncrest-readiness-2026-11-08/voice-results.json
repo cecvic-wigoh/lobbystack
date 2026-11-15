@@ -1,0 +1,314 @@
+[
+  {
+    "name": "voice-baseline",
+    "room": "lobby-635d99bf-43bc-4e87-baed-a5964f3d3fa5",
+    "durationMs": 152176,
+    "assistantTurns": [
+      {
+        "ms": 9701,
+        "text": "Thanks for calling Suncrest College. I\u2019m the AI receptionist."
+      },
+      {
+        "ms": 24501,
+        "text": "For general admissions and applications inquiries, email admissions at suncrestcollege dot ca."
+      },
+      {
+        "ms": 46524,
+        "text": "I can\u2019t confirm the admission requirements from verified information right now. Please contact admissions at suncrestcollege dot ca for the current requirements."
+      },
+      {
+        "ms": 60153,
+        "text": "Let me pause for a moment so I can be sure I\u2019m giving you the correct verified information."
+      },
+      {
+        "ms": 70115,
+        "text": "I can\u2019t confirm the entry requirements right now. Please contact admissions at suncrestcollege dot ca for the current requirements."
+      },
+      {
+        "ms": 81677,
+        "text": "I\u2019m going to check the verified program details so I can read them accurately."
+      },
+      {
+        "ms": 129705,
+        "text": "Practical Nursing \u2014 published academic and English-language requirements:\nGrade 12 with a minimum overall score of 65 percent in the following four subjects:\n30-level English Language Arts.\nFoundations of Math 30 OR Pre-Calculus 30 OR Workplace and Apprenticeship Math 30.\nOne of Biology 30, Chemistry 30 or Physics 30.\nOne of Social Studies 30, History 30 or Native Studies 30.\nEnglish Language Proficiency:\nThe English language requirement for this program follows Saskatchewan Polytechnic language requirements.\nEnglish Language requirement must be provided on or before the document deadline.\nThe page also lists additional requirements upon acceptance; please review the program page for those conditions."
+      },
+      {
+        "ms": 141135,
+        "text": "You\u2019re welcome. Goodbye, and take care."
+      }
+    ],
+    "events": [
+      {
+        "ms": 11066,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "greeting"
+        }
+      },
+      {
+        "ms": 11067,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q0-admissions"
+        }
+      },
+      {
+        "ms": 14368,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q0-admissions"
+        }
+      },
+      {
+        "ms": 26662,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q0-admissions"
+        }
+      },
+      {
+        "ms": 26662,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "qa-electrician"
+        }
+      },
+      {
+        "ms": 30766,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "qa-electrician"
+        }
+      },
+      {
+        "ms": 48502,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "qa-electrician"
+        }
+      },
+      {
+        "ms": 48502,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "qa-electrician-repeat"
+        }
+      },
+      {
+        "ms": 52754,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "qa-electrician-repeat"
+        }
+      },
+      {
+        "ms": 71947,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "qa-electrician-repeat"
+        }
+      },
+      {
+        "ms": 71947,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q8-requirements"
+        }
+      },
+      {
+        "ms": 75659,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q8-requirements"
+        }
+      },
+      {
+        "ms": 133437,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q8-requirements"
+        }
+      },
+      {
+        "ms": 133437,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 137183,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 145421,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 152129,
+        "event": "end_session",
+        "detail": {
+          "status": 204
+        }
+      }
+    ]
+  },
+  {
+    "name": "voice-interruption",
+    "room": "lobby-aa12bb15-6db7-47bb-b9f5-6f982a8d37d4",
+    "durationMs": 86327,
+    "assistantTurns": [
+      {
+        "ms": 9441,
+        "text": "How can I help you today with Suncrest College information or a request?"
+      },
+      {
+        "ms": 21482,
+        "text": "Practical Nursing is listed for Yorkton and Melfort campuses."
+      },
+      {
+        "ms": 40222,
+        "text": "Practical Nursing, Melfort, Winter 2027 fee table. Tuition, total, is $16,000.00. Fees, per year, are $700.00."
+      },
+      {
+        "ms": 43323,
+        "text": "It starts on August 26, 2027."
+      },
+      {
+        "ms": 62967,
+        "text": "You\u2019re speaking with an AI receptionist for Suncrest College. If you need a person, I can share a published contact option."
+      },
+      {
+        "ms": 75070,
+        "text": "You\u2019re welcome. Goodbye, and have a great rest of your day."
+      }
+    ],
+    "events": [
+      {
+        "ms": 10504,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "greeting"
+        }
+      },
+      {
+        "ms": 10505,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q1-campuses"
+        }
+      },
+      {
+        "ms": 14809,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q1-campuses"
+        }
+      },
+      {
+        "ms": 26850,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q1-campuses"
+        }
+      },
+      {
+        "ms": 26851,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q2-followup-fees"
+        }
+      },
+      {
+        "ms": 29910,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q2-followup-fees"
+        }
+      },
+      {
+        "ms": 34128,
+        "event": "interrupt_while_agent_speaking",
+        "detail": {
+          "agentSpeaking": true
+        }
+      },
+      {
+        "ms": 34129,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q3b-interrupt"
+        }
+      },
+      {
+        "ms": 39879,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q3b-interrupt"
+        }
+      },
+      {
+        "ms": 51905,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q3b-interrupt"
+        }
+      },
+      {
+        "ms": 51905,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q4-person"
+        }
+      },
+      {
+        "ms": 54505,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q4-person"
+        }
+      },
+      {
+        "ms": 66515,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q4-person"
+        }
+      },
+      {
+        "ms": 66516,
+        "event": "caller_speech_start",
+        "detail": {
+          "id": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 70269,
+        "event": "caller_speech_end",
+        "detail": {
+          "id": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 79454,
+        "event": "agent_reply_done",
+        "detail": {
+          "label": "q5-goodbye"
+        }
+      },
+      {
+        "ms": 86292,
+        "event": "end_session",
+        "detail": {
+          "status": 404
+        }
+      }
+    ]
+  }
+]

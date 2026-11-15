@@ -1,0 +1,17 @@
+{
+  "admin": {
+    "id": "303222a8-2982-4e9e-b992-1240223389a5",
+    "status": "SUCCESS",
+    "createdAt": "2026-11-08T09:42:44.991Z"
+  },
+  "worker": {
+    "id": "2b118b06-e152-43fe-8940-8df1068456e5",
+    "status": "SUCCESS",
+    "createdAt": "2026-11-08T10:02:58.457Z"
+  },
+  "crawl4ai": {
+    "id": "70b3223d-f91c-4999-89d5-7df87bffaaa0",
+    "status": "SUCCESS",
+    "createdAt": "2026-11-06T10:17:12.423Z"
+  }
+}

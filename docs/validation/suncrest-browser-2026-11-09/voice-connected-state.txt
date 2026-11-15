@@ -1,0 +1,24 @@
+Browser tab: 1, Title: "Suncrest College | Meet your AI receptionist", URL: "https://admin-production-ad1d.up.railway.app/en/demo/suncrest".
+1 AXWebArea Suncrest College | Meet your AI receptionist, URL: admin-production-ad1d.up.railway.app/en/demo/suncrest
+	2 container Notifications alt+T
+	3 container
+		4 image Suncrest College
+		5 text AI RECEPTIONIST PREVIEW A WELCOMING FIRST CONVERSATION
+		8 heading Your next chapter. Let’s talk about it., Value: 1
+			9 text Your next chapter.
+			10 text Let’s talk about it.
+		11 text Meet Suncrest’s AI receptionist. Ask about programs, admissions, and student life—in your own words.
+		22 text Answers grounded in the college’s published information. When a detail can’t be confirmed, we’ll say so.
+		23 container
+			24 container Choose how to talk
+				25 checkbox Talk naturally, Value: 1
+				26 checkbox Type a question, Value: 0
+			30 text SUNCREST COLLEGE
+			31 text Call ended
+			32 button Start test call
+			33 text Click to start, allow your microphone, and say hello.
+			34 text You can interrupt or ask a follow-up, just like a conversation.
+			35 text Preview calls last up to 5 minutes. Each connection can start 5 calls per hour and 10 per day. AI receptionist · Voice and chat
+		29 text Built for Suncrest College Demonstration · October 2026
+
+The focused UI element is 1 AXWebArea Suncrest College | Meet your AI receptionist, URL: admin-production-ad1d.up.railway.app/en/demo/suncrest
